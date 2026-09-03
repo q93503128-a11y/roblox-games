@@ -32,6 +32,7 @@ end
 
 function Loot.GenerateWeapon(rng, roomIndex, powerRank, luck)
     local rarity = chooseRarity(rng, luck)
+    local rarityIndex = table.find(orderedRarities, rarity) or 1
     local rarityData = Config.Rarity[rarity]
     local names = Config.WeaponNames[rarity]
     local name = names[rng:NextInteger(1, #names)]
@@ -41,8 +42,8 @@ function Loot.GenerateWeapon(rng, roomIndex, powerRank, luck)
     local variance = rng:NextNumber(0.92, 1.10)
     local power = math.floor(12 * depthScale * rankScale * rarityData.Multiplier * variance + 0.5)
 
-    local critChance = math.clamp(0.04 + ((orderedRarities[1] == rarity and 0) or 0.015 * (table.find(orderedRarities, rarity) - 1)), 0.04, 0.14)
-    local critMultiplier = 1.55 + (0.08 * (table.find(orderedRarities, rarity) - 1))
+    local critChance = math.clamp(0.04 + (0.015 * (rarityIndex - 1)), 0.04, 0.14)
+    local critMultiplier = 1.55 + (0.08 * (rarityIndex - 1))
 
     return {
         Name = name,
