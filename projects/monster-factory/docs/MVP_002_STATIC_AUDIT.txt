@@ -1,0 +1,9 @@
+Lua files: 15
+Checks:
+- loadstring: PASS
+- external require(assetId): PASS
+- client currency grant: PASS
+- NOTE: static audit only; Roblox Studio runtime execution has not been performed in this environment.
+- UI scope audit: PASS (showToast forward-declared before purchase helper closures).
+- Fusion input audit: PASS (explicit touch-friendly button; no right-click dependency).
+- Shop viewport audit: IMPROVED (shop closed by default behind toggle).

@@ -1,0 +1,24 @@
+MONSTER FACTORY - Rojo 실시간 패치 설정
+
+[최초 1회만]
+1. 공식 Rojo Windows x86_64 버전을 받는다.
+2. 압축 안의 rojo.exe를 이 폴더의 tools 폴더에 넣는다.
+3. INSTALL_ROJO_PLUGIN.bat를 더블클릭한다.
+4. Roblox Studio에 Rojo 플러그인 버튼이 생겼는지 확인한다.
+   안 보이면 Studio를 딱 한 번 재시작한다.
+
+[매번 개발할 때]
+1. 이 프로젝트 폴더에서 START_ROJO.bat를 실행한다.
+   검은 창은 개발 중 계속 켜둔다.
+2. Roblox Studio에서 Monster Factory 플레이스를 연다.
+3. 상단 Plugins -> Rojo -> Connect를 누른다.
+4. 끝. Studio를 계속 켜둬도 된다.
+
+[앞으로 패치 받을 때]
+- 내가 주는 새 ROJO_PATCH ZIP의 내용을 이 프로젝트 폴더에 '파일 바꾸기'로 덮어쓴다.
+- START_ROJO.bat가 켜져 있고 Studio Rojo가 Connect 상태면 몇 초 안에 반영된다.
+- .rbxlx를 다시 다운로드하거나 Studio를 껐다 켤 필요가 없다.
+
+주의:
+- Studio에서 직접 추가한 맵/모델을 보호하기 위해 Workspace 등에 ignoreUnknownInstances=true를 사용했다.
+- 단, 내가 관리하는 동일 이름 객체를 Studio에서 직접 수정하면 다음 동기화에서 Rojo 파일 내용이 우선할 수 있다.

@@ -1,0 +1,23 @@
+Build: MVP-003
+Lua files: 21
+
+Static checks:
+- loadstring: PASS
+- external numeric require: PASS
+- Http external request: PASS
+- legacy Progress.Zone reference: REVIEW: src/ServerScriptService/Services/PlayerDataService.lua
+- right-click-only input: PASS
+- exists src/ServerScriptService/Services/ZoneService.lua: PASS
+- exists src/ServerScriptService/Services/RebirthService.lua: PASS
+- exists src/ServerScriptService/Services/QuestService.lua: PASS
+- exists src/ServerScriptService/Services/RewardService.lua: PASS
+- exists src/ReplicatedStorage/Shared/QuestConfig.lua: PASS
+- exists src/ReplicatedStorage/Shared/RewardConfig.lua: PASS
+
+NOTE: No Roblox Studio/Luau runtime is available in this execution environment.
+This is static validation only; runtime playtest remains intentionally deferred.
+
+Audit patch:
+- responsive window type audit: PASS (Vector2 only used as UISizeConstraint MaxSize).
+- v2 -> v3 zone migration masking bug: FIXED.
+- legacy Progress.Zone occurrence is intentional migration-only code.

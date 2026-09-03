@@ -1,0 +1,25 @@
+Build: MVP-004
+Lua files: 31
+
+Static checks:
+- loadstring: PASS
+- numeric require(assetId): PASS
+- external HTTP request: PASS
+- right-click-only input: PASS
+- client direct currency mutation: PASS
+- automatic context purchase prompt: PASS
+- exists src/ServerScriptService/Services/AchievementService.lua: PASS
+- exists src/ServerScriptService/Services/OnboardingService.lua: PASS
+- exists src/ServerScriptService/Services/OfflineEarningsService.lua: PASS
+- exists src/ServerScriptService/Services/FriendBonusService.lua: PASS
+- exists src/ServerScriptService/Services/ContextOfferService.lua: PASS
+- exists src/ServerScriptService/Services/WorkerVisualService.lua: PASS
+- exists src/ServerScriptService/Services/AnalyticsService.lua: PASS
+
+Audit patch:
+- Context offer purchase prompt now requires explicit player click: PASS.
+- Worker visuals have initial RemoteFunction fetch: PASS.
+- Unused IndexService removed: PASS.
+- Analytics event names validated against AnalyticsConfig: PASS.
+
+NOTE: Static validation only. Roblox Studio runtime has not been executed here.
