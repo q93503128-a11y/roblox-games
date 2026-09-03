@@ -8,6 +8,13 @@ if exist "tools\rojo.exe" (
     exit /b
 )
 
+if exist "%USERPROFILE%\Desktop\Rojo\rojo.exe" (
+    echo [Monster Factory] Starting Desktop Rojo...
+    "%USERPROFILE%\Desktop\Rojo\rojo.exe" serve default.project.json
+    pause
+    exit /b
+)
+
 where rojo >nul 2>nul
 if %errorlevel%==0 (
     echo [Monster Factory] Starting system Rojo...
@@ -18,7 +25,10 @@ if %errorlevel%==0 (
 
 echo.
 echo Rojo CLI was not found.
-echo Download the Windows x86_64 Rojo release and put rojo.exe in:
-echo %~dp0tools\
+echo Checked:
+echo   %~dp0tools\rojo.exe
+echo   %USERPROFILE%\Desktop\Rojo\rojo.exe
+echo   PATH: rojo
+
 echo.
 pause
