@@ -6,22 +6,25 @@ Factory Tycoon + Monster Collection + Simulator project managed through Rojo.
 
 Gameplay/system baseline: **MVP-005**
 
-Visual baseline: **Visual Rebuild 005**
+Visual baseline: **Visual Rebuild 006**
 
 The first Studio smoke test confirmed that the static world boots, the player reaches Green Meadows, the HUD/data loop initializes, and the factory economy begins producing. That smoke test also exposed the original placeholder presentation as unacceptable for continued testing, so the project moved into a dedicated visual rebuild before the full checklist continues.
 
-## Visual Rebuild 005
+## Visual Rebuild 006
 
 - `MonsterFactoryWorld.model.json` remains the gameplay-anchor world.
 - `MonsterFactoryArt004.model.json` remains the static non-colliding zone-silhouette layer.
 - canonical Lighting / Atmosphere / Bloom / ColorCorrection remain owned by `default.project.json`.
 - `ZoneMood.client.lua` transitions the scene palette by the player's current logical zone.
-- equipped workers use the Visual Rebuild 003 character presentation with rarity nameplates, shiny treatment and idle motion.
+- `VisualRefresh.client.lua` remains the Visual Rebuild 005 simulator-style HUD/card presentation adapter.
+- `UIVisualContract.lua` keeps semantic icon slots ready for sanitized external GUI art.
+- `WorkerVisualFactory.lua` is now the shared procedural monster visual source used by both factory workers and Hatch previews.
+- `WorkerCharacters.client.lua` now derives equipped workers directly from canonical Monster/Zone state and renders final models at Worker Stations.
+- the old runtime orb-to-character handoff is retired; `WorkerVisualService` remains only as an inert compatibility dependency.
+- `HatchReveal.client.lua` adds a rarity-aware ViewportFrame reveal card driven by actual server-published HatchCount/inventory changes.
+- Hatch reveal scales down for narrow mobile screens and queues successive real hatches.
+- Shiny fusion is not treated as a normal Hatch reveal.
 - current-zone Generator, Collector, Capsule and Worlds anchors retain 3D guidance / ProximityPrompt interaction.
-- `VisualRefresh.client.lua` is now the Visual Rebuild 005 simulator-style presentation adapter.
-- `UIVisualContract.lua` defines semantic icon slots for stats, navigation, primary actions and modal/card content so sanitized external GUI art can be swapped in later without changing gameplay callbacks.
-- Shop / Monsters / Zones / Quests / Rewards / Achievements / Index use a common card language with contextual header icons, subtitles and status badges.
-- Collect / Hatch / Upgrade now have client-only press/ring feedback and state-driven result feedback while all authoritative changes remain server-owned.
 - default Studio `Baseplate` / root `SpawnLocation` cleanup remains owned by `WorldService`.
 - first-pass Studio testing uses explicit ephemeral profiles so DataStore API permission noise does not block visual/core-loop testing.
 
@@ -30,6 +33,7 @@ Detailed audits:
 - `docs/VISUAL_REBUILD_003_AUDIT.md`
 - `docs/VISUAL_REBUILD_004_AUDIT.md`
 - `docs/VISUAL_REBUILD_005_AUDIT.md`
+- `docs/VISUAL_REBUILD_006_AUDIT.md`
 
 ## External art policy
 
@@ -52,6 +56,10 @@ A Studio-only sanitation helper exists at:
 `tools/studio/IMPORT_EXTERNAL_VISUALS.lua`
 
 Imported models must be sanitized before use. Whole packs should not be retained by default, and gameplay anchors must remain repository-owned.
+
+## Known client cleanup boundary
+
+`ClientBootstrap.client.lua` still contains inert legacy worker compatibility code. The server no longer feeds that path, so it does not create worker orbs at runtime. Physically removing that dead code should happen together with the next ClientBootstrap decomposition instead of another large in-place visual patch.
 
 ## Next validation point
 
