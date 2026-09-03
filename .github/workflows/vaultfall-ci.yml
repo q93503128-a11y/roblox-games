@@ -22,13 +22,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Rokit
+      - name: Setup Rokit and pinned tools
         uses: CompeyDev/setup-rokit@v0.1.2
         with:
           version: v1.1.0
-
-      - name: Install pinned tools
-        run: rokit install
 
       - name: Show Rojo version
         run: rojo --version
