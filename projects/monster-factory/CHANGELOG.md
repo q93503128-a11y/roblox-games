@@ -1,5 +1,32 @@
 # Changelog
 
+## Visual Rebuild 002
+
+### Canonical world
+- Replaced the small placeholder static world with a substantially expanded canonical Rojo world.
+- Added factory foundations, entry paths, generator/conveyor/reactor detailing, capsule areas, collector structures, portal frames, worker pads and zone boundary dressing.
+- Added dedicated `ExternalArt` folders to Meadow, Desert and Frozen for sanitized Creator Store art.
+- Preserved all gameplay anchor names used by current services.
+- Removed `WorldVisualRefresh.server.lua`; visual world construction is no longer performed as a runtime patch.
+
+### UI
+- Replaced Visual Refresh 001 with one consolidated Visual Refresh 002 adapter instead of stacking another overlay.
+- Added simulator-style stat chips and compact collection/progression side docks.
+- Kept Collect / Hatch / Upgrade as the three primary bottom actions.
+- Added modal dimming and client-side world blur.
+- Enforced one major modal at a time.
+- Added hover/press feedback and tighter responsive scaling.
+
+### Studio workflow
+- Added explicit ephemeral Studio profile mode for first-pass visual/core-loop testing.
+- Updated Rojo launcher to recognize the existing `Desktop\Rojo\rojo.exe` installation used by the development machine.
+- `WorldService` removes legacy root Baseplate / SpawnLocation objects when the canonical world exists.
+
+### External art
+- Defined stable `ExternalArt` intake slots and preserved logical anchors.
+- Updated Creator Store candidate/sanitization documentation.
+- Runtime gameplay is not allowed to depend on imported model scripts.
+
 ## MVP-005
 
 ### Security
@@ -27,7 +54,7 @@
 ### Testing
 - Added Remote security audit.
 - Added full Studio test checklist.
-- Content foundation is now formally approved for first end-to-end Studio playtest.
+- Content foundation was formally approved for first end-to-end Studio playtest.
 
 ### MVP-005 final integration patch
 - Worker Station visuals now refresh immediately after zone unlock.
@@ -40,4 +67,4 @@
 - PlayerDataService now lazily acquires DataStore and falls back to ephemeral Studio data.
 - WorldService now boots before data/economy service requires.
 - Added boot sentinel messages to Studio Output.
-- Studio place file now contains a static emergency floor and spawn so script errors cannot cause endless void deaths.
+- Studio place file gained a static world/floor/spawn path so script errors cannot cause endless void deaths.
