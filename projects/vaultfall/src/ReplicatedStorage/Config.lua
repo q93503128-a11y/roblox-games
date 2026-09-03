@@ -141,7 +141,7 @@ Config.Meta = {
 }
 
 Config.AssetManifest = {
-    DungeonKit = 84153348982194,
+    DungeonKit = 9492405836,
     WeaponPack = 17351010368,
     MonsterPack = 14483015744,
     NaturePack = 79195618410265,
