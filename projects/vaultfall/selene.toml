@@ -1,7 +1,7 @@
 std = "roblox"
 
 [config]
-unused_variable = { ignore_pattern = "^_|^ok$" }
+unused_variable = { ignore_pattern = "^_|^ok$|^player$|^crossParts$" }
 shadowing = { ignore_pattern = "^_" }
 
 [rules]
