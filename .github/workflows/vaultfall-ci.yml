@@ -27,8 +27,14 @@ jobs:
         with:
           version: v1.1.0
 
-      - name: Show Rojo version
-        run: rojo --version
+      - name: Show tool versions
+        run: |
+          rojo --version
+          selene --version
+
+      - name: Lint Vaultfall Luau
+        working-directory: projects/vaultfall
+        run: selene src tools
 
       - name: Build Vaultfall place
         run: rojo build projects/vaultfall/default.project.json --output Vaultfall.rbxlx
