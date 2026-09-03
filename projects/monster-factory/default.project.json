@@ -3,6 +3,47 @@
   "servePort": 34872,
   "tree": {
     "$className": "DataModel",
+    "Lighting": {
+      "$className": "Lighting",
+      "$properties": {
+        "Brightness": 2.2,
+        "ClockTime": 14.2,
+        "EnvironmentDiffuseScale": 0.45,
+        "EnvironmentSpecularScale": 0.62,
+        "ExposureCompensation": 0.08,
+        "GlobalShadows": true,
+        "Ambient": [0.33, 0.36, 0.42],
+        "OutdoorAmbient": [0.56, 0.60, 0.66]
+      },
+      "Atmosphere": {
+        "$className": "Atmosphere",
+        "$properties": {
+          "Density": 0.26,
+          "Offset": 0.08,
+          "Color": [0.78, 0.86, 0.96],
+          "Decay": [0.38, 0.46, 0.58],
+          "Glare": 0.12,
+          "Haze": 1.15
+        }
+      },
+      "Bloom": {
+        "$className": "BloomEffect",
+        "$properties": {
+          "Intensity": 0.32,
+          "Size": 24,
+          "Threshold": 1.35
+        }
+      },
+      "ColorCorrection": {
+        "$className": "ColorCorrectionEffect",
+        "$properties": {
+          "Brightness": 0.02,
+          "Contrast": 0.08,
+          "Saturation": 0.10,
+          "TintColor": [1.0, 0.985, 0.95]
+        }
+      }
+    },
     "Workspace": {
       "$className": "Workspace",
       "$path": "src/Workspace",
