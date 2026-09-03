@@ -19,6 +19,7 @@ local HVT = require(servicesFolder:WaitForChild("HVTService"))
 local SectorModifiers = require(servicesFolder:WaitForChild("SectorModifierService"))
 local VisualAssets = require(servicesFolder:WaitForChild("VisualAssetService"))
 local Mastery = require(servicesFolder:WaitForChild("MasteryService"))
+local Contracts = require(servicesFolder:WaitForChild("ContractService"))
 
 local remotesFolder = ReplicatedStorage:FindFirstChild("VaultfallRemotes")
 if remotesFolder then
@@ -43,6 +44,7 @@ local context = {
         Skill = makeRemote("Skill"),
         ClaimLoot = makeRemote("ClaimLoot"),
         ClaimAugment = makeRemote("ClaimAugment"),
+        SelectContract = makeRemote("SelectContract"),
         State = makeRemote("State"),
         Ready = makeRemote("Ready"),
     },
@@ -59,6 +61,7 @@ local context = {
     SectorModifiers = SectorModifiers,
     VisualAssets = VisualAssets,
     Mastery = Mastery,
+    Contracts = Contracts,
 }
 
 -- Publish any installed, sanitized Creator Store weapon visuals before clients
@@ -74,6 +77,9 @@ Augments.Init(context)
 -- Weapon mastery layers permanent, weapon-specific handling/performance bonuses
 -- over the existing augment modifiers and records real takedowns through Run.
 Mastery.Init(context)
+-- Contracts wrap the stable run/enemy entry points instead of duplicating combat.
+-- Their selected threat/reward rules therefore affect the same authoritative run.
+Contracts.Init(context)
 Objectives.Init(context)
 Combat.Init(context)
 EncounterDirector.Init(context)
@@ -81,6 +87,7 @@ OptionalOps.Init(context)
 HVT.Init(context)
 SectorModifiers.Init(context)
 World.Build()
+Contracts.BindWorld()
 Profile.Init(context)
 
 local function placeAtHub(player, character)
@@ -109,6 +116,7 @@ context.Remotes.Ready.OnServerEvent:Connect(function(player)
     Run.PushState(player)
     Augments.PushState(player)
     Mastery.PushState(player)
+    Contracts.PushState(player)
     Objectives.PushState(player)
     OptionalOps.PushState(player)
     HVT.PushState(player)
