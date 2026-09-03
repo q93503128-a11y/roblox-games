@@ -51,19 +51,45 @@ local function normalizeClientVisual(instance)
     end
 end
 
+local function isLeafVisualModel(model)
+    if not model:IsA("Model") or not hasVisualGeometry(model) then
+        return false
+    end
+    if #model:GetDescendants() > MAX_DESCENDANTS then
+        return false
+    end
+
+    for _, descendant in ipairs(model:GetDescendants()) do
+        if descendant:IsA("Model") and descendant ~= model and hasVisualGeometry(descendant) then
+            return false
+        end
+    end
+    return true
+end
+
 local function collectCandidates(pack)
     local candidates = {}
-    for _, child in ipairs(pack:GetChildren()) do
-        if hasVisualGeometry(child) and #child:GetDescendants() <= MAX_DESCENDANTS then
-            table.insert(candidates, child)
+
+    -- Weapon packs are frequently wrapped in one top-level Model. Prefer the
+    -- individual leaf models instead of accidentally publishing the entire pack
+    -- as a single first-person weapon.
+    for _, descendant in ipairs(pack:GetDescendants()) do
+        if isLeafVisualModel(descendant) then
+            table.insert(candidates, descendant)
+        end
+    end
+
+    if #candidates == 0 then
+        for _, child in ipairs(pack:GetChildren()) do
+            if child:IsA("BasePart") and hasVisualGeometry(child) then
+                table.insert(candidates, child)
+            end
         end
     end
 
     if #candidates == 0 then
         for _, descendant in ipairs(pack:GetDescendants()) do
-            if (descendant:IsA("Model") or descendant:IsA("MeshPart") or descendant:IsA("UnionOperation"))
-                and hasVisualGeometry(descendant)
-                and #descendant:GetDescendants() <= MAX_DESCENDANTS then
+            if (descendant:IsA("MeshPart") or descendant:IsA("UnionOperation")) and hasVisualGeometry(descendant) then
                 table.insert(candidates, descendant)
             end
         end
