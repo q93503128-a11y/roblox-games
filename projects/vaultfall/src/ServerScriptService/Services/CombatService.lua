@@ -103,8 +103,12 @@ local function pushCombat(player)
     ctx.Remotes.State:FireClient(player, "Combat", combatPayload(player, state, weapon, definition))
 end
 
+local function canUseWeapon(player)
+    return ctx.Run.IsParticipant(player) or (ctx.Training and ctx.Training.IsAvailable(player))
+end
+
 local function beginReload(player)
-    if not ctx.Run.IsParticipant(player) then
+    if not canUseWeapon(player) then
         return
     end
     local state, weapon, definition = stateFor(player)
@@ -165,7 +169,9 @@ local function damageEnemy(player, enemy, amount, weapon, multiplier)
 end
 
 local function fireWeapon(player, requestedDirection)
-    if not ctx.Run.IsParticipant(player) then
+    local isRun = ctx.Run.IsParticipant(player)
+    local isTraining = not isRun and ctx.Training and ctx.Training.IsAvailable(player)
+    if not isRun and not isTraining then
         return
     end
 
@@ -193,30 +199,35 @@ local function fireWeapon(player, requestedDirection)
     state.LastShot = now
     state.Ammo -= 1
     local direction = getDirection(root, requestedDirection)
-    local spread = definition.Spread * (weapon.SpreadMultiplier or 1) * mods.Spread
-    local coneDot = 1 - math.clamp(spread * 3.2, 0.002, 0.24)
-    local candidates = ctx.Enemies.GetInRange(root.Position, definition.Range, direction, coneDot, ctx.Run.GetCurrentRoom())
     local baseDamage = calculateDamage(player, weapon, definition)
     local archetype = weapon.Archetype or "Carbine"
 
-    if archetype == "Shotgun" then
-        local pelletCount = definition.Pellets or 8
-        if #candidates > 0 then
-            local remaining = pelletCount
-            local targetCount = math.min(3, #candidates)
-            for index = 1, targetCount do
-                local pellets = index == 1 and math.ceil(remaining * 0.65) or math.max(1, math.floor(remaining / (targetCount - index + 1)))
-                remaining -= pellets
-                damageEnemy(player, candidates[index], baseDamage * pellets * 0.42, weapon, 1 - ((index - 1) * 0.16))
+    if isRun then
+        local spread = definition.Spread * (weapon.SpreadMultiplier or 1) * mods.Spread
+        local coneDot = 1 - math.clamp(spread * 3.2, 0.002, 0.24)
+        local candidates = ctx.Enemies.GetInRange(root.Position, definition.Range, direction, coneDot, ctx.Run.GetCurrentRoom())
+
+        if archetype == "Shotgun" then
+            local pelletCount = definition.Pellets or 8
+            if #candidates > 0 then
+                local remaining = pelletCount
+                local targetCount = math.min(3, #candidates)
+                for index = 1, targetCount do
+                    local pellets = index == 1 and math.ceil(remaining * 0.65) or math.max(1, math.floor(remaining / (targetCount - index + 1)))
+                    remaining -= pellets
+                    damageEnemy(player, candidates[index], baseDamage * pellets * 0.42, weapon, 1 - ((index - 1) * 0.16))
+                end
             end
+        elseif archetype == "RailRifle" then
+            for index = 1, math.min(3, #candidates) do
+                local penetration = ({ 1, 0.68, 0.46 })[index]
+                damageEnemy(player, candidates[index], baseDamage, weapon, penetration)
+            end
+        elseif candidates[1] then
+            damageEnemy(player, candidates[1], baseDamage, weapon, 1)
         end
-    elseif archetype == "RailRifle" then
-        for index = 1, math.min(3, #candidates) do
-            local penetration = ({ 1, 0.68, 0.46 })[index]
-            damageEnemy(player, candidates[index], baseDamage, weapon, penetration)
-        end
-    elseif candidates[1] then
-        damageEnemy(player, candidates[1], baseDamage, weapon, 1)
+    else
+        ctx.Training.RecordShot(player, direction, definition.Range, baseDamage, archetype)
     end
 
     ctx.Remotes.State:FireClient(player, "WeaponFX", {
@@ -273,8 +284,8 @@ local function performDash(player, requestedDirection)
     params.IgnoreWater = true
 
     local origin = root.Position
-    local cast = Workspace:Raycast(origin, flat * dash.Distance, params)
-    local distance = dash.Distance
+    local cast = Workspace:Raycast(origin, flat * ctx.Config.Attacks.Dash.Distance, params)
+    local distance = ctx.Config.Attacks.Dash.Distance
     if cast then
         distance = math.max(0, cast.Distance - 3)
     end
