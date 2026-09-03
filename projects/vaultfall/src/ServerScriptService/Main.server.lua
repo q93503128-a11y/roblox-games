@@ -44,12 +44,29 @@ local context = {
     Combat = Combat,
 }
 
-Profile.Init(context)
+-- World construction must never depend on persistence. A local .rbxlx can have
+-- DataStore access disabled, but the player still needs a complete playable map.
 World.Init(context)
 Enemies.Init(context)
 Run.Init(context)
 Combat.Init(context)
 World.Build()
+Profile.Init(context)
+
+local function placeAtHub(player, character)
+    if Run.IsParticipant(player) then
+        return
+    end
+
+    local root = character:WaitForChild("HumanoidRootPart", 10)
+    if not root or not character.Parent then
+        return
+    end
+
+    character:PivotTo(World.GetHubSpawnCFrame())
+    root.AssemblyLinearVelocity = Vector3.zero
+    root.AssemblyAngularVelocity = Vector3.zero
+end
 
 context.Remotes.Ready.OnServerEvent:Connect(function(player)
     if not Profile.Get(player) then
@@ -61,6 +78,14 @@ end)
 
 local function onPlayerAdded(player)
     Profile.Load(player)
+
+    player.CharacterAdded:Connect(function(character)
+        task.defer(placeAtHub, player, character)
+    end)
+
+    if player.Character then
+        task.defer(placeAtHub, player, player.Character)
+    end
 end
 
 Players.PlayerAdded:Connect(onPlayerAdded)
@@ -78,4 +103,4 @@ game:BindToClose(function()
     end
 end)
 
-print("[Vaultfall] server boot complete")
+print("[Vaultfall] server boot complete; world ready")
