@@ -21,6 +21,7 @@ local VisualAssets = require(servicesFolder:WaitForChild("VisualAssetService"))
 local Mastery = require(servicesFolder:WaitForChild("MasteryService"))
 local Contracts = require(servicesFolder:WaitForChild("ContractService"))
 local ContractEncounters = require(servicesFolder:WaitForChild("ContractEncounterService"))
+local Training = require(servicesFolder:WaitForChild("TrainingService"))
 
 local remotesFolder = ReplicatedStorage:FindFirstChild("VaultfallRemotes")
 if remotesFolder then
@@ -64,26 +65,18 @@ local context = {
     Mastery = Mastery,
     Contracts = Contracts,
     ContractEncounters = ContractEncounters,
+    Training = Training,
 }
 
--- Publish any installed, sanitized Creator Store weapon visuals before clients
--- build their first-person viewmodels. Missing packs never block a playable build.
 VisualAssets.Init(context)
-
--- World construction must never depend on persistence. A local .rbxlx can have
--- DataStore access disabled, but the player still needs a complete playable map.
 World.Init(context)
 Enemies.Init(context)
 Run.Init(context)
 Augments.Init(context)
--- Weapon mastery layers permanent, weapon-specific handling/performance bonuses
--- over the existing augment modifiers and records real takedowns through Run.
 Mastery.Init(context)
--- Contracts own the selected reward/threat rule. The contract encounter layer is
--- installed immediately after it so its composition changes still pass through
--- the authoritative contract scaling wrapper instead of bypassing it.
 Contracts.Init(context)
 ContractEncounters.Init(context)
+Training.Init(context)
 Objectives.Init(context)
 Combat.Init(context)
 EncounterDirector.Init(context)
@@ -125,6 +118,7 @@ context.Remotes.Ready.OnServerEvent:Connect(function(player)
     OptionalOps.PushState(player)
     HVT.PushState(player)
     SectorModifiers.PushState(player)
+    Combat.PushState(player)
 end)
 
 local function onPlayerAdded(player)
@@ -143,6 +137,7 @@ end
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(function(player)
     Augments.ClearPlayer(player)
+    Training.ClearPlayer(player)
     Mastery.Unload(player)
     Profile.Unload(player)
 end)
