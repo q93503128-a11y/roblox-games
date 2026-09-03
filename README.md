@@ -13,6 +13,7 @@ roblox-games/
 │  └─ workflows/          # 공용/프로젝트별 CI 및 Roblox 배포
 ├─ projects/
 │  ├─ monster-factory/    # Monster Factory Simulator
+│  ├─ vaultfall/          # Vaultfall
 │  └─ <future-game>/      # 이후 Roblox 프로젝트
 ├─ shared/
 │  ├─ modules/            # 실제로 여러 게임에서 재사용하기로 확정된 모듈
@@ -138,6 +139,22 @@ projects/monster-factory/
 - 테스트 Place와 LIVE Place 분리 예정
 - GitHub → Rojo build → Roblox TEST 자동 배포 구축 예정
 
+### Vaultfall
+
+경로:
+
+```text
+projects/vaultfall/
+```
+
+현재 개발 방향:
+
+- 1~4인 협동 던전 로그라이트
+- 외부 Creator Store 에셋은 시각 재료로만 사용하고 게임 로직은 저장소에서 통제
+- 서버 권한 전투·방 진행·보상·영구 성장·DataStore 구조
+- 8개 방 원정, 엘리트/보스, 임시 무기 드롭, Essence/Power Rank 성장
+- 첫 전체 Studio 플레이테스트 준비 단계
+
 ## 새 프로젝트 추가 규칙
 
 새 Roblox 게임은 다음 최소 구조로 시작합니다.
@@ -159,5 +176,5 @@ projects/<project-name>/
 2. 로컬 Studio ↔ Rojo 연결 확인
 3. Roblox TEST Experience / Place 확보
 4. Open Cloud 배포 자격증명은 GitHub Secrets에만 등록
-5. `main` 변경 시 Monster Factory TEST Place 자동 배포 workflow 구축
+5. 프로젝트별 TEST Place 자동 배포 workflow 구축
 6. 실제 첫 플레이 테스트 결과를 바탕으로 버그·밸런스·UI 수정
