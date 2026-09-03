@@ -2,15 +2,20 @@
 
 > 검증 기준일: 2026-09-03
 
-`knowledge/`는 이 monorepo의 모든 Roblox 프로젝트가 공통으로 참조하는 **개발 지식 정본**이다. Roblox Studio·Luau·AI 개발·아키텍처·에셋·UI/UX·레벨 디자인·Terrain·3D 아트·전투·히트박스·VFX·카메라·애니메이션·오디오·NPC AI·물리/차량·아바타·Teleport/Matchmaking·상호작용·인벤토리·루팅/제작·퀘스트·거래·라운드·절차생성·소셜·보안·성능·저장·경제·LiveOps·Analytics·정책·배포·오픈소스 도구·실패 회귀 지식을 지속적으로 조사하고 검증한다.
-
-목표는 모든 것을 기억으로 때우는 것이 아니라 **현재 검증된 해결책을 먼저 검색하고, 실제 Studio에서 확인하며, 이미 알려진 실패를 반복하지 않는 것**이다.
+`knowledge/`는 이 monorepo의 모든 Roblox 프로젝트가 공통으로 참조하는 **개발 지식 정본**이다. 목표는 Roblox를 기억으로 때우는 것이 아니라, 현재 검증된 해결책·도구·에셋·실패 패턴을 먼저 찾고 실제 Studio에서 검증한 뒤 구현하는 것이다.
 
 ## 가장 먼저 읽기
 
-새 Roblox 작업을 시작하는 AI/개발자는 `GODBASE_MANIFEST.json → AGENT_PROTOCOL.md → QUICK_REFERENCE.md → regressions/FAILURE_LIBRARY.md → 작업 domain 전문 문서` 순서로 확인한다.
+모든 새 Roblox 작업:
 
-새 프로젝트는 추가로 `PROJECT_START_CHECKLIST`, `TOOLCHAIN_DECISION_MATRIX`, `AI_STUDIO_AUTONOMOUS_PLAYTEST`, `VERTICAL_SLICE_DONE_DEFINITION`, `LEVEL_DESIGN_WORLD_TRAVERSAL`을 확인한다.
+`GODBASE_MANIFEST.json → AGENT_PROTOCOL.md → QUICK_REFERENCE.md → regressions/FAILURE_LIBRARY.md → 작업 domain 문서`
+
+새 프로젝트는 추가로:
+- `checklists/PROJECT_START_CHECKLIST.md`
+- `workflow/TOOLCHAIN_DECISION_MATRIX.md`
+- `workflow/AI_STUDIO_AUTONOMOUS_PLAYTEST.md`
+- `checklists/VERTICAL_SLICE_DONE_DEFINITION.md`
+- `level-design/LEVEL_DESIGN_WORLD_TRAVERSAL.md`
 
 ## 핵심 원칙
 
@@ -39,9 +44,26 @@ Rojo + Rokit + Wally + Git/CI + Studio MCP for QA
 
 기존 프로젝트는 Godbase 때문에 강제 migration하지 않는다.
 
+## 2026-09-03 오픈소스/에셋 선별 핵심
+
+- `catalogs/OPEN_SOURCE_ECOSYSTEM_AUDIT.md` — 현재 Roblox OSS를 추천/조건부/전환/레거시로 분류.
+- `catalogs/LIBRARY_CATALOG.json` — AI가 읽는 canonical dependency catalog.
+- `networking/NETWORK_LIBRARY_DECISION_MATRIX.md` — native remotes vs ByteNet vs Zap vs legacy BridgeNet2.
+- `ui/UI_STORYBOOK_COMPONENT_WORKFLOW.md` — UI Labs/Flipbook을 이용한 component state 검증.
+- `assets/CREATOR_STORE_SEED_CATALOG.json` — 실제 Creator Store 후보의 첫 metadata catalog.
+- `assets/CREATOR_STORE_AUTOMATION_AND_SCORING.md` — API discovery → quarantine Studio audit → production-fit test 자동화 규칙.
+
+중요 상태:
+- **Knit**: archived, 신규 기본값 금지.
+- **BridgeNet2**: 작성자 README가 ByteNet을 권장하므로 신규 기본값 금지.
+- **Zap**: 0.6.x 유지 + rewrite 병행, exact version/branch 확인 필수.
+- **Matter**: ECS가 실제로 필요한 게임에서만 조건부.
+- **Cmdr/Charm/Nevermore 개별 packages/UI storybook tools**: 문제에 맞으면 강한 후보.
+- Creator Store의 rating/vote는 discovery signal일 뿐 S-tier 증명이 아니다.
+
 ## 전문 문서 지도
 
-### 공식/도구
+### 공식/워크플로
 - `official/CREATOR_DOCS_MAP.md`
 - `official/TEMPLATES_FEATURE_PACKAGES_MODULES.md`
 - `official/ENGINE_CAPABILITIES_2026.md`
@@ -51,15 +73,20 @@ Rojo + Rokit + Wally + Git/CI + Studio MCP for QA
 - `workflow/PACKAGES_TEAM_CREATE_COLLABORATION.md`
 - `workflow/OPEN_CLOUD_CI_RELEASE_AUTOMATION.md`
 
-### 구조/코드/네트워킹
+### 구조/코드/OSS
 - `architecture/ENGINE_AND_NETWORKING.md`
 - `architecture/PROJECT_STRUCTURE_PATTERNS.md`
-- `networking/REPLICATION_PHYSICS_INPUT.md`
 - `code/LUAU_ENGINEERING_PLAYBOOK.md`
 - `code/OPEN_SOURCE_STACK.md`
+- `catalogs/OPEN_SOURCE_ECOSYSTEM_AUDIT.md`
 - `catalogs/LIBRARY_CATALOG.json`
 
-### 공통 게임플레이 시스템
+### 네트워킹/보안
+- `networking/REPLICATION_PHYSICS_INPUT.md`
+- `networking/NETWORK_LIBRARY_DECISION_MATRIX.md`
+- `security/SECURITY_AND_ANTICHEAT.md`
+
+### 공통 게임플레이
 - `gameplay/INTERACTION_SYSTEMS.md`
 - `gameplay/INVENTORY_EQUIPMENT_ARCHITECTURE.md`
 - `gameplay/LOOT_DROP_CRAFTING.md`
@@ -70,13 +97,14 @@ Rojo + Rokit + Wally + Git/CI + Studio MCP for QA
 - `social/SOCIAL_PARTY_INVITES.md`
 - `operations/ADMIN_MODERATION_COMMANDS.md`
 
-### 월드/아트
+### 월드/에셋/아트
 - `level-design/LEVEL_DESIGN_WORLD_TRAVERSAL.md`
 - `graphics/TERRAIN_ENVIRONMENT_PIPELINE.md`
-- `graphics/WORLD_ART_ANIMATION_AUDIO.md`
 - `graphics/VISUAL_QUALITY_PIPELINE.md`
 - `graphics/VFX_TELEGRAPHS_EFFECT_BUDGETS.md`
 - `assets/CREATOR_STORE_AUDIT_AND_CATALOG.md`
+- `assets/CREATOR_STORE_AUTOMATION_AND_SCORING.md`
+- `assets/CREATOR_STORE_SEED_CATALOG.json`
 - `assets/OFFICIAL_ASSET_CATALOG.json`
 
 ### 전투/캐릭터/멀티플레이
@@ -90,39 +118,28 @@ Rojo + Rokit + Wally + Git/CI + Studio MCP for QA
 - `avatar/AVATAR_CHARACTER_ACCESSORIES.md`
 - `multiplayer/TELEPORT_MATCHMAKING_RESERVED_SERVERS.md`
 
-### UI/접근성
-- `design/GAME_DESIGN_AND_FTUE.md`
+### UI
 - `design/UI_UX_PLAYBOOK.md`
 - `ui/CROSS_PLATFORM_ACCESSIBILITY_LOCALIZATION.md`
+- `ui/UI_STORYBOOK_COMPONENT_WORKFLOW.md`
 
 ### 데이터/경제/운영
 - `data/CLOUD_SERVICES_DECISION_MATRIX.md`
 - `data/SAVE_SCHEMA_MIGRATION_RECOVERY.md`
 - `data/ECONOMY_BALANCING_INFLATION.md`
-- `data/DATA_ECONOMY_AND_LIVEOPS.md`
-- `analytics/ANALYTICS_EVENT_TAXONOMY_EXPERIMENTS.md`
 - `production/DISCOVERY_GROWTH_RETENTION.md`
 - `production/MONETIZATION_LIVEOPS_NOTIFICATIONS.md`
+- `analytics/ANALYTICS_EVENT_TAXONOMY_EXPERIMENTS.md`
 - `publishing/POLICY_MARKETPLACE_LOCALIZATION.md`
 
-### 품질/검증
+### 품질/테스트
 - `debugging/STUDIO_DEBUGGING_VISUALIZATION.md`
 - `performance/PERFORMANCE_AND_STREAMING.md`
 - `performance/LOADING_MEMORY_STREAMING_BUDGETS.md`
-- `security/SECURITY_AND_ANTICHEAT.md`
 - `testing/AUTOMATED_ACCEPTANCE_GATES.md`
 - `testing/DEVICE_NETWORK_TEST_MATRIX.md`
-- `checklists/PROJECT_START_CHECKLIST.md`
-- `checklists/VERTICAL_SLICE_DONE_DEFINITION.md`
 - `checklists/ASSET_IMPORT_CHECKLIST.md`
 - `checklists/SHIP_CHECKLIST.md`
-
-### 학습/회귀
-- `research/OFFICIAL_CURRICULUM_ROADMAP.md`
-- `research/COURSES_COMMUNITY_AND_CONTINUOUS_LEARNING.md`
-- `research/CONTINUOUS_RESEARCH_ROADMAP.md`
-- `genre/GENRE_REFERENCE_MATRIX.md`
-- `regressions/FAILURE_LIBRARY.md`
 
 ## 공식 출발점
 
@@ -130,24 +147,17 @@ Rojo + Rokit + Wally + Git/CI + Studio MCP for QA
 - Full docs: https://create.roblox.com/docs/llms-full.txt
 - Engine API: https://create.roblox.com/docs/reference/engine/llms.txt
 - Open Cloud: https://create.roblox.com/docs/cloud/llms.txt
+- Creator Store Cloud/API surface: https://create.roblox.com/docs/cloud/reference/features/creator-store
 - Creator Docs source: https://github.com/Roblox/creator-docs
 - Studio MCP: https://create.roblox.com/docs/studio/mcp
 - Script Sync: https://create.roblox.com/docs/scripting/sync
 
 ## Godbase 자체 품질관리
 
-`tools/godbase/validate.py`가 manifest가 가리키는 파일 존재 여부, JSON 파싱, 비정상적으로 빈 지식 문서 등을 검사한다. `.github/workflows/godbase-check.yml`은 Godbase 관련 변경에서 이 검사를 실행한다.
+`tools/godbase/validate.py` + `.github/workflows/godbase-check.yml`가 manifest 경로, JSON 파싱, 비정상적으로 빈 문서 등을 검사한다.
 
-## 사용자 테스트 전 quality gate
+## 사용자 테스트 전
 
-`testing/AUTOMATED_ACCEPTANCE_GATES.md`를 적용한다. 최소 Studio clean boot, unexpected Output error 0, 정상 spawn, primary loop 실제 완주, screenshot visual review, moving model integrity, desktop/mobile UI, valuable state server authority를 확인한다. 이를 통과하지 않은 artifact는 `INTERNAL_PROTOTYPE`이다.
+`testing/AUTOMATED_ACCEPTANCE_GATES.md`를 적용한다. 최소 clean boot, unexpected Output error 0, 정상 spawn, primary loop 직접 완주, screenshot visual review, model integrity, desktop/mobile UI, server authority를 확인한다. 통과 전 상태는 `INTERNAL_PROTOTYPE`이다.
 
-## 실패 정본
-
-`regressions/FAILURE_LIBRARY.md`는 mandatory read다. Blind rbxlx generation, bootstrap single-point failure, z-fighting, Model 일부만 이동, placeholder art, random map soup, surface-copy combat, breadth-before-feel, patch stacking 등 이미 겪은 문제를 반복하지 않는다.
-
-## 지속 연구
-
-`research/CONTINUOUS_RESEARCH_ROADMAP.md`가 장기 queue다. Creator Store 실물 S/A tier catalog, 공식 Module/Feature Package 실제 Studio integration, 장르별 현행 상위 게임 역설계, DevForum/강의/creator talks 정제, MCP 자동 regression harness, 기존 `projects/` failure mining을 계속한다.
-
-Godbase는 완결된 백과사전이 아니라 **Roblox가 바뀔수록 함께 갱신되는 개발 운영체계**다.
+Godbase는 완결된 백과사전이 아니라 **Roblox가 바뀔수록 같이 갱신되는 개발 운영체계**다.

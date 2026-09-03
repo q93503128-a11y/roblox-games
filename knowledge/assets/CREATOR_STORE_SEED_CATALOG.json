@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "verifiedDate": "2026-09-03",
+  "rule": "Web-discovered Creator Store entries are SHORTLISTS until inserted into an isolated Studio place and audited. Ratings do not prove security, ownership provenance, style fit, or performance.",
+  "entries": [
+    {
+      "assetId": 11313268071,
+      "name": "Low-Poly Asset Pack",
+      "creator": "@iChxnger",
+      "price": "Free/Get Model",
+      "webSignals": {"rating":"99%","votes":"100+","triangles":104775,"vertices":113094,"meshParts":235},
+      "status": "WEB_SHORTLIST_A_PENDING_STUDIO",
+      "recommendedFor": ["stylized environment prototyping","large low-poly prop source"],
+      "cautions": ["large pack; extract only needed subsets","verify scripts/dependencies in Studio","235 mesh parts can become waste if whole pack is duplicated"]
+    },
+    {
+      "assetId": 5609746231,
+      "name": "Low Poly Asset Pack",
+      "creator": "@Veerius",
+      "price": "Free/Get Model",
+      "webSignals": {"rating":"93%","votes":"10+","triangles":11058,"vertices":20556,"meshParts":12,"decals":1},
+      "status": "WEB_SHORTLIST_A_PENDING_STUDIO",
+      "recommendedFor": ["small stylized environment kit","lightweight prototype art replacement"],
+      "cautions": ["old asset; inspect materials/pivots/collisions against current project"]
+    },
+    {
+      "assetId": 7436760067,
+      "name": "Low Poly Asset Pack",
+      "creator": "@to_xiCchipYT",
+      "price": "Free/Get Model",
+      "webSignals": {"rating":"97%","votes":"30+"},
+      "status": "WEB_SHORTLIST_B_LICENSE_NOTE",
+      "recommendedFor": ["simulator/environment prototyping"],
+      "cautions": ["description allows game/map use but says do not resell/use in commissions; preserve source note","Studio audit still required"]
+    },
+    {
+      "assetId": 5240120926,
+      "name": "Low Poly Pack",
+      "creator": "@nodomz",
+      "price": "Free/Get Model",
+      "webSignals": {"rating":"99%","votes":"400+","triangles":551999,"vertices":1048561,"meshParts":1013},
+      "status": "WEB_SHORTLIST_B_SUBSET_ONLY",
+      "recommendedFor": ["reference","carefully extracted individual assets"],
+      "cautions": ["very large geometry/mesh count","never insert entire pack into production world by default","sanitize and package only chosen assets"]
+    },
+    {
+      "assetId": 112672322113504,
+      "name": "VFX PACK",
+      "creator": "@jbfreitas13 / Euphoric Games Community",
+      "price": "Free/Get Model",
+      "webSignals": {"rating":"98%","votes":"700+","reviews":29,"triangles":18286,"vertices":14877,"decals":45,"audio":1},
+      "status": "WEB_SHORTLIST_A_PENDING_STUDIO",
+      "recommendedFor": ["VFX reference library","impact/telegraph prototyping"],
+      "cautions": ["inspect emitters/scripts if any","measure simultaneous effect cost","do not mix unrelated visual styles"]
+    },
+    {
+      "assetId": 15668215669,
+      "name": "vfx pack",
+      "creator": "@BlockCrashNO",
+      "price": "Free/Get Model",
+      "webSignals": {"rating":"97%","votes":"30+","audio":1},
+      "status": "WEB_SHORTLIST_B_PENDING_STUDIO",
+      "recommendedFor": ["VFX reference/prototype"],
+      "cautions": ["web metadata is sparse; Studio inspection required before any recommendation upgrade"]
+    },
+    {
+      "assetId": 135581141962270,
+      "name": "VFX Studio",
+      "creator": "@XxOmqxXNerd",
+      "type": "Plugin",
+      "price": "Free/Get Plugin",
+      "webSignals": {"rating":"96%","votes":"600+","reviews":101,"updated":"2026-08-23"},
+      "status": "TOOL_SHORTLIST_A",
+      "recommendedFor": ["VFX authoring workflow evaluation"],
+      "cautions": ["plugin has Studio privileges; inspect publisher/trust and test in noncritical place first","tool quality does not validate runtime assets automatically"]
+    },
+    {
+      "assetId": 138435568333202,
+      "name": "Low Poly Nature Pack",
+      "creator": "@Hyper_verse",
+      "price": "$2.99 at verification",
+      "webSignals": {"rating":"92%","votes":"10+","triangles":42354,"vertices":47574,"meshParts":70},
+      "status": "PAID_SHORTLIST_B_PENDING_STUDIO",
+      "recommendedFor": ["stylized nature if project budget/style fits"],
+      "cautions": ["do not purchase only from catalog score","compare free candidates first"]
+    },
+    {
+      "assetId": 120589416551083,
+      "name": "Low Poly Simulator Pack",
+      "creator": "@Hyper_verse",
+      "price": "$2.99 at verification",
+      "webSignals": {"triangles":16599,"vertices":39150,"meshParts":97,"created":"2026-05-11"},
+      "status": "PAID_DISCOVERY_PENDING_REVIEW",
+      "recommendedFor": ["simulator/tycoon/adventure prop shortlist"],
+      "cautions": ["not enough ratings at verification","must inspect before buying/adopting"]
+    },
+    {
+      "assetId": 111633892039096,
+      "name": "Gun Pack [V2.1]",
+      "creator": "@SinisterFunny",
+      "price": "$4.99 at verification",
+      "webSignals": {"scripts":50,"animations":14,"audio":56,"tools":12,"triangles":20148,"vertices":18406},
+      "status": "QUARANTINE_SCRIPTED_KIT",
+      "recommendedFor": ["isolated study only until full audit"],
+      "cautions": ["50 scripts = high audit surface","review reports reset/camera bug and R6 preference","never insert directly into main production place"]
+    },
+    {
+      "assetId": 80874055496400,
+      "name": "[1500+] Ultimate VFX Pack - Anime Combat Effects",
+      "creator": "@Tinker_RBXL",
+      "price": "$11.99 at verification",
+      "webSignals": {"rating":"23%","votes":"10+","reviews":2},
+      "status": "REJECT_WEB_REPUTATION_SOURCE_CONCERN",
+      "recommendedFor": [],
+      "cautions": ["very low rating","visible reviews allege repackaging of free VFX","do not adopt without exceptionally strong provenance evidence"]
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 4,
+  "schemaVersion": 5,
   "verifiedDate": "2026-09-03",
   "name": "Roblox Godbase",
   "status": "ACTIVE_CANONICAL_NOT_COMPLETE",
@@ -25,9 +25,25 @@
       "knowledge/workflow/AI_STUDIO_AUTONOMOUS_PLAYTEST.md",
       "knowledge/checklists/VERTICAL_SLICE_DONE_DEFINITION.md"
     ],
-    "interactionHeavy": [
-      "knowledge/gameplay/INTERACTION_SYSTEMS.md"
+    "ossDependencySelection": [
+      "knowledge/catalogs/OPEN_SOURCE_ECOSYSTEM_AUDIT.md",
+      "knowledge/catalogs/LIBRARY_CATALOG.json"
     ],
+    "highTrafficNetworking": [
+      "knowledge/networking/REPLICATION_PHYSICS_INPUT.md",
+      "knowledge/networking/NETWORK_LIBRARY_DECISION_MATRIX.md",
+      "knowledge/security/SECURITY_AND_ANTICHEAT.md"
+    ],
+    "uiHeavy": [
+      "knowledge/ui/CROSS_PLATFORM_ACCESSIBILITY_LOCALIZATION.md",
+      "knowledge/ui/UI_STORYBOOK_COMPONENT_WORKFLOW.md"
+    ],
+    "thirdPartyAssets": [
+      "knowledge/assets/CREATOR_STORE_AUDIT_AND_CATALOG.md",
+      "knowledge/assets/CREATOR_STORE_AUTOMATION_AND_SCORING.md",
+      "knowledge/checklists/ASSET_IMPORT_CHECKLIST.md"
+    ],
+    "interactionHeavy": ["knowledge/gameplay/INTERACTION_SYSTEMS.md"],
     "inventoryLootRpg": [
       "knowledge/gameplay/INVENTORY_EQUIPMENT_ARCHITECTURE.md",
       "knowledge/gameplay/LOOT_DROP_CRAFTING.md",
@@ -37,18 +53,10 @@
       "knowledge/gameplay/TRADING_GIFTING_SECURITY_UX.md",
       "knowledge/data/SAVE_SCHEMA_MIGRATION_RECOVERY.md"
     ],
-    "roundGames": [
-      "knowledge/gameplay/ROUND_GAME_STATE_ARCHITECTURE.md"
-    ],
-    "proceduralGames": [
-      "knowledge/gameplay/PROCEDURAL_GENERATION_DETERMINISM.md"
-    ],
-    "socialGames": [
-      "knowledge/social/SOCIAL_PARTY_INVITES.md"
-    ],
-    "adminLiveOps": [
-      "knowledge/operations/ADMIN_MODERATION_COMMANDS.md"
-    ],
+    "roundGames": ["knowledge/gameplay/ROUND_GAME_STATE_ARCHITECTURE.md"],
+    "proceduralGames": ["knowledge/gameplay/PROCEDURAL_GENERATION_DETERMINISM.md"],
+    "socialGames": ["knowledge/social/SOCIAL_PARTY_INVITES.md"],
+    "adminLiveOps": ["knowledge/operations/ADMIN_MODERATION_COMMANDS.md"],
     "worldDesign": [
       "knowledge/level-design/LEVEL_DESIGN_WORLD_TRAVERSAL.md",
       "knowledge/graphics/TERRAIN_ENVIRONMENT_PIPELINE.md",
@@ -90,6 +98,7 @@
     "creatorDocsFull": "https://create.roblox.com/docs/llms-full.txt",
     "engineApi": "https://create.roblox.com/docs/reference/engine/llms.txt",
     "openCloud": "https://create.roblox.com/docs/cloud/llms.txt",
+    "creatorStoreCloud": "https://create.roblox.com/docs/cloud/reference/features/creator-store",
     "creatorDocsRepo": "https://github.com/Roblox/creator-docs"
   },
   "currentPreferredWorkflowCandidates": {
@@ -98,6 +107,7 @@
   },
   "catalogs": [
     "knowledge/assets/OFFICIAL_ASSET_CATALOG.json",
+    "knowledge/assets/CREATOR_STORE_SEED_CATALOG.json",
     "knowledge/catalogs/LIBRARY_CATALOG.json"
   ],
   "validation": "tools/godbase/validate.py",
