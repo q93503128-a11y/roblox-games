@@ -123,7 +123,7 @@ Rojo build
 
 ### Monster Factory Simulator
 
-예정 경로:
+경로:
 
 ```text
 projects/monster-factory/
@@ -134,6 +134,7 @@ projects/monster-factory/
 - Factory Tycoon + Monster Collection + Simulator
 - Rojo 기반 개발
 - 서버 권한 경제/저장/구매 구조
+- MVP-005 Rojo 정본 이전 완료, 첫 전체 Studio 플레이테스트 대기
 - 테스트 Place와 LIVE Place 분리 예정
 - GitHub → Rojo build → Roblox TEST 자동 배포 구축 예정
 
@@ -154,10 +155,9 @@ projects/<project-name>/
 
 ## 현재 다음 단계
 
-1. `projects/monster-factory/`에 현재 Monster Factory 정본 이전
-2. GitHub 기준 Rojo 빌드 검증
-3. 로컬 Studio ↔ Rojo 연결 확인
-4. Roblox TEST Experience / Place 확보
-5. Open Cloud 배포 자격증명은 GitHub Secrets에만 등록
-6. `main` 변경 시 Monster Factory TEST Place 자동 배포 workflow 구축
-7. 실제 첫 플레이 테스트 결과를 바탕으로 버그·밸런스·UI 수정
+1. GitHub 기준 Rojo 빌드 검증
+2. 로컬 Studio ↔ Rojo 연결 확인
+3. Roblox TEST Experience / Place 확보
+4. Open Cloud 배포 자격증명은 GitHub Secrets에만 등록
+5. `main` 변경 시 Monster Factory TEST Place 자동 배포 workflow 구축
+6. 실제 첫 플레이 테스트 결과를 바탕으로 버그·밸런스·UI 수정
