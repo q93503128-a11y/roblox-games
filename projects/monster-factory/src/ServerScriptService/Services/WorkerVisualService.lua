@@ -1,57 +1,21 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local MonsterConfig = require(ReplicatedStorage.Shared.MonsterConfig)
-
 local WorkerVisualService = {}
 
-local PlayerDataService
-local RemoteService
+-- Visual Rebuild 006 retired the dedicated WorkerVisualStateUpdated bridge.
+-- Equipped worker presentation now derives from the canonical public monster
+-- state plus zone state on the client. The service remains as a compatibility
+-- dependency because existing gameplay services still call PushState().
 
-local function stateFor(player)
-    local data = PlayerDataService.Get(player)
-    if not data then
+function WorkerVisualService.PushState(_player)
+    -- Intentionally no-op. MonsterService/ZoneService already publish the
+    -- canonical states consumed by WorkerCharacters.client.lua.
+end
+
+function WorkerVisualService.Init(_playerDataService, remoteService)
+    -- Keep the old RemoteFunction inert for compatibility with the legacy
+    -- ClientBootstrap until that controller is split further. Returning nil
+    -- guarantees that it cannot create the old orb handoff visuals.
+    remoteService.Get("RequestWorkerVisualState").OnServerInvoke = function(_player)
         return nil
-    end
-
-    local equippedSet = {}
-    for _, uid in ipairs(data.Monsters.Equipped) do
-        equippedSet[uid] = true
-    end
-
-    local workers = {}
-    for _, item in ipairs(data.Monsters.Inventory) do
-        if equippedSet[item.Uid] then
-            local def = MonsterConfig.Get(item.MonsterId)
-            if def then
-                table.insert(workers, {
-                    Uid = item.Uid,
-                    MonsterId = item.MonsterId,
-                    DisplayName = def.DisplayName,
-                    Shiny = item.Shiny == true,
-                    Color = def.Color,
-                })
-            end
-        end
-    end
-
-    return {
-        CurrentZone = data.Progress.CurrentZone or 1,
-        Workers = workers,
-    }
-end
-
-function WorkerVisualService.PushState(player)
-    local state = stateFor(player)
-    if state then
-        RemoteService.Get("WorkerVisualStateUpdated"):FireClient(player, state)
-    end
-end
-
-function WorkerVisualService.Init(playerDataService, remoteService)
-    PlayerDataService = playerDataService
-    RemoteService = remoteService
-
-    RemoteService.Get("RequestWorkerVisualState").OnServerInvoke = function(player)
-        return stateFor(player)
     end
 end
 
