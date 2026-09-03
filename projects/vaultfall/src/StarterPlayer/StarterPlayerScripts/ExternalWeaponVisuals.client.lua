@@ -21,6 +21,20 @@ local targetLengths = {
     RailRifle = 5.7,
 }
 
+local proceduralShellNames = {
+    Receiver = true,
+    Shroud = true,
+    Stock = true,
+    Magazine = true,
+    Pump = true,
+    Tube = true,
+    RailTop = true,
+    Cell = true,
+    Scope = true,
+    Handguard = true,
+    Sight = true,
+}
+
 local candidates = weaponFolder:GetChildren()
 table.sort(candidates, function(a, b)
     return a.Name < b.Name
@@ -79,7 +93,7 @@ end
 
 local function hideProceduralShell(model)
     for _, child in ipairs(model:GetChildren()) do
-        if child:IsA("BasePart") and child.Name ~= "Muzzle" then
+        if child:IsA("BasePart") and proceduralShellNames[child.Name] then
             child.Transparency = 1
         end
     end
