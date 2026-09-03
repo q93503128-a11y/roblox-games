@@ -6,20 +6,22 @@ Factory Tycoon + Monster Collection + Simulator project managed through Rojo.
 
 Gameplay/system baseline: **MVP-005**
 
-Visual baseline: **Visual Rebuild 004**
+Visual baseline: **Visual Rebuild 005**
 
 The first Studio smoke test confirmed that the static world boots, the player reaches Green Meadows, the HUD/data loop initializes, and the factory economy begins producing. That smoke test also exposed the original placeholder presentation as unacceptable for continued testing, so the project moved into a dedicated visual rebuild before the full checklist continues.
 
-## Visual Rebuild 004
+## Visual Rebuild 005
 
 - `MonsterFactoryWorld.model.json` remains the gameplay-anchor world.
-- `MonsterFactoryArt004.model.json` adds a static non-colliding silhouette layer for Meadow / Desert / Frozen instead of a runtime world-restyling script.
-- Meadow now leans toward a bio-industrial factory silhouette, Desert toward an asymmetric refinery silhouette, and Frozen toward a cryogenic lab silhouette.
-- canonical Lighting / Atmosphere / Bloom / ColorCorrection are now owned by `default.project.json` rather than inherited from an arbitrary Studio place.
-- `ZoneMood.client.lua` transitions visual atmosphere by the player's current logical zone.
+- `MonsterFactoryArt004.model.json` remains the static non-colliding zone-silhouette layer.
+- canonical Lighting / Atmosphere / Bloom / ColorCorrection remain owned by `default.project.json`.
+- `ZoneMood.client.lua` transitions the scene palette by the player's current logical zone.
 - equipped workers use the Visual Rebuild 003 character presentation with rarity nameplates, shiny treatment and idle motion.
 - current-zone Generator, Collector, Capsule and Worlds anchors retain 3D guidance / ProximityPrompt interaction.
-- `VisualRefresh.client.lua` remains the consolidated simulator-style HUD presentation adapter from Visual Rebuild 002.
+- `VisualRefresh.client.lua` is now the Visual Rebuild 005 simulator-style presentation adapter.
+- `UIVisualContract.lua` defines semantic icon slots for stats, navigation, primary actions and modal/card content so sanitized external GUI art can be swapped in later without changing gameplay callbacks.
+- Shop / Monsters / Zones / Quests / Rewards / Achievements / Index use a common card language with contextual header icons, subtitles and status badges.
+- Collect / Hatch / Upgrade now have client-only press/ring feedback and state-driven result feedback while all authoritative changes remain server-owned.
 - default Studio `Baseplate` / root `SpawnLocation` cleanup remains owned by `WorldService`.
 - first-pass Studio testing uses explicit ephemeral profiles so DataStore API permission noise does not block visual/core-loop testing.
 
@@ -27,6 +29,7 @@ Detailed audits:
 
 - `docs/VISUAL_REBUILD_003_AUDIT.md`
 - `docs/VISUAL_REBUILD_004_AUDIT.md`
+- `docs/VISUAL_REBUILD_005_AUDIT.md`
 
 ## External art policy
 
@@ -36,9 +39,13 @@ Read:
 
 `docs/EXTERNAL_VISUAL_ASSET_INTAKE_001.md`
 
-The reviewed source IDs and status are also recorded in:
+The reviewed source IDs and status are recorded in:
 
 `src/ReplicatedStorage/Shared/VisualAssetManifest.lua`
+
+The UI replacement contract is:
+
+`src/ReplicatedStorage/Shared/UIVisualContract.lua`
 
 A Studio-only sanitation helper exists at:
 
