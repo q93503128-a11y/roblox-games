@@ -2,10 +2,24 @@ local Workspace = game:GetService("Workspace")
 
 local WorldService = {}
 
+local LEGACY_ROOT_OBJECTS = {
+    Baseplate = true,
+    SpawnLocation = true,
+}
+
+local function removeLegacyStudioObjects()
+    for _, child in ipairs(Workspace:GetChildren()) do
+        if LEGACY_ROOT_OBJECTS[child.Name] then
+            child:Destroy()
+        end
+    end
+end
+
 function WorldService.Init()
     local world = Workspace:FindFirstChild("MonsterFactoryWorld")
 
     if world then
+        removeLegacyStudioObjects()
         print("[MonsterFactory] Static world found.")
         return
     end
