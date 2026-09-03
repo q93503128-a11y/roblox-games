@@ -3,6 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
 local player = Players.LocalPlayer
+local screenCamera = workspace.CurrentCamera
 local shared = ReplicatedStorage:WaitForChild("Shared")
 local remotes = ReplicatedStorage:WaitForChild("Remotes")
 local WorkerVisualFactory = require(shared:WaitForChild("WorkerVisualFactory"))
@@ -18,6 +19,7 @@ local revealQueue = {}
 local revealing = false
 local revealToken = 0
 local runQueue
+local responsiveScale = 1
 
 local rarityRank = {
     Common = 1,
@@ -121,11 +123,11 @@ viewportStroke.Thickness = 1.5
 viewportStroke.Transparency = 0.2
 viewportStroke.Parent = viewport
 
-local camera = Instance.new("Camera")
-camera.CFrame = CFrame.lookAt(Vector3.new(0, 3.1, -13.5), Vector3.new(0, 2.6, 0))
-camera.FieldOfView = 35
-camera.Parent = viewport
-viewport.CurrentCamera = camera
+local previewCamera = Instance.new("Camera")
+previewCamera.CFrame = CFrame.lookAt(Vector3.new(0, 3.1, -13.5), Vector3.new(0, 2.6, 0))
+previewCamera.FieldOfView = 35
+previewCamera.Parent = viewport
+viewport.CurrentCamera = previewCamera
 
 local name = Instance.new("TextLabel")
 name.Size = UDim2.new(1, -28, 0, 42)
@@ -158,9 +160,23 @@ dismissLabel.TextSize = 10
 dismissLabel.ZIndex = 5
 dismissLabel.Parent = card
 
+local function updateResponsiveScale()
+    local viewportSize = screenCamera and screenCamera.ViewportSize or Vector2.new(1280, 720)
+    responsiveScale = math.min(1, (viewportSize.X - 24) / 430, (viewportSize.Y - 42) / 520)
+    responsiveScale = math.clamp(responsiveScale, 0.62, 1)
+    if not revealing then
+        scale.Scale = responsiveScale
+    end
+end
+
+if screenCamera then
+    screenCamera:GetPropertyChangedSignal("ViewportSize"):Connect(updateResponsiveScale)
+end
+updateResponsiveScale()
+
 local function clearViewport()
     for _, child in ipairs(viewport:GetChildren()) do
-        if child ~= camera and not child:IsA("UICorner") and not child:IsA("UIStroke") then
+        if child ~= previewCamera and not child:IsA("UICorner") and not child:IsA("UIStroke") then
             child:Destroy()
         end
     end
@@ -207,7 +223,9 @@ local function dismissCurrent()
 
     revealToken += 1
     revealing = false
-    TweenService:Create(scale, TweenInfo.new(0.13, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Scale = 0.82 }):Play()
+    TweenService:Create(scale, TweenInfo.new(0.13, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        Scale = 0.82 * responsiveScale,
+    }):Play()
     TweenService:Create(card, TweenInfo.new(0.13), { BackgroundTransparency = 0.18 }):Play()
     TweenService:Create(backdrop, TweenInfo.new(0.15), { BackgroundTransparency = 1 }):Play()
 
@@ -216,6 +234,7 @@ local function dismissCurrent()
         backdrop.Visible = false
         card.BackgroundTransparency = 0.02
         clearViewport()
+        scale.Scale = responsiveScale
         if runQueue then
             task.defer(runQueue)
         end
@@ -258,7 +277,7 @@ local function showReveal(item)
     backdrop.Visible = true
     card.Visible = true
     backdrop.BackgroundTransparency = 1
-    scale.Scale = 0.62
+    scale.Scale = 0.62 * responsiveScale
     card.Rotation = -3
 
     addBurst(accent, math.clamp(5 + rank, 6, 12))
@@ -266,7 +285,7 @@ local function showReveal(item)
         BackgroundTransparency = rank >= 5 and 0.20 or 0.34,
     }):Play()
     TweenService:Create(scale, TweenInfo.new(0.32, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-        Scale = rank >= 5 and 1.04 or 1,
+        Scale = (rank >= 5 and 1.04 or 1) * responsiveScale,
     }):Play()
     TweenService:Create(card, TweenInfo.new(0.28, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
         Rotation = 0,
@@ -275,7 +294,7 @@ local function showReveal(item)
     if rank >= 5 then
         task.delay(0.34, function()
             if revealing and token == revealToken then
-                TweenService:Create(scale, TweenInfo.new(0.16), { Scale = 1 }):Play()
+                TweenService:Create(scale, TweenInfo.new(0.16), { Scale = responsiveScale }):Play()
             end
         end)
     end
