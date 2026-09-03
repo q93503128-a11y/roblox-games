@@ -1,6 +1,6 @@
 # Roblox Godbase
 
-> 검증 기준일: 2026-09-03
+> 검증 기준일: 2026-09-04
 
 `knowledge/`는 이 monorepo의 모든 Roblox 프로젝트가 공통으로 참조하는 **개발 지식 정본**이다. 목표는 Roblox를 기억으로 때우는 것이 아니라, 현재 검증된 해결책·도구·에셋·실패 패턴을 먼저 찾고 실제 Studio에서 검증한 뒤 구현하는 것이다.
 
@@ -54,7 +54,7 @@ Canonical machine-readable catalog: `catalogs/LIBRARY_CATALOG.json`.
 - **Chickynoid** → custom server-authoritative character simulation의 연구/특수용 후보. 먼저 current Roblox native Server Authority를 검토.
 - **Flamework** → roblox-ts를 의도적으로 선택한 프로젝트에서만 조건부.
 - **Ripple** → UI/motion에 강한 현재 후보. 단순 TweenService로 충분하면 추가하지 않음.
-- **TopbarPlus** → 유용할 수 있으나 GitHub license metadata가 명확한 SPDX로 잡히지 않아 adoption 전 정확한 terms 검토.
+- **TopbarPlus** → 유용할 수 있으나 adoption 전 정확한 license terms 검토.
 
 관련 문서:
 - `catalogs/OPEN_SOURCE_ECOSYSTEM_AUDIT.md`
@@ -81,11 +81,32 @@ Unit test가 실제 Playtest를 대체하지 않는다.
 
 ## Creator Store 공급망
 
-- `assets/CREATOR_STORE_SEED_CATALOG.json` — 실제 후보의 웹/API metadata seed.
+Canonical procurement files:
+- `assets/CREATOR_STORE_SUPPLY_CATALOG.json` — 현재 선별된 실제 공급 후보/보류/거절 목록.
+- `assets/OFFICIAL_ROBLOX_ASSET_PACKS.md` — Roblox 공식 팩/Developer Module 우선 공급원.
+- `assets/ASSET_SELECTION_BY_GENRE.md` — RPG/시뮬레이터/호러/도시/전투/VFX 등 장르별 선택 순서.
+- `assets/CREATOR_STORE_RED_FLAGS_AND_QUARANTINE.md` — backdoor/virus 신고, 검색어 스팸, 과도한 script surface, 깨진 dependency 처리.
+- `assets/CREATOR_STORE_SEED_CATALOG.json` — 초기 웹/API metadata seed.
 - `assets/CREATOR_STORE_AUTOMATION_AND_SCORING.md` — discovery → quarantine Studio audit → production-fit test.
 - `assets/CREATOR_STORE_AUDIT_AND_CATALOG.md` — 보안/출처/품질 정책.
 
-Rating/vote 수는 discovery signal일 뿐 S-tier 증명이 아니다. Scripted kit/plugin은 quarantine에서 먼저 검사한다. 대형 asset pack은 필요한 subset만 추출한다.
+### 2026-09-04 실물 선별 핵심
+
+강한 공식 공급원:
+- Roblox `Forest Pack` — realistic/stylized-real foliage source library.
+- `Synty Nature Pack` — stylized/low-poly world의 강한 generic seed.
+- `City Road Pack` — modular road/PBR/traffic-light reference.
+- `Duvall Drive` props/furniture/landscaping/material variants — production environment/detail/PBR reference.
+- `RO-01 Robot` — NPC Kit/rig/animation organization reference.
+- `Merch Booth [Dev Module]` — intended use가 맞을 때 공식 기능 우선.
+
+중요 HOLD/REJECT:
+- `Synty City Pack` — 현재 리뷰에서 removed texture 문제가 반복 보고되어 HOLD.
+- `Nature Pack Studs Trees Bush Grass Flower` (`82060619904561`) — 최근 리뷰에 backdoor/virus 의혹이 있어 REJECT.
+- generic `free` bulk asset (`17300868459`) — 56 scripts + 거대한 dependency surface + 빈약한 provenance로 REJECT.
+- `[FREE] Low Poly Dungeon Kit` (`84153348982194`) — 설명의 대규모 unrelated trending-keyword spam으로 discovery trust 낮아 REJECT.
+
+**평점/투표 수는 discovery signal일 뿐 S-tier 증명이 아니다.** 구체적인 security/dependency report는 aggregate rating보다 우선한다. Scripted kit/plugin은 quarantine에서 먼저 검사한다. 대형 asset pack은 필요한 subset만 추출한다.
 
 ## 전문 문서 지도
 
@@ -130,8 +151,12 @@ Rating/vote 수는 discovery signal일 뿐 S-tier 증명이 아니다. Scripted 
 - `graphics/TERRAIN_ENVIRONMENT_PIPELINE.md`
 - `graphics/VISUAL_QUALITY_PIPELINE.md`
 - `graphics/VFX_TELEGRAPHS_EFFECT_BUDGETS.md`
+- `assets/OFFICIAL_ROBLOX_ASSET_PACKS.md`
+- `assets/ASSET_SELECTION_BY_GENRE.md`
+- `assets/CREATOR_STORE_RED_FLAGS_AND_QUARANTINE.md`
 - `assets/CREATOR_STORE_AUDIT_AND_CATALOG.md`
 - `assets/CREATOR_STORE_AUTOMATION_AND_SCORING.md`
+- `assets/CREATOR_STORE_SUPPLY_CATALOG.json`
 - `assets/CREATOR_STORE_SEED_CATALOG.json`
 - `assets/OFFICIAL_ASSET_CATALOG.json`
 

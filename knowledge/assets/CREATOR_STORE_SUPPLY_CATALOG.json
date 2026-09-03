@@ -1,0 +1,263 @@
+{
+  "schemaVersion": 1,
+  "verifiedDate": "2026-09-04",
+  "purpose": "Curated Creator Store supply catalog for Roblox Godbase. Entries are procurement candidates, not automatic production approval.",
+  "statusLegend": {
+    "OFFICIAL_A_PENDING_STUDIO": "Roblox-published/high-confidence source; still inspect in Studio",
+    "OFFICIAL_SOURCE_LIBRARY_SUBSET_ONLY": "Strong source pack but too large or scripted to ship wholesale",
+    "OFFICIAL_DEV_MODULE": "Roblox developer module; integrate only for its intended use",
+    "WEB_A_PENDING_STUDIO": "Strong community candidate pending quarantine inspection",
+    "WEB_B_PENDING_STUDIO": "Useful secondary/prototype candidate pending inspection",
+    "LICENSE_REVIEW_REQUIRED": "Usage/credit terms must be recorded before adoption",
+    "PAID_REVIEW_REQUIRED": "Paid candidate; evaluate before purchase",
+    "QUARANTINE_SCRIPTED_KIT": "High code/dependency audit surface",
+    "HOLD_BROKEN_DEPENDENCY_REPORTS": "Useful-looking asset with unresolved broken dependency/user-report issues",
+    "REJECT_SECURITY_REPORTS": "User reports indicate possible backdoor/virus; do not use unless independently cleared",
+    "REJECT_DISCOVERY_SPAM": "Search-spam/low-trust discovery signal; not recommended",
+    "REJECT_UNTRUSTED_BULK": "Opaque bulk asset with excessive scripts/dependencies and weak provenance"
+  },
+  "entries": [
+    {
+      "assetId": 6432306802,
+      "name": "Forest Pack",
+      "creator": "@Roblox",
+      "category": ["nature","environment","wildlife"],
+      "status": "OFFICIAL_SOURCE_LIBRARY_SUBSET_ONLY",
+      "webSignals": {"rating":"97%","votes":"2K+","scripts":13,"meshParts":83,"triangles":153252,"vertices":149690},
+      "strengths": ["official Roblox source","PBR/SurfaceAppearance examples","trees/bushes/rocks/logs/ground detail","animated wildlife"],
+      "cautions": ["13 scripts and animated wildlife require audit","extract only needed assets","test foliage/particles on mobile"],
+      "source": "https://create.roblox.com/store/asset/6432306802"
+    },
+    {
+      "assetId": 6933438443,
+      "name": "Synty Nature Pack",
+      "creator": "@Roblox",
+      "category": ["stylized","nature","low-poly"],
+      "status": "OFFICIAL_A_PENDING_STUDIO",
+      "webSignals": {"rating":"96%","votes":"800+","meshParts":200,"triangles":108816,"vertices":140065},
+      "strengths": ["officially licensed by Roblox for Roblox games","consistent Synty art language","large stylized nature vocabulary"],
+      "cautions": ["200 mesh parts; package approved subset","do not mix with unrelated realistic assets without art-direction pass"],
+      "source": "https://create.roblox.com/store/asset/6933438443"
+    },
+    {
+      "assetId": 6933556508,
+      "name": "Synty City Pack",
+      "creator": "@Roblox",
+      "category": ["stylized","city","buildings"],
+      "status": "HOLD_BROKEN_DEPENDENCY_REPORTS",
+      "webSignals": {"rating":"96%","votes":"1K+","reviews":13},
+      "strengths": ["official Roblox/Synty city source","coherent modular visual style"],
+      "cautions": ["multiple reviews report removed textures","review reports recolor limitations and heavy load","verify texture dependencies before use"],
+      "source": "https://create.roblox.com/store/asset/6933556508"
+    },
+    {
+      "assetId": 6432233485,
+      "name": "City Road Pack",
+      "creator": "@Roblox",
+      "category": ["roads","city","modular"],
+      "status": "OFFICIAL_SOURCE_LIBRARY_SUBSET_ONLY",
+      "webSignals": {"rating":"94%","votes":"900+","scripts":10,"meshParts":196,"triangles":69002,"vertices":82508,"decals":4},
+      "strengths": ["snap-together road/sidewalk tiles","PBR","traffic-light examples"],
+      "cautions": ["scripted traffic lights require code review","196 mesh parts; do not ship entire demo pack by default"],
+      "source": "https://create.roblox.com/store/asset/6432233485"
+    },
+    {
+      "assetId": 10840642581,
+      "name": "House Props Pack - Duvall Drive",
+      "creator": "@Roblox",
+      "category": ["props","interior","horror","narrative"],
+      "status": "OFFICIAL_SOURCE_LIBRARY_SUBSET_ONLY",
+      "webSignals": {"rating":"97%","votes":"400+","scripts":1,"meshParts":514,"triangles":243941,"vertices":233928,"decals":10,"audio":2},
+      "strengths": ["production-quality small-detail library","good for lived-in interiors","official showcase provenance"],
+      "cautions": ["514 mesh parts; subset extraction mandatory","preserve coherent scale/material language"],
+      "source": "https://create.roblox.com/store/asset/10840642581"
+    },
+    {
+      "assetId": 10847897579,
+      "name": "House Furniture Pack - Duvall Drive",
+      "creator": "@Roblox",
+      "category": ["furniture","interior","interactive-props"],
+      "status": "OFFICIAL_SOURCE_LIBRARY_SUBSET_ONLY",
+      "webSignals": {"rating":"96%","votes":"1K+","scripts":101,"meshParts":833,"triangles":345162,"vertices":412516,"decals":16,"audio":66},
+      "strengths": ["high-quality furniture/PBR","interactive doors/windows/lighting examples"],
+      "cautions": ["101 scripts and 66 audio assets = large audit surface","never drop entire pack directly into production","extract sanitized static subsets unless interactions are specifically needed"],
+      "source": "https://create.roblox.com/store/asset/10847897579"
+    },
+    {
+      "assetId": 10840661513,
+      "name": "Landscaping Pack - Duvall Drive",
+      "creator": "@Roblox",
+      "category": ["landscaping","plants","architecture","surface-detail"],
+      "status": "OFFICIAL_SOURCE_LIBRARY_SUBSET_ONLY",
+      "webSignals": {"rating":"99%","votes":"100+","scripts":4,"meshParts":1803,"triangles":912716,"vertices":1003762,"decals":3,"audio":2},
+      "strengths": ["broad exterior detail library","official showcase provenance","useful wet/dry material examples"],
+      "cautions": ["extremely large pack","1803 mesh parts; source-library use only","mobile/repetition test required"],
+      "source": "https://create.roblox.com/store/asset/10840661513"
+    },
+    {
+      "assetId": 10841357434,
+      "name": "Realistic Material Variants - Duvall Drive",
+      "creator": "@Roblox",
+      "category": ["materials","PBR","environment"],
+      "status": "OFFICIAL_A_PENDING_STUDIO",
+      "webSignals": {"rating":"95%","votes":"1K+","materialVariants":16},
+      "strengths": ["official PBR material examples","wet/dry environment variants","good reference for material system"],
+      "cautions": ["review notes some BaseMaterial mappings feel odd","validate material naming and terrain compatibility"],
+      "source": "https://create.roblox.com/store/asset/10841357434"
+    },
+    {
+      "assetId": 3924232032,
+      "name": "RO-01 Robot",
+      "creator": "@Roblox",
+      "category": ["npc","rig","character"],
+      "status": "OFFICIAL_SOURCE_LIBRARY_SUBSET_ONLY",
+      "webSignals": {"rating":"85%","votes":"200+","scripts":12,"meshParts":15,"animations":81,"audio":6,"triangles":6252,"vertices":6237},
+      "strengths": ["official NPC Kit example","large animation reference set","compact geometry"],
+      "cautions": ["study/configure rather than blindly reuse AI scripts","old implementation assumptions may need modernization"],
+      "source": "https://create.roblox.com/store/asset/3924232032"
+    },
+    {
+      "assetId": 11338021801,
+      "name": "Merch Booth [Dev Module]",
+      "creator": "@Roblox",
+      "category": ["developer-module","commerce","ui"],
+      "status": "OFFICIAL_DEV_MODULE",
+      "webSignals": {"rating":"94%","votes":"400+","scripts":2,"updated":"2025-08-01"},
+      "strengths": ["official updateable Developer Module","documented purpose for in-experience sales"],
+      "cautions": ["use only when product design actually needs it","still test current Marketplace behavior and UX"],
+      "source": "https://create.roblox.com/store/asset/11338021801"
+    },
+    {
+      "assetId": 10088225842,
+      "name": "PBR - Nature Pack",
+      "creator": "RoCreative Development / @LeoGamerBR938478",
+      "category": ["nature","PBR","realistic"],
+      "status": "WEB_A_PENDING_STUDIO",
+      "webSignals": {"rating":"98%","votes":"100+","updated":"2026-01-20","meshParts":131,"triangles":208609,"vertices":266026,"decals":4},
+      "strengths": ["recent optimization update","strong rating","PBR nature vocabulary"],
+      "cautions": ["heavy if repeated wholesale","benchmark trees/foliage under target mobile scene"],
+      "source": "https://create.roblox.com/store/asset/10088225842"
+    },
+    {
+      "assetId": 13418164648,
+      "name": "Simulator Assets (Trees, rocks and borders)",
+      "creator": "@BlizV3",
+      "category": ["stylized","simulator","nature"],
+      "status": "LICENSE_REVIEW_REQUIRED",
+      "webSignals": {"rating":"96%","votes":"20+","meshParts":20,"triangles":6480,"vertices":13912},
+      "strengths": ["small lightweight low-poly set","trees/rocks/borders"],
+      "cautions": ["description requires visible/accessibile credit","record attribution requirement in project credits before use"],
+      "source": "https://create.roblox.com/store/asset/13418164648"
+    },
+    {
+      "assetId": 10226464132,
+      "name": "Sword Pack",
+      "creator": "@Synrrgy",
+      "category": ["weapons","fantasy","static-models"],
+      "status": "WEB_B_PENDING_STUDIO",
+      "webSignals": {"meshParts":6,"triangles":2208,"vertices":3832,"scripts":0},
+      "strengths": ["small geometry footprint","no scripts exposed in web metadata","useful weapon silhouette source"],
+      "cautions": ["no meaningful rating history","verify pivots/handles/scales/materials"],
+      "source": "https://create.roblox.com/store/asset/10226464132"
+    },
+    {
+      "assetId": 10783802955,
+      "name": "Sword",
+      "creator": "@Sub2HTR",
+      "category": ["combat-kit","sword","animations","VFX"],
+      "status": "QUARANTINE_SCRIPTED_KIT",
+      "webSignals": {"rating":"87%","votes":"60+","scripts":2,"meshParts":16,"animations":8,"decals":4,"audio":6,"tools":2,"triangles":3668,"vertices":4997},
+      "strengths": ["combo/VFX/animation study candidate"],
+      "cautions": ["treat as study kit, not drop-in combat architecture","audit server authority, damage validation, remote use, animation ownership"],
+      "source": "https://create.roblox.com/store/asset/10783802955"
+    },
+    {
+      "assetId": 74849899553864,
+      "name": "Medieval Asset Pack",
+      "creator": "@KickPlayer_80",
+      "category": ["medieval","props","environment"],
+      "status": "WEB_B_PENDING_STUDIO",
+      "webSignals": {"meshParts":7,"triangles":26671,"vertices":35099},
+      "strengths": ["compact pack","reasonable source for medieval prop experiments"],
+      "cautions": ["no rating history","visual/style inspection required"],
+      "source": "https://create.roblox.com/store/asset/74849899553864"
+    },
+    {
+      "assetId": 125797252502681,
+      "name": "[Layered R15] Medieval armor pack",
+      "creator": "@Inf1n1tylt",
+      "category": ["avatar","armor","medieval","R15"],
+      "status": "PAID_REVIEW_REQUIRED",
+      "webSignals": {"price":"$29.99 at verification","meshParts":31,"triangles":110688,"vertices":95920},
+      "strengths": ["explicit game-use/modify permissions in description","multiple armor/color variants","R15-focused"],
+      "cautions": ["paid; evaluate art direction before purchase","usage terms prohibit redistribution/resale/UGC resale","test layered fit and device cost"],
+      "source": "https://create.roblox.com/store/asset/125797252502681"
+    },
+    {
+      "assetId": 112672322113504,
+      "name": "VFX PACK",
+      "creator": "Euphoric Games Community / @jbfreitas13",
+      "category": ["VFX","effects","reference-library"],
+      "status": "WEB_A_PENDING_STUDIO",
+      "webSignals": {"rating":"98%","votes":"700+","reviews":29,"triangles":18286,"vertices":14877,"decals":45,"audio":1},
+      "strengths": ["strong discovery signals","broad VFX reference library"],
+      "cautions": ["benchmark particle/beam overdraw","extract coherent effects only","verify any hidden dependencies after insertion"],
+      "source": "https://create.roblox.com/store/asset/112672322113504"
+    },
+    {
+      "assetId": 90784331057727,
+      "name": "Advanced Inventory System",
+      "creator": "@Veylo_studios",
+      "category": ["inventory","hotbar","saving","gameplay-kit"],
+      "status": "QUARANTINE_SCRIPTED_KIT",
+      "webSignals": {"price":"$5.99 at verification","scripts":9,"meshParts":3,"triangles":1816,"vertices":2602,"decals":2},
+      "strengths": ["feature-complete inventory study candidate","drag/drop, stacking, equip, pickup, saving claims"],
+      "cautions": ["no meaningful rating history","saving/security architecture must be fully audited","do not pay/adopt before code and UX review"],
+      "source": "https://create.roblox.com/store/asset/90784331057727"
+    },
+    {
+      "assetId": 129209071205187,
+      "name": "Nature Asset Pack!",
+      "creator": "@MeqCreations",
+      "category": ["nature","low-poly","starter-pack"],
+      "status": "PAID_REVIEW_REQUIRED",
+      "webSignals": {"price":"$2.99 at verification","scripts":1,"meshParts":76,"animations":9,"decals":2,"triangles":36078,"vertices":56809},
+      "strengths": ["organized mixed nature set","description states Roblox-scale and performance intent"],
+      "cautions": ["not enough ratings","why a nature pack contains animations/script must be understood before adoption"],
+      "source": "https://create.roblox.com/store/asset/129209071205187"
+    },
+    {
+      "assetId": 82060619904561,
+      "name": "Nature Pack Studs Trees Bush Grass Flower",
+      "creator": "@St3althPow3rHaz358",
+      "category": ["nature"],
+      "status": "REJECT_SECURITY_REPORTS",
+      "webSignals": {"rating":"89%","votes":"80+","reviews":4},
+      "strengths": [],
+      "cautions": ["multiple 2026 reviews allege backdoor/virus","do not insert into trusted place","rating is not sufficient to override security reports"],
+      "source": "https://create.roblox.com/store/asset/82060619904561"
+    },
+    {
+      "assetId": 84153348982194,
+      "name": "[FREE] Low Poly Dungeon Kit",
+      "creator": "@SamuelMysticInfern0",
+      "category": ["dungeon","low-poly"],
+      "status": "REJECT_DISCOVERY_SPAM",
+      "webSignals": {"created":"2026-02-13","reviews":0},
+      "strengths": [],
+      "cautions": ["description contains large unrelated trending-keyword spam","no ratings/reviews to offset low-trust discovery signal","prefer Roblox/Synty or better-provenanced modular kits"],
+      "source": "https://create.roblox.com/store/asset/84153348982194"
+    },
+    {
+      "assetId": 17300868459,
+      "name": "free",
+      "creator": "@ghtisy8gt",
+      "category": ["opaque-bulk-model"],
+      "status": "REJECT_UNTRUSTED_BULK",
+      "webSignals": {"scripts":56,"meshParts":53,"decals":18,"audio":17,"triangles":503430,"vertices":816148,"reviews":0},
+      "strengths": [],
+      "cautions": ["opaque generic title","56 scripts plus large dependency surface","no useful description/reputation evidence","not worth audit cost versus better sources"],
+      "source": "https://create.roblox.com/store/asset/17300868459"
+    }
+  ]
+}
