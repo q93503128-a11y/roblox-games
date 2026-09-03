@@ -1,9 +1,14 @@
 local Workspace = game:GetService("Workspace")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local shared = ReplicatedStorage:WaitForChild("Vaultfall")
+local Arsenal = require(shared:WaitForChild("Arsenal"))
 
 local CombatService = {}
 local ctx
-local cooldowns = {}
 local rng = Random.new()
+local weaponStates = {}
+local dashCooldowns = {}
 
 local function isFiniteVector3(value)
     if typeof(value) ~= "Vector3" then
@@ -11,33 +16,6 @@ local function isFiniteVector3(value)
     end
     return value.X == value.X and value.Y == value.Y and value.Z == value.Z
         and math.abs(value.X) < 100000 and math.abs(value.Y) < 100000 and math.abs(value.Z) < 100000
-end
-
-local function getDirection(root, requested)
-    if isFiniteVector3(requested) then
-        local flat = Vector3.new(requested.X, 0, requested.Z)
-        if flat.Magnitude > 0.05 then
-            return flat.Unit
-        end
-    end
-    local look = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z)
-    return look.Magnitude > 0.05 and look.Unit or Vector3.new(0, 0, -1)
-end
-
-local function canUse(player, key, cooldown)
-    local playerCooldowns = cooldowns[player]
-    if not playerCooldowns then
-        playerCooldowns = {}
-        cooldowns[player] = playerCooldowns
-    end
-
-    local now = os.clock()
-    local last = playerCooldowns[key] or 0
-    if now - last < cooldown then
-        return false
-    end
-    playerCooldowns[key] = now
-    return true
 end
 
 local function characterRoot(player)
@@ -53,22 +31,119 @@ local function characterRoot(player)
     return root, humanoid
 end
 
-local function calculateDamage(player, attackDef)
-    local weapon = ctx.Run.GetEquippedWeapon(player) or ctx.Config.StartingWeapon
-    local attackMultiplier = ctx.Profile.GetAttackMultiplier(player)
-    return math.max(1, weapon.Power * attackMultiplier * attackDef.Multiplier), weapon
+local function getDirection(root, requested)
+    if isFiniteVector3(requested) then
+        local unit = requested.Magnitude > 0.05 and requested.Unit or nil
+        if unit then
+            return unit
+        end
+    end
+    return root.CFrame.LookVector
 end
 
-local function performAttack(player, attackName, requestedDirection)
+local function equippedWeapon(player)
+    return ctx.Run.GetEquippedWeapon(player) or ctx.Config.StartingWeapon
+end
+
+local function weaponDefinition(weapon)
+    return Arsenal.Get(weapon.Archetype or "Carbine") or Arsenal.Get("Carbine")
+end
+
+local function magazineSize(weapon, definition)
+    return math.max(1, math.floor(definition.Magazine * (weapon.MagazineMultiplier or 1) + 0.5))
+end
+
+local function stateFor(player)
+    local weapon = equippedWeapon(player)
+    local definition = weaponDefinition(weapon)
+    local key = string.format("%s|%s|%s", tostring(weapon.Name), tostring(weapon.Archetype), tostring(weapon.Trait))
+    local state = weaponStates[player]
+    if not state or state.Key ~= key then
+        state = {
+            Key = key,
+            Ammo = magazineSize(weapon, definition),
+            Reloading = false,
+            ReloadToken = 0,
+            LastShot = 0,
+        }
+        weaponStates[player] = state
+    end
+    return state, weapon, definition
+end
+
+local function combatPayload(player, state, weapon, definition)
+    return {
+        Ammo = state.Ammo,
+        Magazine = magazineSize(weapon, definition),
+        Reloading = state.Reloading,
+        Archetype = weapon.Archetype or "Carbine",
+        WeaponName = weapon.Name,
+        FireMode = definition.FireMode,
+        ReloadTime = definition.ReloadTime * (weapon.ReloadMultiplier or 1),
+    }
+end
+
+local function pushCombat(player)
+    if not player.Parent then
+        return
+    end
+    local state, weapon, definition = stateFor(player)
+    ctx.Remotes.State:FireClient(player, "Combat", combatPayload(player, state, weapon, definition))
+end
+
+local function beginReload(player)
     if not ctx.Run.IsParticipant(player) then
         return
     end
-
-    local attack = ctx.Config.Attacks[attackName]
-    if not attack or attackName == "Dash" then
+    local state, weapon, definition = stateFor(player)
+    local capacity = magazineSize(weapon, definition)
+    if state.Reloading or state.Ammo >= capacity then
         return
     end
-    if not canUse(player, attackName, attack.Cooldown) then
+
+    state.Reloading = true
+    state.ReloadToken += 1
+    local token = state.ReloadToken
+    pushCombat(player)
+    ctx.Remotes.State:FireClient(player, "WeaponFX", {
+        Kind = "Reload",
+        Duration = definition.ReloadTime * (weapon.ReloadMultiplier or 1),
+        Archetype = weapon.Archetype or "Carbine",
+    })
+
+    task.delay(definition.ReloadTime * (weapon.ReloadMultiplier or 1), function()
+        local current = weaponStates[player]
+        if current ~= state or state.ReloadToken ~= token then
+            return
+        end
+        state.Reloading = false
+        state.Ammo = capacity
+        pushCombat(player)
+    end)
+end
+
+local function calculateDamage(player, weapon, definition)
+    local attackMultiplier = ctx.Profile.GetAttackMultiplier(player)
+    local archetypeScale = definition.BaseDamage / Arsenal.Weapons.Carbine.BaseDamage
+    return math.max(1, weapon.Power * archetypeScale * (weapon.DamageMultiplier or 1) * attackMultiplier)
+end
+
+local function damageEnemy(player, enemy, amount, weapon, multiplier)
+    local crit = rng:NextNumber() <= (weapon.CritChance or 0)
+    local damage = amount * (multiplier or 1) * (crit and (weapon.CritMultiplier or 1.5) or 1)
+    damage = math.floor(damage + 0.5)
+    local killed = ctx.Enemies.Damage(enemy, damage, player)
+    ctx.Remotes.State:FireClient(player, "Hit", {
+        Damage = damage,
+        Crit = crit,
+        Kill = killed,
+        Enemy = enemy.Type,
+    })
+    return killed
+end
+
+local function fireWeapon(player, requestedDirection)
+    if not ctx.Run.IsParticipant(player) then
         return
     end
 
@@ -77,31 +152,64 @@ local function performAttack(player, attackName, requestedDirection)
         return
     end
 
-    local direction = getDirection(root, requestedDirection)
-    local baseDamage, weapon = calculateDamage(player, attack)
-    local targets = ctx.Enemies.GetInRange(root.Position, attack.Range, direction, attack.ConeDot, ctx.Run.GetCurrentRoom())
-    local maxTargets = attackName == "Basic" and 3 or attackName == "Heavy" and 6 or 14
-
-    local hitAny = false
-    for index, enemy in ipairs(targets) do
-        if index > maxTargets then
-            break
-        end
-        hitAny = true
-        local crit = rng:NextNumber() <= (weapon.CritChance or 0)
-        local damage = baseDamage * (crit and (weapon.CritMultiplier or 1.5) or 1)
-        damage = math.floor(damage + 0.5)
-        local killed = ctx.Enemies.Damage(enemy, damage, player)
-        ctx.Remotes.State:FireClient(player, "Hit", {
-            Damage = damage,
-            Crit = crit,
-            Kill = killed,
-            Enemy = enemy.Type,
-        })
+    local state, weapon, definition = stateFor(player)
+    if state.Reloading then
+        return
     end
 
-    if not hitAny then
-        ctx.Remotes.State:FireClient(player, "Swing", { Attack = attackName })
+    local interval = definition.FireInterval * (weapon.FireIntervalMultiplier or 1)
+    local now = os.clock()
+    if now - state.LastShot < interval * 0.9 then
+        return
+    end
+    if state.Ammo <= 0 then
+        beginReload(player)
+        return
+    end
+
+    state.LastShot = now
+    state.Ammo -= 1
+    local direction = getDirection(root, requestedDirection)
+    local spread = definition.Spread * (weapon.SpreadMultiplier or 1)
+    local coneDot = 1 - math.clamp(spread * 3.2, 0.002, 0.24)
+    local candidates = ctx.Enemies.GetInRange(root.Position, definition.Range, direction, coneDot, ctx.Run.GetCurrentRoom())
+    local baseDamage = calculateDamage(player, weapon, definition)
+    local archetype = weapon.Archetype or "Carbine"
+
+    if archetype == "Shotgun" then
+        local pelletCount = definition.Pellets or 8
+        if #candidates > 0 then
+            local remaining = pelletCount
+            local targetCount = math.min(3, #candidates)
+            for index = 1, targetCount do
+                local pellets = index == 1 and math.ceil(remaining * 0.65) or math.max(1, math.floor(remaining / (targetCount - index + 1)))
+                remaining -= pellets
+                damageEnemy(player, candidates[index], baseDamage * pellets * 0.42, weapon, 1 - ((index - 1) * 0.16))
+            end
+        end
+    elseif archetype == "RailRifle" then
+        for index = 1, math.min(3, #candidates) do
+            local penetration = ({ 1, 0.68, 0.46 })[index]
+            damageEnemy(player, candidates[index], baseDamage, weapon, penetration)
+        end
+    elseif candidates[1] then
+        damageEnemy(player, candidates[1], baseDamage, weapon, 1)
+    end
+
+    ctx.Remotes.State:FireClient(player, "WeaponFX", {
+        Kind = "Shot",
+        Archetype = archetype,
+        Recoil = definition.Recoil * (weapon.RecoilMultiplier or 1),
+        EmptyAfter = state.Ammo <= 0,
+    })
+    pushCombat(player)
+
+    if state.Ammo <= 0 then
+        task.delay(0.16, function()
+            if player.Parent then
+                beginReload(player)
+            end
+        end)
     end
 end
 
@@ -111,9 +219,12 @@ local function performDash(player, requestedDirection)
     end
 
     local dash = ctx.Config.Attacks.Dash
-    if not canUse(player, "Dash", dash.Cooldown) then
+    local now = os.clock()
+    local last = dashCooldowns[player] or 0
+    if now - last < dash.Cooldown then
         return
     end
+    dashCooldowns[player] = now
 
     local root = characterRoot(player)
     if not root then
@@ -121,6 +232,12 @@ local function performDash(player, requestedDirection)
     end
 
     local direction = getDirection(root, requestedDirection)
+    local flat = Vector3.new(direction.X, 0, direction.Z)
+    if flat.Magnitude <= 0.05 then
+        return
+    end
+    flat = flat.Unit
+
     local params = RaycastParams.new()
     params.FilterType = Enum.RaycastFilterType.Exclude
     local filter = { player.Character }
@@ -133,29 +250,30 @@ local function performDash(player, requestedDirection)
     params.IgnoreWater = true
 
     local origin = root.Position
-    local cast = Workspace:Raycast(origin, direction * dash.Distance, params)
+    local cast = Workspace:Raycast(origin, flat * dash.Distance, params)
     local distance = dash.Distance
     if cast then
         distance = math.max(0, cast.Distance - 3)
     end
-
     if distance < 2 then
         return
     end
 
-    local destination = origin + direction * distance
-    root.CFrame = CFrame.lookAt(destination, destination + direction)
+    local destination = origin + flat * distance
+    root.CFrame = CFrame.lookAt(destination, destination + flat)
     root.AssemblyLinearVelocity = Vector3.zero
+    ctx.Remotes.State:FireClient(player, "WeaponFX", { Kind = "Dash" })
 end
 
 function CombatService.Init(context)
     ctx = context
 
-    ctx.Remotes.Attack.OnServerEvent:Connect(function(player, attackName, direction)
-        if type(attackName) ~= "string" then
-            return
+    ctx.Remotes.Attack.OnServerEvent:Connect(function(player, action, direction)
+        if action == "Fire" then
+            fireWeapon(player, direction)
+        elseif action == "Reload" then
+            beginReload(player)
         end
-        performAttack(player, attackName, direction)
     end)
 
     ctx.Remotes.Skill.OnServerEvent:Connect(function(player, skillName, direction)
@@ -163,6 +281,15 @@ function CombatService.Init(context)
             performDash(player, direction)
         end
     end)
+end
+
+function CombatService.PushState(player)
+    pushCombat(player)
+end
+
+function CombatService.ResetPlayer(player)
+    weaponStates[player] = nil
+    dashCooldowns[player] = nil
 end
 
 return CombatService
