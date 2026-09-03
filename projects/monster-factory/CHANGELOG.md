@@ -1,5 +1,26 @@
 # Changelog
 
+## Visual Rebuild 003
+
+### Worker characters
+- Added `WorkerCharacters.client.lua` as the canonical worker presentation layer.
+- Replaced the visible orb placeholders with small procedural character models while preserving the existing worker-state contract.
+- Added distinct visual families for slime, mushroom, bee, beast, golem, scarab, humanoid, sphinx, snowball, penguin, yeti, dragon and factory-bot workers.
+- Added rarity-aware nameplates, production bonus text, shiny highlighting and subtle idle bob/turn animation.
+- Worker character visuals are still client-only and cannot affect production, inventory or reward logic.
+
+### In-world factory interaction
+- Added `WorldInteractionGuide.client.lua`.
+- Added current-zone BillboardGui guidance for Generator, Collector, Capsule and Worlds anchors.
+- Added ProximityPrompt actions for Upgrade, Collect and Hatch so the factory can be operated from the 3D world as well as the HUD.
+- Added a Worlds prompt that opens the existing Zones window.
+- Prompt availability follows the player's current logical zone; server-side validation remains authoritative for all state-changing actions.
+- Dynamic subtitles show generator level/cost, pending collector Cash and current hatch price/free-first-hatch state.
+
+### Architecture
+- Reused existing RemoteEvents and static world anchors; no new economy or progression authority was introduced on the client.
+- External art remains optional and replaceable through the existing per-zone `ExternalArt` folders.
+
 ## Visual Rebuild 002
 
 ### Canonical world
