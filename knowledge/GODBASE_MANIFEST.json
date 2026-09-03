@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 2,
+  "verifiedDate": "2026-09-03",
+  "name": "Roblox Godbase",
+  "status": "ACTIVE_CANONICAL_NOT_COMPLETE",
+  "purpose": "Canonical research and operating knowledge for every Roblox project in this monorepo.",
+  "principles": [
+    "official-docs-first",
+    "studio-validation-first",
+    "source-and-license-before-reuse",
+    "server-authority-for-valuable-state",
+    "reference-before-invention",
+    "official-parts-before-reimplementation",
+    "vertical-slice-before-breadth",
+    "playtest-before-handoff",
+    "failure-to-regression-knowledge",
+    "knowledge-is-versioned-and-time-sensitive"
+  ],
+  "mandatoryReads": {
+    "allNewProjects": [
+      "knowledge/AGENT_PROTOCOL.md",
+      "knowledge/QUICK_REFERENCE.md",
+      "knowledge/checklists/PROJECT_START_CHECKLIST.md",
+      "knowledge/regressions/FAILURE_LIBRARY.md",
+      "knowledge/workflow/AI_STUDIO_AUTONOMOUS_PLAYTEST.md",
+      "knowledge/checklists/VERTICAL_SLICE_DONE_DEFINITION.md"
+    ],
+    "worldDesign": [
+      "knowledge/level-design/LEVEL_DESIGN_WORLD_TRAVERSAL.md",
+      "knowledge/graphics/VISUAL_QUALITY_PIPELINE.md"
+    ],
+    "networkedGames": [
+      "knowledge/architecture/ENGINE_AND_NETWORKING.md",
+      "knowledge/networking/REPLICATION_PHYSICS_INPUT.md",
+      "knowledge/security/SECURITY_AND_ANTICHEAT.md"
+    ],
+    "npcGames": [
+      "knowledge/ai/NPC_AI_AND_PATHFINDING.md"
+    ],
+    "persistentGames": [
+      "knowledge/data/DATA_ECONOMY_AND_LIVEOPS.md",
+      "knowledge/data/CLOUD_SERVICES_DECISION_MATRIX.md"
+    ],
+    "combatGames": [
+      "knowledge/combat/COMBAT_FEEL_PLAYBOOK.md",
+      "knowledge/camera/CAMERA_AND_GAME_FEEL.md",
+      "knowledge/animation/ANIMATION_AND_RIGGING_PIPELINE.md",
+      "knowledge/audio/AUDIO_SYSTEMS_AND_MIXING.md"
+    ],
+    "release": [
+      "knowledge/testing/AUTOMATED_ACCEPTANCE_GATES.md",
+      "knowledge/testing/DEVICE_NETWORK_TEST_MATRIX.md",
+      "knowledge/checklists/SHIP_CHECKLIST.md",
+      "knowledge/workflow/OPEN_CLOUD_CI_RELEASE_AUTOMATION.md"
+    ]
+  },
+  "sourceIndexes": {
+    "creatorDocs": "https://create.roblox.com/docs/llms.txt",
+    "creatorDocsFull": "https://create.roblox.com/docs/llms-full.txt",
+    "engineApi": "https://create.roblox.com/docs/reference/engine/llms.txt",
+    "openCloud": "https://create.roblox.com/docs/cloud/llms.txt",
+    "creatorDocsRepo": "https://github.com/Roblox/creator-docs"
+  },
+  "currentPreferredWorkflowCandidates": {
+    "studioFirst": ["Roblox Studio", "Studio MCP", "Script Sync", "Git", "Luau LSP", "StyLua", "selene"],
+    "filesystemFirst": ["Rojo", "Rokit", "Wally", "Git", "Luau LSP", "StyLua", "selene", "Studio MCP for QA"]
+  },
+  "catalogs": [
+    "knowledge/assets/OFFICIAL_ASSET_CATALOG.json",
+    "knowledge/catalogs/LIBRARY_CATALOG.json"
+  ],
+  "continuousResearch": "knowledge/research/CONTINUOUS_RESEARCH_ROADMAP.md",
+  "failureLibrary": "knowledge/regressions/FAILURE_LIBRARY.md",
+  "note": "Godbase is intentionally never declared permanently complete because Roblox engine, policies, assets, successful game patterns and ecosystem change."
+}

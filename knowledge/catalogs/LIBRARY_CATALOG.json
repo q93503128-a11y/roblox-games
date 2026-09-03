@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "verifiedDate": "2026-09-03",
+  "rule": "Catalog status is a shortlist, not automatic adoption. Re-check license, latest release, API, and project fit at adoption time.",
+  "libraries": [
+    {
+      "name": "ProfileStore",
+      "repo": "MadStudioRoblox/ProfileStore",
+      "url": "https://github.com/MadStudioRoblox/ProfileStore",
+      "status": "CURRENT_CANDIDATE",
+      "trustGrade": "A",
+      "license": "Apache-2.0",
+      "archivedAtVerification": false,
+      "category": ["data", "player-profile", "session-locking"],
+      "recommendedFor": ["player progress", "inventory profile", "autosave", "session locking"],
+      "notRecommendedFor": ["global state", "global leaderboard"],
+      "notes": "Project docs explicitly describe ProfileStore as player-data-oriented and not designed for in-game leaderboards/global state."
+    },
+    {
+      "name": "RbxUtil",
+      "repo": "Sleitnick/RbxUtil",
+      "url": "https://github.com/Sleitnick/RbxUtil",
+      "status": "CURRENT_CANDIDATE",
+      "trustGrade": "A",
+      "license": "MIT",
+      "archivedAtVerification": false,
+      "category": ["utility"],
+      "recommendedFor": ["Trove lifecycle cleanup", "Comm networking abstraction", "Component", "Signal", "targeted utilities"],
+      "notRecommendedFor": ["importing every module without need"],
+      "notes": "Prefer specific utilities that solve an actual problem; avoid framework-by-default behavior."
+    },
+    {
+      "name": "roblox-lua-promise",
+      "repo": "evaera/roblox-lua-promise",
+      "url": "https://github.com/evaera/roblox-lua-promise",
+      "status": "CURRENT_CANDIDATE",
+      "trustGrade": "A",
+      "license": "MIT",
+      "archivedAtVerification": false,
+      "category": ["async"],
+      "recommendedFor": ["async composition", "timeout", "retry", "cancellation/chains"],
+      "notRecommendedFor": ["wrapping every simple yield"],
+      "notes": "Use where Promise semantics reduce complexity."
+    },
+    {
+      "name": "Fusion",
+      "repo": "dphfox/Fusion",
+      "url": "https://github.com/dphfox/Fusion",
+      "status": "CURRENT_CANDIDATE",
+      "trustGrade": "A",
+      "license": "MIT",
+      "category": ["ui", "reactive", "state"],
+      "recommendedFor": ["reactive Roblox UI", "complex derived state"],
+      "notRecommendedFor": ["small UI where vanilla Instances are clearer"],
+      "notes": "Current repository/documentation must be checked for version-specific API before adoption."
+    },
+    {
+      "name": "Vide",
+      "repo": "centau/vide",
+      "url": "https://github.com/centau/vide",
+      "status": "CURRENT_CANDIDATE",
+      "trustGrade": "A_OR_B_REVIEW",
+      "license": "MIT",
+      "archivedAtVerification": false,
+      "category": ["ui", "reactive"],
+      "recommendedFor": ["typed declarative reactive UI"],
+      "notRecommendedFor": ["automatic migration of existing UI"],
+      "notes": "Compare team familiarity and ecosystem with Fusion/React Lua."
+    },
+    {
+      "name": "React Lua",
+      "repo": "jsdotlua/react-lua",
+      "url": "https://github.com/jsdotlua/react-lua",
+      "status": "CURRENT_CANDIDATE",
+      "trustGrade": "A_OR_B_REVIEW",
+      "license": "MIT",
+      "archivedAtVerification": false,
+      "category": ["ui", "react"],
+      "recommendedFor": ["React-style component architecture", "teams familiar with React mental model"],
+      "notRecommendedFor": ["small HUD solely because React is familiar from web"],
+      "notes": "Community-maintained Lua translation; verify current compatibility and renderer stack."
+    },
+    {
+      "name": "Rojo",
+      "repo": "rojo-rbx/rojo",
+      "url": "https://github.com/rojo-rbx/rojo",
+      "status": "CURRENT",
+      "trustGrade": "A",
+      "license": "MPL-2.0",
+      "archivedAtVerification": false,
+      "category": ["workflow", "filesystem-source-of-truth"],
+      "recommendedFor": ["monorepos", "CI", "full project filesystem workflows"],
+      "notRecommendedFor": ["forcing onto Studio-first projects without benefit"],
+      "notes": "Official Roblox Script Sync docs explicitly position Rojo as a better fit when the whole project must be in version control/filesystem."
+    },
+    {
+      "name": "Rokit",
+      "repo": "rojo-rbx/rokit",
+      "url": "https://github.com/rojo-rbx/rokit",
+      "status": "CURRENT_PREFERRED_TOOLCHAIN_CANDIDATE",
+      "trustGrade": "A",
+      "license": "MIT",
+      "archivedAtVerification": false,
+      "category": ["toolchain-manager"],
+      "recommendedFor": ["pinning CLI tool versions", "reproducible dev environments"],
+      "notRecommendedFor": [],
+      "notes": "Prefer for new community toolchain bootstrap unless project has a stable legacy manager."
+    },
+    {
+      "name": "Wally",
+      "repo": "UpliftGames/wally",
+      "url": "https://github.com/UpliftGames/wally",
+      "status": "CURRENT",
+      "trustGrade": "A",
+      "license": "MPL-2.0",
+      "archivedAtVerification": false,
+      "category": ["package-manager"],
+      "recommendedFor": ["Luau package dependency management"],
+      "notRecommendedFor": ["treating registry presence as security review"],
+      "notes": "Pin versions and audit dependencies."
+    }
+  ],
+  "toolsToEvaluateAndPinPerProject": [
+    "StyLua",
+    "selene",
+    "Luau Language Server",
+    "Lune"
+  ]
+}

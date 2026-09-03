@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "verifiedDate": "2026-09-03",
+  "policy": "Only exact IDs verified from Roblox official sources are listed. Unknown IDs stay null; never guess.",
+  "officialFeaturePackages": [
+    {
+      "name": "Feature Package Core",
+      "assetId": 94918533221001,
+      "creator": "CreatorKnowledge",
+      "status": "CURRENT",
+      "role": "Shared dependency for Roblox Feature Packages",
+      "docs": "https://create.roblox.com/docs/resources/feature-packages"
+    },
+    {
+      "name": "Bundles",
+      "assetId": 72975253516300,
+      "creator": "CreatorKnowledge",
+      "status": "CURRENT",
+      "role": "Bundle commerce feature package",
+      "docs": "https://create.roblox.com/docs/resources/feature-packages/bundles"
+    },
+    {
+      "name": "Missions",
+      "assetId": 89760436366160,
+      "creator": "CreatorKnowledge",
+      "status": "CURRENT",
+      "role": "Mission/objective progression package",
+      "docs": "https://create.roblox.com/docs/resources/feature-packages"
+    },
+    {
+      "name": "Season Passes",
+      "assetId": 89781974928804,
+      "creator": "CreatorKnowledge",
+      "status": "BETA_AT_VERIFICATION",
+      "role": "Seasonal progression package; verify Core/Missions dependencies",
+      "docs": "https://create.roblox.com/docs/resources/feature-packages/season-passes"
+    },
+    {
+      "name": "Engagement Rewards",
+      "assetId": 80053655757903,
+      "creator": "CreatorKnowledge",
+      "status": "CURRENT",
+      "role": "Engagement milestone rewards",
+      "docs": "https://create.roblox.com/docs/resources/feature-packages"
+    }
+  ],
+  "officialDeveloperModules": [
+    {
+      "name": "Friends Locator",
+      "assetId": 11338008960,
+      "creator": "Roblox",
+      "status": "CURRENT",
+      "role": "Find/teleport near friends",
+      "docs": "https://create.roblox.com/docs/resources/modules"
+    },
+    {
+      "name": "Selfie Mode",
+      "assetId": 11338094218,
+      "creator": "Roblox",
+      "status": "CURRENT",
+      "role": "Social camera/selfie feature",
+      "docs": "https://create.roblox.com/docs/resources/modules"
+    },
+    {
+      "name": "Merch Booth",
+      "assetId": 11338021801,
+      "creator": "Roblox",
+      "status": "CURRENT",
+      "role": "In-experience commerce surface",
+      "docs": "https://create.roblox.com/docs/resources/modules/merch-booth"
+    },
+    {
+      "name": "Spawn With Friends",
+      "assetId": null,
+      "creator": "Roblox",
+      "status": "CURRENT_ID_NOT_VERIFIED",
+      "role": "Spawn/teleport near friends with free-space checks",
+      "docs": "https://create.roblox.com/docs/resources/modules/spawn-with-friends"
+    },
+    {
+      "name": "Emote Bar",
+      "assetId": null,
+      "creator": "Roblox",
+      "status": "CURRENT_ID_NOT_VERIFIED",
+      "role": "Emote bar/wheel",
+      "docs": "https://create.roblox.com/docs/resources/modules/emote-bar"
+    },
+    {
+      "name": "Scavenger Hunt",
+      "assetId": null,
+      "creator": "Roblox",
+      "status": "CURRENT_ID_NOT_VERIFIED",
+      "role": "Persistent exploration/collection mechanic",
+      "docs": "https://create.roblox.com/docs/resources/modules/scavenger-hunt"
+    },
+    {
+      "name": "Event Sequencer",
+      "assetId": null,
+      "creator": "Roblox",
+      "status": "CURRENT_ID_NOT_VERIFIED",
+      "role": "Live event/cutscene sequence framework",
+      "docs": "https://create.roblox.com/docs/resources/modules/event-sequencer"
+    }
+  ],
+  "officialTemplates": [
+    "Platformer",
+    "UGC Homestore",
+    "Laser Tag",
+    "FPS System",
+    "Racing",
+    "Baseplate",
+    "Modern City",
+    "Village",
+    "Starting Place",
+    "Line Runner",
+    "Capture the Flag",
+    "Team Arena",
+    "FFA Arena",
+    "Combat",
+    "Concert",
+    "Move It Simulator",
+    "Mansion of Wonder",
+    "Flat Terrain",
+    "Classic Racing",
+    "Classic Baseplate"
+  ],
+  "templateDocs": "https://create.roblox.com/docs/resources/templates"
+}
