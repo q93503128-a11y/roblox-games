@@ -16,6 +16,7 @@ local Augments = require(servicesFolder:WaitForChild("AugmentService"))
 local Objectives = require(servicesFolder:WaitForChild("ObjectiveService"))
 local OptionalOps = require(servicesFolder:WaitForChild("OptionalOpsService"))
 local HVT = require(servicesFolder:WaitForChild("HVTService"))
+local SectorModifiers = require(servicesFolder:WaitForChild("SectorModifierService"))
 
 local remotesFolder = ReplicatedStorage:FindFirstChild("VaultfallRemotes")
 if remotesFolder then
@@ -53,6 +54,7 @@ local context = {
     Objectives = Objectives,
     OptionalOps = OptionalOps,
     HVT = HVT,
+    SectorModifiers = SectorModifiers,
 }
 
 -- World construction must never depend on persistence. A local .rbxlx can have
@@ -66,6 +68,7 @@ Combat.Init(context)
 EncounterDirector.Init(context)
 OptionalOps.Init(context)
 HVT.Init(context)
+SectorModifiers.Init(context)
 World.Build()
 Profile.Init(context)
 
@@ -94,6 +97,7 @@ context.Remotes.Ready.OnServerEvent:Connect(function(player)
     Objectives.PushState(player)
     OptionalOps.PushState(player)
     HVT.PushState(player)
+    SectorModifiers.PushState(player)
 end)
 
 local function onPlayerAdded(player)
