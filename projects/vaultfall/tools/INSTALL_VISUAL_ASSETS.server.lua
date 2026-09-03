@@ -9,7 +9,8 @@ local ServerStorage = game:GetService("ServerStorage")
 assert(RunService:IsStudio(), "Vaultfall asset installer is Studio-only")
 
 local manifest = {
-    DungeonKit = 84153348982194,
+    -- Established 95%-rated pack with modular dungeon pieces and a complete sample dungeon build.
+    DungeonKit = 9492405836,
     WeaponPack = 17351010368,
     MonsterPack = 14483015744,
     NaturePack = 79195618410265,
