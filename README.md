@@ -2,7 +2,7 @@
 
 문승준의 Roblox 게임 개발을 한곳에서 관리하는 **공용 monorepo**입니다.
 
-이 저장소는 하나의 게임 전용 저장소가 아닙니다. 여러 Roblox 프로젝트를 `projects/` 아래에서 서로 완전히 분리해 관리하고, Rojo·검증·배포 자동화처럼 여러 게임이 함께 사용할 수 있는 개발 인프라는 저장소 루트 또는 `shared/`, `tools/`에 둡니다.
+이 저장소는 하나의 게임 전용 저장소가 아닙니다. 여러 Roblox 프로젝트를 `projects/` 아래에서 서로 완전히 분리해 관리하고, Rojo·검증·배포 자동화처럼 여러 게임이 함께 사용할 수 있는 개발 인프라는 저장소 루트 또는 `shared/`, `tools/`에 둡니다. Roblox 플랫폼 자체에 대한 공용 조사·검증 지식은 `knowledge/`의 **Roblox Godbase**를 정본으로 사용합니다.
 
 ## 기본 구조
 
@@ -11,6 +11,7 @@ roblox-games/
 ├─ README.md
 ├─ .github/
 │  └─ workflows/          # 공용/프로젝트별 CI 및 Roblox 배포
+├─ knowledge/             # Roblox Godbase: 공용 개발 지식 정본
 ├─ projects/
 │  ├─ monster-factory/    # Monster Factory Simulator
 │  ├─ vaultfall/          # Vaultfall
@@ -20,6 +21,39 @@ roblox-games/
 │  └─ tooling/            # 공용 검증/빌드 보조 코드
 └─ tools/                 # 개발 도구 설정 및 스크립트
 ```
+
+## Roblox Godbase
+
+경로:
+
+```text
+knowledge/
+```
+
+`knowledge/`는 특정 게임 기획서가 아니라 Roblox 개발 전반을 지속적으로 조사하고 검증하는 공용 지식층입니다.
+
+현재 포함 범위:
+
+- Roblox 공식 Creator Docs / Engine API / Open Cloud 지도
+- Studio MCP, Script Sync, Rojo 등 개발 workflow
+- Luau, client/server, networking, streaming, architecture
+- ProfileStore, RbxUtil, Fusion, Vide, React Lua, Wally, Rokit 등 오픈소스 후보군
+- Creator Store, 패키지, 키트, 플러그인, 외부 에셋 검수
+- UI/UX, FTUE, game design, genre reference 분석법
+- world art, lighting, animation, VFX, audio
+- combat feel과 enemy/boss 설계
+- performance, MicroProfiler, streaming
+- security, anti-cheat, Remote validation
+- DataStore, economy, monetization, LiveOps
+- Studio QA, release, analytics, funnel/error monitoring
+- 공식 curriculum, DevForum, 강의/커뮤니티 자료 검증법
+- 새 프로젝트 시작 체크리스트
+
+새 Roblox 프로젝트는 맨땅에서 구현을 시작하기 전에 `knowledge/README.md`와 `knowledge/checklists/PROJECT_START_CHECKLIST.md`를 먼저 확인합니다.
+
+Godbase에 적힌 라이브러리나 패턴이 기존 프로젝트에 자동으로 강제되지는 않습니다. 기존 Rojo 프로젝트는 그대로 유지할 수 있고, 신규 Studio-first 프로젝트에서는 Roblox가 공식 지원하는 **Studio MCP + Script Sync**도 우선 검토합니다.
+
+Godbase는 완성본이 아니라 계속 갱신되는 정본입니다. Roblox 공식 문서와 도구는 빠르게 변하므로 문서마다 검증일과 대체/폐기 상태를 기록합니다.
 
 ## 저장소 운영 원칙
 
@@ -44,11 +78,12 @@ Studio에서 생성된 임시 사본이나 다운로드한 `(1)`, `(2)` 파일�
 
 ### 3. Rojo 우선
 
-- 개발 중 코드와 Rojo 관리 대상 맵은 파일 시스템을 정본으로 합니다.
+- 기존 Rojo 기반 프로젝트에서는 개발 중 코드와 Rojo 관리 대상 맵의 파일 시스템 정본 원칙을 유지합니다.
 - Studio는 편집·실행·수동 테스트 환경으로 사용합니다.
 - Rojo 연결 상태에서는 동일한 관리 객체를 Studio와 파일 양쪽에서 동시에 수정하지 않습니다.
 - Studio에서 직접 만든 객체를 보존해야 하는 영역은 프로젝트 설정에서 `ignoreUnknownInstances` 정책을 명시합니다.
 - `.rbxl`/`.rbxlx`는 필요할 때 생성하는 테스트/배포 산출물이며, 가능한 한 소스의 유일한 정본으로 사용하지 않습니다.
+- 신규 프로젝트는 Godbase 검토 후 Studio-first(MCP + Script Sync) 또는 filesystem-first(Rojo) 중 목적에 맞는 workflow를 선택할 수 있습니다.
 
 ### 4. 코드 품질
 
@@ -90,6 +125,7 @@ Studio에서 생성된 임시 사본이나 다운로드한 `(1)`, `(2)` 파일�
 monster-factory: add rebirth progression
 monster-factory: fix datastore local boot
 infra: add Rojo validation workflow
+docs: update Roblox Godbase security guidance
 ```
 
 - API Key, 토큰, 비밀번호, Roblox Open Cloud Key 같은 비밀정보는 절대 커밋하지 않습니다.
@@ -104,7 +140,7 @@ GitHub main
   ↓
 변경된 프로젝트 감지
   ↓
-Rojo build
+Rojo build 또는 프로젝트별 검증
   ↓
 정적 검사 / 프로젝트별 검증
   ↓
@@ -162,19 +198,24 @@ projects/vaultfall/
 ```text
 projects/<project-name>/
 ├─ README.md
-├─ default.project.json
-├─ src/
+├─ default.project.json 또는 프로젝트가 선택한 Studio-first 동기화 설정
+├─ src/ 또는 Script Sync 대상 코드
 ├─ docs/
 └─ ASSET_SOURCES.md
 ```
 
-새 프로젝트를 추가할 때 루트 README의 `현재 프로젝트` 목록도 함께 갱신합니다.
+새 프로젝트를 추가할 때:
+
+1. Godbase 시작 체크리스트 확인
+2. Studio-first / Rojo workflow 선택 이유 기록
+3. 레퍼런스 게임과 vertical slice 범위 기록
+4. 루트 README의 `현재 프로젝트` 목록 갱신
 
 ## 현재 다음 단계
 
-1. GitHub 기준 Rojo 빌드 검증
-2. 로컬 Studio ↔ Rojo 연결 확인
-3. Roblox TEST Experience / Place 확보
-4. Open Cloud 배포 자격증명은 GitHub Secrets에만 등록
-5. 프로젝트별 TEST Place 자동 배포 workflow 구축
-6. 실제 첫 플레이 테스트 결과를 바탕으로 버그·밸런스·UI 수정
+1. `knowledge/` Godbase를 지속 확장
+2. Studio MCP + Codex CLI 실제 연결 검증
+3. 장르별 실제 게임 reference 연구 추가
+4. Creator Store 에셋/키트 실제 검수 카탈로그 구축
+5. 기존 프로젝트는 현재 정본 workflow를 유지하면서 MCP 기반 Studio QA를 점진적으로 추가
+6. 실제 플레이 테스트 결과를 Godbase의 regression/failure knowledge로 환류
