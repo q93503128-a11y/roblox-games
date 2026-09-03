@@ -1,5 +1,27 @@
 # Changelog
 
+## Visual Rebuild 004
+
+### Static art / zone identity
+- Added `MonsterFactoryArt004.model.json` as a static Rojo art layer with 75 non-colliding visual instances.
+- Added a stronger landmark gantry / backbone silhouette to all three zones.
+- Pushed Green Meadows toward a bio-industrial visual language with bio spires, wings and energy accents.
+- Pushed Desert Outpost toward a refinery visual language with asymmetric stacks and heat accents.
+- Pushed Frozen Lab toward a cryogenic research visual language with cryo spires, antenna structure and elevated lab bridging.
+- Kept gameplay anchors in `MonsterFactoryWorld.model.json`; Art004 owns no economy/progression authority.
+
+### Lighting / atmosphere
+- Moved the experience's baseline Lighting, Atmosphere, Bloom and ColorCorrection configuration into `default.project.json`.
+- Added `ZoneMood.client.lua` for per-zone atmosphere/tint/bloom transitions using the existing zone-state contract.
+
+### External visual intake
+- Added `VisualAssetManifest.lua` with explicit Creator Store provenance and runtime-loading prohibition.
+- Approved the free Low Poly Asset Pack (`7436760067`) for sanitized environment intake.
+- Approved the free GUI Asset Pack (`130347426228193`) for design/presentation intake only; bundled scripts must be removed.
+- Kept Factory low poly (`6247256567`) as reference-only pending stronger provenance/use review.
+- Added `tools/studio/IMPORT_EXTERNAL_VISUALS.lua`, a Studio Command Bar helper that loads candidate assets into ServerStorage staging and strips scripts/interactivity before review.
+- Raw Creator Store binary packs are not claimed as vendored Git assets in this pass.
+
 ## Visual Rebuild 003
 
 ### Worker characters
