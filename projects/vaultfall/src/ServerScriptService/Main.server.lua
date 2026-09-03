@@ -35,6 +35,7 @@ local context = {
         Skill = makeRemote("Skill"),
         ClaimLoot = makeRemote("ClaimLoot"),
         State = makeRemote("State"),
+        Ready = makeRemote("Ready"),
     },
     Profile = Profile,
     World = World,
@@ -49,6 +50,14 @@ Enemies.Init(context)
 Run.Init(context)
 Combat.Init(context)
 World.Build()
+
+context.Remotes.Ready.OnServerEvent:Connect(function(player)
+    if not Profile.Get(player) then
+        Profile.Load(player)
+    end
+    Profile.Push(player)
+    Run.PushState(player)
+end)
 
 local function onPlayerAdded(player)
     Profile.Load(player)
