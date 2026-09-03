@@ -5,6 +5,7 @@ local ctx
 
 local state = {
     Active = false,
+    Ending = false,
     RunId = 0,
     Participants = {},
     ParticipantSet = {},
@@ -27,8 +28,8 @@ local function copyWeapon(weapon)
     return result
 end
 
-local function sendRunState()
-    local payload = {
+local function runPayload()
+    return {
         Active = state.Active,
         Room = state.CurrentRoom,
         TotalRooms = ctx.Config.RoomCount,
@@ -36,6 +37,10 @@ local function sendRunState()
         Cleared = state.RoomCleared,
         EnemyCount = state.EnemyCount,
     }
+end
+
+local function sendRunState()
+    local payload = runPayload()
     for _, player in ipairs(state.Participants) do
         if player.Parent then
             ctx.Remotes.State:FireClient(player, "Run", payload)
@@ -171,6 +176,8 @@ local function resetState()
     ctx.World.ResetGates()
     table.clear(equippedWeapons)
     table.clear(pendingLoot)
+    state.Active = false
+    state.Ending = false
     state.Participants = {}
     state.ParticipantSet = {}
     state.Dead = {}
@@ -238,6 +245,33 @@ function RunService.Init(context)
     end)
 end
 
+function RunService.PushState(player)
+    if not player or not player.Parent then
+        return
+    end
+
+    if state.ParticipantSet[player] then
+        ctx.Remotes.State:FireClient(player, "Run", runPayload())
+        sendWeapon(player)
+        local offer = pendingLoot[player]
+        if offer then
+            ctx.Remotes.State:FireClient(player, "LootOffer", {
+                Offered = offer,
+                Equipped = equippedWeapons[player],
+            })
+        end
+    else
+        ctx.Remotes.State:FireClient(player, "Run", {
+            Active = false,
+            Room = 0,
+            TotalRooms = ctx.Config.RoomCount,
+            RoomType = "Hub",
+            Cleared = false,
+            EnemyCount = 0,
+        })
+    end
+end
+
 function RunService.IsActive()
     return state.Active
 end
@@ -273,8 +307,8 @@ function RunService.GetLivingParticipants()
 end
 
 function RunService.StartRun(requester)
-    if state.Active then
-        ctx.Remotes.State:FireClient(requester, "Notice", "A vault run is already active")
+    if state.Active or state.Ending then
+        ctx.Remotes.State:FireClient(requester, "Notice", state.Ending and "The previous run is closing" or "A vault run is already active")
         return false
     end
 
@@ -430,6 +464,7 @@ function RunService.CompleteRun()
     end
 
     state.Active = false
+    state.Ending = true
     for _, player in ipairs(state.Participants) do
         if player.Parent then
             ctx.Profile.RecordCompletion(player)
@@ -446,6 +481,7 @@ function RunService.FailRun(reason)
     end
 
     state.Active = false
+    state.Ending = true
     ctx.Enemies.ClearAll()
     for _, player in ipairs(state.Participants) do
         if player.Parent then
