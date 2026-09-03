@@ -65,6 +65,17 @@ Config.Missions = {
     },
 }
 
+Config.HVT = {
+    Rooms = {
+        [3] = 0.45,
+        [6] = 0.65,
+        [8] = 0.72,
+        [10] = 0.80,
+        [11] = 1.00,
+    },
+    Variants = { "Huntsman", "Bulwark", "Reaper" },
+}
+
 Config.BasePlayerHealth = 120
 Config.BaseWalkSpeed = 17
 Config.StartingWeapon = {
@@ -130,6 +141,40 @@ Config.Enemies = {
         Essence = 24,
         Radius = 3.4,
         Elite = true,
+    },
+    Huntsman = {
+        Health = 520,
+        Damage = 21,
+        Speed = 8.6,
+        AttackRange = 31,
+        AttackCooldown = 1.35,
+        Essence = 32,
+        Radius = 3.2,
+        Elite = true,
+        HVT = true,
+        Ranged = true,
+    },
+    Bulwark = {
+        Health = 760,
+        Damage = 28,
+        Speed = 5.8,
+        AttackRange = 7.5,
+        AttackCooldown = 1.55,
+        Essence = 38,
+        Radius = 4.0,
+        Elite = true,
+        HVT = true,
+    },
+    Reaper = {
+        Health = 610,
+        Damage = 25,
+        Speed = 11.2,
+        AttackRange = 6.5,
+        AttackCooldown = 0.95,
+        Essence = 36,
+        Radius = 3.4,
+        Elite = true,
+        HVT = true,
     },
     VaultWarden = {
         Health = 1650,
