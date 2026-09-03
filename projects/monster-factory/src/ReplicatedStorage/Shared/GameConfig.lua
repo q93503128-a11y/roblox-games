@@ -3,6 +3,11 @@ local GameConfig = {}
 GameConfig.DATA_STORE_NAME = "MonsterFactory_PlayerData_v1"
 GameConfig.DATA_VERSION = 4
 
+-- First-pass Studio testing intentionally uses temporary in-memory profiles.
+-- Set this to false only when explicitly testing DataStore persistence with
+-- Studio API access enabled for the correct test experience.
+GameConfig.STUDIO_USE_EPHEMERAL_DATA = true
+
 GameConfig.STARTING_CASH = 100
 GameConfig.STARTING_GEMS = 25
 GameConfig.STARTING_REBIRTH_TOKENS = 0
