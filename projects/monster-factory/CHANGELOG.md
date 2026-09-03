@@ -1,5 +1,34 @@
 # Changelog
 
+## Visual Rebuild 005
+
+### UI contract / external-art readiness
+- Added `UIVisualContract.lua` with semantic icon slots for stats, navigation, primary actions and modal/card content.
+- Kept Creator Store runtime loading disabled; icon slots use repository fallback glyphs until a sanitized Studio-side GUI-art intake provides approved project-owned image assets.
+- Kept existing gameplay callbacks and Remote names independent from presentation assets.
+
+### HUD hierarchy
+- Promoted `VisualRefresh.client.lua` in-place to Visual Rebuild 005 instead of stacking another visual overlay script.
+- Added icon+label side navigation and stronger top stat cards.
+- Kept Collect / Hatch / Upgrade as the dominant primary actions with larger icon slots and clearer hierarchy.
+- Added live value pulse feedback on stat-chip changes.
+
+### Modal / card presentation
+- Added semantic header icons and contextual subtitles to Shop, Monsters, Zones, Quests, Rewards, Achievements and Index.
+- Added common gradient card treatment for scrolling entries.
+- Added compact semantic entry icons and status badges such as DEV/BUY, HERE/GO/LOCK, CLAIM/DONE and FOUND/? where applicable.
+- Retained one-major-modal-at-a-time dim/blur behavior.
+
+### Action feedback
+- Added client-only button pulse / ring feedback for Collect, Hatch and Upgrade.
+- Observed existing authoritative state events to display result feedback after real generator upgrades, successful collects and hatch-count increases.
+- Added larger presentation feedback for world unlock, insufficient Cash and Shiny creation using existing server toast/state contracts.
+- No Cash, monster, reward, zone, upgrade or purchase authority was moved to the client.
+
+### Documentation
+- Added `docs/VISUAL_REBUILD_005_AUDIT.md`.
+- Updated project README baseline to Visual Rebuild 005.
+
 ## Visual Rebuild 004
 
 ### Static art / zone identity
