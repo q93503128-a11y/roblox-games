@@ -7,12 +7,14 @@ Vaultfall treats third-party Creator Store models as **visual material only**. N
 ## Current packs
 
 ### DungeonKit
-- Asset: `[FREE] Low Poly Dungeon Kit`
-- Creator: `@SamuelMysticInfern0`
-- Asset ID: `84153348982194`
-- Creator Store: `https://create.roblox.com/store/asset/84153348982194/FREE-Low-Poly-Dungeon-Kit`
-- Use: dungeon room props/decorative geometry only
-- Store state checked 2026-09-03: free model
+- Asset: `The Ultimate Low Poly Asset Pack`
+- Creator: `@FaDoLuanSantana`
+- Asset ID: `9492405836`
+- Creator Store: `https://create.roblox.com/store/asset/9492405836/The-Ultimate-Low-Poly-Asset-Pack`
+- DevForum resource: `https://devforum.roblox.com/t/free-the-ultimate-low-poly-asset-pack-added-more-assets/1772603`
+- Use: modular dungeon pieces and dungeon props/decorative geometry only
+- Store state checked 2026-09-03: free model, 95% with 70+ votes
+- Pack documentation states it contains 11 modular dungeon assets (walls, floors, flags, detailed windows) plus a complete sample dungeon build; game use is explicitly permitted and credit is appreciated but not required.
 
 ### WeaponPack
 - Asset: `Weapon pack`
