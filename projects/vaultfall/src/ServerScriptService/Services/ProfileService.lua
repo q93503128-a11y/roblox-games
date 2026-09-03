@@ -79,15 +79,21 @@ function ProfileService.ApplyCharacter(player, character)
     end
 
     local bonus = 1 + (profile.HealthUpgrade * ctx.Config.Meta.HealthPerLevel)
-    humanoid.MaxHealth = math.floor(ctx.Config.BasePlayerHealth * bonus + 0.5)
-    humanoid.Health = humanoid.MaxHealth
+    local oldMaxHealth = math.max(humanoid.MaxHealth, 1)
+    local healthRatio = math.clamp(humanoid.Health / oldMaxHealth, 0, 1)
+    local newMaxHealth = math.floor(ctx.Config.BasePlayerHealth * bonus + 0.5)
+    humanoid.MaxHealth = newMaxHealth
+    humanoid.Health = math.max(1, math.floor(newMaxHealth * healthRatio + 0.5))
     humanoid.WalkSpeed = ctx.Config.BaseWalkSpeed
 
-    humanoid.Died:Connect(function()
-        if ctx.Run and ctx.Run.OnPlayerDied then
-            ctx.Run.OnPlayerDied(player)
-        end
-    end)
+    if not humanoid:GetAttribute("VaultfallDeathHookBound") then
+        humanoid:SetAttribute("VaultfallDeathHookBound", true)
+        humanoid.Died:Connect(function()
+            if ctx.Run and ctx.Run.OnPlayerDied then
+                ctx.Run.OnPlayerDied(player)
+            end
+        end)
+    end
 end
 
 function ProfileService.Load(player)
@@ -108,7 +114,9 @@ function ProfileService.Load(player)
     profiles[player] = profile
 
     player.CharacterAdded:Connect(function(character)
-        ProfileService.ApplyCharacter(player, character)
+        task.defer(function()
+            ProfileService.ApplyCharacter(player, character)
+        end)
     end)
 
     if player.Character then
@@ -179,7 +187,15 @@ function ProfileService.GetUpgradeCost(player, upgradeName)
         return math.huge
     end
 
-    local field = upgradeName == "Attack" and "AttackUpgrade" or "HealthUpgrade"
+    local field
+    if upgradeName == "Attack" then
+        field = "AttackUpgrade"
+    elseif upgradeName == "Health" then
+        field = "HealthUpgrade"
+    else
+        return math.huge
+    end
+
     local level = profile[field]
     return math.floor(ctx.Config.Meta.UpgradeBaseCost * (ctx.Config.Meta.UpgradeCostGrowth ^ level) + 0.5)
 end
