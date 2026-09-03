@@ -11,6 +11,7 @@ local World = require(servicesFolder:WaitForChild("WorldService"))
 local Enemies = require(servicesFolder:WaitForChild("EnemyService"))
 local Run = require(servicesFolder:WaitForChild("RunService"))
 local Combat = require(servicesFolder:WaitForChild("CombatService"))
+local EncounterDirector = require(servicesFolder:WaitForChild("EncounterDirector"))
 
 local remotesFolder = ReplicatedStorage:FindFirstChild("VaultfallRemotes")
 if remotesFolder then
@@ -42,6 +43,7 @@ local context = {
     Enemies = Enemies,
     Run = Run,
     Combat = Combat,
+    EncounterDirector = EncounterDirector,
 }
 
 -- World construction must never depend on persistence. A local .rbxlx can have
@@ -50,6 +52,7 @@ World.Init(context)
 Enemies.Init(context)
 Run.Init(context)
 Combat.Init(context)
+EncounterDirector.Init(context)
 World.Build()
 Profile.Init(context)
 
