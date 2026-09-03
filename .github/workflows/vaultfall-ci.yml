@@ -1,0 +1,47 @@
+name: Vaultfall CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "projects/vaultfall/**"
+      - ".github/workflows/vaultfall-ci.yml"
+      - "rokit.toml"
+  pull_request:
+    paths:
+      - "projects/vaultfall/**"
+      - ".github/workflows/vaultfall-ci.yml"
+      - "rokit.toml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rokit
+        uses: CompeyDev/setup-rokit@v0.1.2
+        with:
+          version: v1.1.0
+
+      - name: Install pinned tools
+        run: rokit install
+
+      - name: Show Rojo version
+        run: rojo --version
+
+      - name: Build Vaultfall place
+        run: rojo build projects/vaultfall/default.project.json --output Vaultfall.rbxlx
+
+      - name: Verify build artifact
+        run: test -s Vaultfall.rbxlx
+
+      - name: Upload test place
+        uses: actions/upload-artifact@v4
+        with:
+          name: vaultfall-rbxlx
+          path: Vaultfall.rbxlx
+          if-no-files-found: error
