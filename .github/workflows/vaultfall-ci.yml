@@ -32,6 +32,17 @@ jobs:
           rojo --version
           selene --version
 
+      - name: Capture Selene diagnostics
+        working-directory: projects/vaultfall
+        run: selene src tools > selene-report.txt 2>&1 || true
+
+      - name: Upload Selene diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: vaultfall-selene-report
+          path: projects/vaultfall/selene-report.txt
+          if-no-files-found: error
+
       - name: Lint Vaultfall Luau
         working-directory: projects/vaultfall
         run: selene src tools
