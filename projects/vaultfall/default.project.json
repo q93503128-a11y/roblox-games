@@ -1,0 +1,50 @@
+{
+  "name": "Vaultfall",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "Vaultfall": {
+        "$path": "src/ReplicatedStorage"
+      }
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "Vaultfall": {
+        "$path": "src/ServerScriptService"
+      }
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "$properties": {
+        "CharacterWalkSpeed": 16,
+        "CharacterUseJumpPower": true
+      },
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "Vaultfall": {
+          "$path": "src/StarterPlayer/StarterPlayerScripts"
+        }
+      }
+    },
+    "Workspace": {
+      "$className": "Workspace",
+      "$ignoreUnknownInstances": true,
+      "$properties": {
+        "StreamingEnabled": true,
+        "FallenPartsDestroyHeight": -250
+      }
+    },
+    "Lighting": {
+      "$className": "Lighting",
+      "$ignoreUnknownInstances": true,
+      "$properties": {
+        "Brightness": 2,
+        "ClockTime": 18.5,
+        "EnvironmentDiffuseScale": 0.35,
+        "EnvironmentSpecularScale": 0.45,
+        "GlobalShadows": true
+      }
+    }
+  }
+}
