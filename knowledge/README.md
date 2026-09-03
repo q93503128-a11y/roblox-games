@@ -2,20 +2,15 @@
 
 > 검증 기준일: 2026-09-03
 
-`knowledge/`는 이 monorepo의 모든 Roblox 프로젝트가 공통으로 참조하는 **개발 지식 정본**이다. Roblox Studio·Luau·AI 개발·아키텍처·에셋·UI/UX·레벨 디자인·Terrain·3D 아트·전투·히트박스·VFX·카메라·애니메이션·오디오·NPC AI·물리/차량·아바타·Teleport/Matchmaking·보안·성능·저장·경제·LiveOps·Analytics·정책·배포·오픈소스 도구·실패 회귀 지식을 지속적으로 조사하고 검증한다.
+`knowledge/`는 이 monorepo의 모든 Roblox 프로젝트가 공통으로 참조하는 **개발 지식 정본**이다. Roblox Studio·Luau·AI 개발·아키텍처·에셋·UI/UX·레벨 디자인·Terrain·3D 아트·전투·히트박스·VFX·카메라·애니메이션·오디오·NPC AI·물리/차량·아바타·Teleport/Matchmaking·상호작용·인벤토리·루팅/제작·퀘스트·거래·라운드·절차생성·소셜·보안·성능·저장·경제·LiveOps·Analytics·정책·배포·오픈소스 도구·실패 회귀 지식을 지속적으로 조사하고 검증한다.
 
 목표는 모든 것을 기억으로 때우는 것이 아니라 **현재 검증된 해결책을 먼저 검색하고, 실제 Studio에서 확인하며, 이미 알려진 실패를 반복하지 않는 것**이다.
 
 ## 가장 먼저 읽기
 
-새 Roblox 작업을 시작하는 AI/개발자는:
-1. `GODBASE_MANIFEST.json`
-2. `AGENT_PROTOCOL.md`
-3. `QUICK_REFERENCE.md`
-4. `regressions/FAILURE_LIBRARY.md`
-5. 작업 domain 전문 문서
+새 Roblox 작업을 시작하는 AI/개발자는 `GODBASE_MANIFEST.json → AGENT_PROTOCOL.md → QUICK_REFERENCE.md → regressions/FAILURE_LIBRARY.md → 작업 domain 전문 문서` 순서로 확인한다.
 
-새 프로젝트라면 추가로 `PROJECT_START_CHECKLIST`, `TOOLCHAIN_DECISION_MATRIX`, `AI_STUDIO_AUTONOMOUS_PLAYTEST`, `VERTICAL_SLICE_DONE_DEFINITION`, `LEVEL_DESIGN_WORLD_TRAVERSAL`을 확인한다.
+새 프로젝트는 추가로 `PROJECT_START_CHECKLIST`, `TOOLCHAIN_DECISION_MATRIX`, `AI_STUDIO_AUTONOMOUS_PLAYTEST`, `VERTICAL_SLICE_DONE_DEFINITION`, `LEVEL_DESIGN_WORLD_TRAVERSAL`을 확인한다.
 
 ## 핵심 원칙
 
@@ -44,7 +39,7 @@ Rojo + Rokit + Wally + Git/CI + Studio MCP for QA
 
 기존 프로젝트는 Godbase 때문에 강제 migration하지 않는다.
 
-## 주요 전문 문서 지도
+## 전문 문서 지도
 
 ### 공식/도구
 - `official/CREATOR_DOCS_MAP.md`
@@ -64,6 +59,17 @@ Rojo + Rokit + Wally + Git/CI + Studio MCP for QA
 - `code/OPEN_SOURCE_STACK.md`
 - `catalogs/LIBRARY_CATALOG.json`
 
+### 공통 게임플레이 시스템
+- `gameplay/INTERACTION_SYSTEMS.md`
+- `gameplay/INVENTORY_EQUIPMENT_ARCHITECTURE.md`
+- `gameplay/LOOT_DROP_CRAFTING.md`
+- `gameplay/QUEST_OBJECTIVE_MISSIONS.md`
+- `gameplay/TRADING_GIFTING_SECURITY_UX.md`
+- `gameplay/ROUND_GAME_STATE_ARCHITECTURE.md`
+- `gameplay/PROCEDURAL_GENERATION_DETERMINISM.md`
+- `social/SOCIAL_PARTY_INVITES.md`
+- `operations/ADMIN_MODERATION_COMMANDS.md`
+
 ### 월드/아트
 - `level-design/LEVEL_DESIGN_WORLD_TRAVERSAL.md`
 - `graphics/TERRAIN_ENVIRONMENT_PIPELINE.md`
@@ -73,7 +79,7 @@ Rojo + Rokit + Wally + Git/CI + Studio MCP for QA
 - `assets/CREATOR_STORE_AUDIT_AND_CATALOG.md`
 - `assets/OFFICIAL_ASSET_CATALOG.json`
 
-### 게임플레이
+### 전투/캐릭터/멀티플레이
 - `combat/COMBAT_FEEL_PLAYBOOK.md`
 - `combat/HIT_DETECTION_HITBOXES_PROJECTILES.md`
 - `ai/NPC_AI_AND_PATHFINDING.md`
@@ -128,11 +134,13 @@ Rojo + Rokit + Wally + Git/CI + Studio MCP for QA
 - Studio MCP: https://create.roblox.com/docs/studio/mcp
 - Script Sync: https://create.roblox.com/docs/scripting/sync
 
+## Godbase 자체 품질관리
+
+`tools/godbase/validate.py`가 manifest가 가리키는 파일 존재 여부, JSON 파싱, 비정상적으로 빈 지식 문서 등을 검사한다. `.github/workflows/godbase-check.yml`은 Godbase 관련 변경에서 이 검사를 실행한다.
+
 ## 사용자 테스트 전 quality gate
 
-`testing/AUTOMATED_ACCEPTANCE_GATES.md`를 적용한다. 최소 Studio clean boot, unexpected Output error 0, 정상 spawn, primary loop 실제 완주, screenshot visual review, moving model integrity, desktop/mobile UI, valuable state server authority를 확인한다.
-
-이를 통과하지 않은 artifact는 `INTERNAL_PROTOTYPE`이다.
+`testing/AUTOMATED_ACCEPTANCE_GATES.md`를 적용한다. 최소 Studio clean boot, unexpected Output error 0, 정상 spawn, primary loop 실제 완주, screenshot visual review, moving model integrity, desktop/mobile UI, valuable state server authority를 확인한다. 이를 통과하지 않은 artifact는 `INTERNAL_PROTOTYPE`이다.
 
 ## 실패 정본
 
