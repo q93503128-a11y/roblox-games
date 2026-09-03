@@ -10,9 +10,17 @@ local store
 local storeInitError
 local profiles = {}
 
+local function useStudioEphemeralData()
+    return RunService:IsStudio() and GameConfig.STUDIO_USE_EPHEMERAL_DATA == true
+end
+
 local function getStore()
     if store then
         return store
+    end
+
+    if useStudioEphemeralData() then
+        return nil
     end
 
     if RunService:IsStudio() and game.GameId == 0 then
@@ -157,6 +165,11 @@ local function reconcile(data)
 end
 
 function PlayerDataService.Load(player)
+    if useStudioEphemeralData() then
+        profiles[player] = freshData()
+        return profiles[player]
+    end
+
     local activeStore = getStore()
 
     if not activeStore then
@@ -217,6 +230,10 @@ function PlayerDataService.Save(player)
     local data = profiles[player]
     if not data then
         return false
+    end
+
+    if useStudioEphemeralData() then
+        return true
     end
 
     if RunService:IsStudio() and game.GameId == 0 then
