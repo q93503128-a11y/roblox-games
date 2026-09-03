@@ -17,6 +17,7 @@ local Objectives = require(servicesFolder:WaitForChild("ObjectiveService"))
 local OptionalOps = require(servicesFolder:WaitForChild("OptionalOpsService"))
 local HVT = require(servicesFolder:WaitForChild("HVTService"))
 local SectorModifiers = require(servicesFolder:WaitForChild("SectorModifierService"))
+local VisualAssets = require(servicesFolder:WaitForChild("VisualAssetService"))
 
 local remotesFolder = ReplicatedStorage:FindFirstChild("VaultfallRemotes")
 if remotesFolder then
@@ -55,7 +56,12 @@ local context = {
     OptionalOps = OptionalOps,
     HVT = HVT,
     SectorModifiers = SectorModifiers,
+    VisualAssets = VisualAssets,
 }
+
+-- Publish any installed, sanitized Creator Store weapon visuals before clients
+-- build their first-person viewmodels. Missing packs never block a playable build.
+VisualAssets.Init(context)
 
 -- World construction must never depend on persistence. A local .rbxlx can have
 -- DataStore access disabled, but the player still needs a complete playable map.
