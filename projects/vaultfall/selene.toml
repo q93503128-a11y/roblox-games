@@ -7,3 +7,5 @@ shadowing = { ignore_pattern = "^_" }
 [rules]
 global_usage = "allow"
 multiple_statements = "allow"
+manual_table_clone = "allow"
+roblox_manual_fromscale_or_fromoffset = "allow"
