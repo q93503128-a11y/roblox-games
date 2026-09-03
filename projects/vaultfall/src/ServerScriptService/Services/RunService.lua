@@ -3,6 +3,13 @@ local Players = game:GetService("Players")
 local RunService = {}
 local ctx
 
+local EXTRACTION_CHECKPOINTS = {
+    [4] = true,
+    [7] = true,
+    [9] = true,
+    [11] = true,
+}
+
 local state = {
     Active = false,
     Ending = false,
@@ -10,15 +17,20 @@ local state = {
     Participants = {},
     ParticipantSet = {},
     Dead = {},
+    Extracted = {},
+    UnsecuredEssence = {},
     CurrentRoom = 0,
     RoomCleared = false,
     EnemyCount = 0,
     DifficultyScale = 1,
+    ExtractionAvailable = false,
+    ExtractionRoom = 0,
     RNG = Random.new(),
 }
 
 local equippedWeapons = {}
 local pendingLoot = {}
+local extractionBeacon
 
 local function copyWeapon(weapon)
     local result = {}
@@ -42,9 +54,44 @@ end
 local function sendRunState()
     local payload = runPayload()
     for _, player in ipairs(state.Participants) do
-        if player.Parent then
+        if player.Parent and not state.Extracted[player] then
             ctx.Remotes.State:FireClient(player, "Run", payload)
         end
+    end
+end
+
+local function extractionPayload(player)
+    local bank = state.UnsecuredEssence[player] or 0
+    local depth = state.CurrentRoom
+    local completionBonus = math.floor((depth * 18) + (bank * 0.20) + 0.5)
+    return {
+        Active = state.Active and state.ParticipantSet[player] == true and not state.Extracted[player],
+        Available = state.ExtractionAvailable and state.RoomCleared and state.ExtractionRoom == state.CurrentRoom,
+        Room = depth,
+        Bank = bank,
+        Bonus = completionBonus,
+        Total = bank + completionBonus,
+    }
+end
+
+local function sendExtractionState(player)
+    if player and player.Parent then
+        ctx.Remotes.State:FireClient(player, "Extraction", extractionPayload(player))
+    end
+end
+
+local function broadcastExtractionState()
+    for _, player in ipairs(state.Participants) do
+        if player.Parent and not state.Extracted[player] then
+            sendExtractionState(player)
+        end
+    end
+end
+
+local function destroyExtractionBeacon()
+    if extractionBeacon then
+        extractionBeacon:Destroy()
+        extractionBeacon = nil
     end
 end
 
@@ -175,12 +222,70 @@ local function objectiveComplete()
     return not ctx.Objectives or ctx.Objectives.IsComplete(state.CurrentRoom)
 end
 
+local function createExtractionBeacon(roomIndex)
+    destroyExtractionBeacon()
+    local room = ctx.World.GetRoom(roomIndex)
+    if not room then
+        return
+    end
+
+    local model = Instance.new("Model")
+    model.Name = "EmergencyExtraction"
+    model.Parent = room.Folder
+
+    local pad = Instance.new("Part")
+    pad.Name = "ExtractionPad"
+    pad.Size = Vector3.new(14, 1, 14)
+    pad.CFrame = CFrame.new(room.Origin + Vector3.new(-34, 1, 34))
+    pad.Material = Enum.Material.Metal
+    pad.Color = Color3.fromRGB(42, 50, 57)
+    pad.Anchored = true
+    pad.Parent = model
+
+    local core = Instance.new("Part")
+    core.Name = "BeaconCore"
+    core.Size = Vector3.new(3.5, 8, 3.5)
+    core.CFrame = pad.CFrame * CFrame.new(0, 4.5, 0)
+    core.Material = Enum.Material.Neon
+    core.Color = Color3.fromRGB(90, 214, 190)
+    core.Anchored = true
+    core.CanCollide = false
+    core.Parent = model
+
+    local halo = Instance.new("Part")
+    halo.Name = "BeaconHalo"
+    halo.Shape = Enum.PartType.Cylinder
+    halo.Size = Vector3.new(0.35, 11, 11)
+    halo.CFrame = pad.CFrame * CFrame.new(0, 0.7, 0) * CFrame.Angles(0, 0, math.rad(90))
+    halo.Material = Enum.Material.Neon
+    halo.Color = Color3.fromRGB(90, 214, 190)
+    halo.Transparency = 0.35
+    halo.Anchored = true
+    halo.CanCollide = false
+    halo.Parent = model
+
+    local prompt = Instance.new("ProximityPrompt")
+    prompt.Name = "ExtractPrompt"
+    prompt.ActionText = "EXTRACT + BANK"
+    prompt.ObjectText = "Emergency Lift"
+    prompt.HoldDuration = 1.35
+    prompt.MaxActivationDistance = 11
+    prompt.RequiresLineOfSight = false
+    prompt.Parent = core
+    prompt.Triggered:Connect(function(player)
+        RunService.ExtractPlayer(player)
+    end)
+
+    extractionBeacon = model
+end
+
 local function resetState()
     ctx.Enemies.ClearAll()
     ctx.World.ResetGates()
     if ctx.Objectives then
         ctx.Objectives.Reset()
     end
+    destroyExtractionBeacon()
     table.clear(equippedWeapons)
     table.clear(pendingLoot)
     state.Active = false
@@ -188,10 +293,14 @@ local function resetState()
     state.Participants = {}
     state.ParticipantSet = {}
     state.Dead = {}
+    state.Extracted = {}
+    state.UnsecuredEssence = {}
     state.CurrentRoom = 0
     state.RoomCleared = false
     state.EnemyCount = 0
     state.DifficultyScale = 1
+    state.ExtractionAvailable = false
+    state.ExtractionRoom = 0
 end
 
 local function finishCleanup(delaySeconds)
@@ -211,6 +320,14 @@ local function finishCleanup(delaySeconds)
                     Cleared = false,
                     EnemyCount = 0,
                 })
+                ctx.Remotes.State:FireClient(player, "Extraction", {
+                    Active = false,
+                    Available = false,
+                    Room = 0,
+                    Bank = 0,
+                    Bonus = 0,
+                    Total = 0,
+                })
             end
         end
         resetState()
@@ -221,7 +338,7 @@ function RunService.Init(context)
     ctx = context
 
     ctx.Remotes.ClaimLoot.OnServerEvent:Connect(function(player, accept)
-        if not state.Active or not state.ParticipantSet[player] then
+        if not state.Active or not state.ParticipantSet[player] or state.Extracted[player] then
             return
         end
         local offer = pendingLoot[player]
@@ -245,11 +362,12 @@ function RunService.Init(context)
     Players.PlayerRemoving:Connect(function(player)
         pendingLoot[player] = nil
         equippedWeapons[player] = nil
-        if state.Active and state.ParticipantSet[player] then
+        state.UnsecuredEssence[player] = nil
+        if state.Active and state.ParticipantSet[player] and not state.Extracted[player] then
             state.Dead[player] = true
             task.defer(function()
                 if state.Active and #RunService.GetLivingParticipants() == 0 then
-                    RunService.FailRun("Party wiped")
+                    RunService.FailRun("Squad unavailable")
                 end
             end)
         end
@@ -261,9 +379,10 @@ function RunService.PushState(player)
         return
     end
 
-    if state.ParticipantSet[player] then
+    if state.ParticipantSet[player] and not state.Extracted[player] then
         ctx.Remotes.State:FireClient(player, "Run", runPayload())
         sendWeapon(player)
+        sendExtractionState(player)
         local offer = pendingLoot[player]
         if offer then
             ctx.Remotes.State:FireClient(player, "LootOffer", {
@@ -280,6 +399,7 @@ function RunService.PushState(player)
             Cleared = false,
             EnemyCount = 0,
         })
+        sendExtractionState(player)
     end
 end
 
@@ -288,7 +408,7 @@ function RunService.IsActive()
 end
 
 function RunService.IsParticipant(player)
-    return state.Active and state.ParticipantSet[player] == true
+    return state.Active and state.ParticipantSet[player] == true and not state.Extracted[player]
 end
 
 function RunService.GetCurrentRoom()
@@ -305,7 +425,7 @@ function RunService.GetLivingParticipants()
         return result
     end
     for _, player in ipairs(state.Participants) do
-        if player.Parent and not state.Dead[player] then
+        if player.Parent and not state.Dead[player] and not state.Extracted[player] then
             local character = player.Character
             local humanoid = character and character:FindFirstChildOfClass("Humanoid")
             local root = character and character:FindFirstChild("HumanoidRootPart")
@@ -319,7 +439,7 @@ end
 
 function RunService.StartRun(requester)
     if state.Active or state.Ending then
-        ctx.Remotes.State:FireClient(requester, "Notice", state.Ending and "The previous run is closing" or "A vault run is already active")
+        ctx.Remotes.State:FireClient(requester, "Notice", state.Ending and "The previous run is closing" or "A breach is already active")
         return false
     end
 
@@ -340,6 +460,8 @@ function RunService.StartRun(requester)
     state.Participants = participants
     state.ParticipantSet = {}
     state.Dead = {}
+    state.Extracted = {}
+    state.UnsecuredEssence = {}
     state.CurrentRoom = 0
     state.RoomCleared = false
     state.DifficultyScale = calculateDifficulty()
@@ -348,6 +470,8 @@ function RunService.StartRun(requester)
     for _, player in ipairs(participants) do
         state.ParticipantSet[player] = true
         state.Dead[player] = false
+        state.Extracted[player] = false
+        state.UnsecuredEssence[player] = 0
         equippedWeapons[player] = copyWeapon(ctx.Config.StartingWeapon)
         pendingLoot[player] = nil
         if ctx.Combat then
@@ -355,7 +479,8 @@ function RunService.StartRun(requester)
         end
         sendWeapon(player)
         teleportCharacter(player, ctx.World.GetRoomSpawnCFrame(1) * CFrame.new((math.random() - 0.5) * 8, 0, (math.random() - 0.5) * 8))
-        ctx.Remotes.State:FireClient(player, "Notice", "Breach initiated — adapt, descend, extract")
+        ctx.Remotes.State:FireClient(player, "Notice", "Breach initiated — loot is unsecured until extraction or completion")
+        sendExtractionState(player)
     end
 
     if ctx.Augments then
@@ -367,7 +492,7 @@ function RunService.StartRun(requester)
 end
 
 function RunService.TryEnterRoom(player, roomIndex)
-    if not state.Active or not state.ParticipantSet[player] or state.Dead[player] then
+    if not state.Active or not state.ParticipantSet[player] or state.Dead[player] or state.Extracted[player] then
         return
     end
 
@@ -376,6 +501,12 @@ function RunService.TryEnterRoom(player, roomIndex)
     end
 
     if state.RoomCleared and roomIndex == state.CurrentRoom + 1 then
+        if state.ExtractionAvailable then
+            state.ExtractionAvailable = false
+            state.ExtractionRoom = 0
+            destroyExtractionBeacon()
+            broadcastExtractionState()
+        end
         RunService.ActivateRoom(roomIndex)
     end
 end
@@ -388,13 +519,16 @@ function RunService.ActivateRoom(roomIndex)
     state.CurrentRoom = roomIndex
     state.RoomCleared = false
     state.EnemyCount = 0
+    state.ExtractionAvailable = false
+    state.ExtractionRoom = 0
+    destroyExtractionBeacon()
     ctx.World.SetExitOpen(roomIndex, false)
     if ctx.Objectives then
         ctx.Objectives.Reset()
     end
 
     for _, player in ipairs(state.Participants) do
-        if player.Parent then
+        if player.Parent and not state.Extracted[player] then
             ctx.Profile.SetBestDepth(player, roomIndex)
         end
     end
@@ -428,6 +562,7 @@ function RunService.ActivateRoom(roomIndex)
         ctx.Objectives.StartRoom(roomIndex)
     end
     sendRunState()
+    broadcastExtractionState()
 end
 
 function RunService.OnEnemyDied(enemy, attacker)
@@ -437,7 +572,8 @@ function RunService.OnEnemyDied(enemy, attacker)
 
     local essence = math.ceil(enemy.Data.Essence * (0.7 + state.CurrentRoom * 0.08))
     for _, player in ipairs(RunService.GetLivingParticipants()) do
-        ctx.Profile.AddEssence(player, essence)
+        state.UnsecuredEssence[player] = (state.UnsecuredEssence[player] or 0) + essence
+        sendExtractionState(player)
     end
 
     if attacker and attacker.Parent then
@@ -508,9 +644,67 @@ function RunService.ClearRoom()
         end
     end
 
-    for _, player in ipairs(RunService.GetLivingParticipants()) do
-        ctx.Remotes.State:FireClient(player, "Notice", string.format("Sector %d secured — choose your next advantage", roomIndex))
+    if EXTRACTION_CHECKPOINTS[roomIndex] then
+        state.ExtractionAvailable = true
+        state.ExtractionRoom = roomIndex
+        createExtractionBeacon(roomIndex)
+        broadcastExtractionState()
+        for _, player in ipairs(RunService.GetLivingParticipants()) do
+            local bank = state.UnsecuredEssence[player] or 0
+            local bonus = math.floor((roomIndex * 18) + (bank * 0.20) + 0.5)
+            ctx.Remotes.State:FireClient(player, "Notice", string.format("EXTRACTION WINDOW — bank %d Essence + %d depth bonus, or push deeper", bank, bonus))
+        end
+    else
+        broadcastExtractionState()
+        for _, player in ipairs(RunService.GetLivingParticipants()) do
+            ctx.Remotes.State:FireClient(player, "Notice", string.format("Sector %d secured — choose your next advantage", roomIndex))
+        end
     end
+end
+
+function RunService.ExtractPlayer(player)
+    if not state.Active or not state.ParticipantSet[player] or state.Dead[player] or state.Extracted[player] then
+        return false
+    end
+    if not state.RoomCleared or not state.ExtractionAvailable or state.ExtractionRoom ~= state.CurrentRoom then
+        return false
+    end
+
+    local bank = state.UnsecuredEssence[player] or 0
+    local bonus = math.floor((state.CurrentRoom * 18) + (bank * 0.20) + 0.5)
+    local secured = bank + bonus
+    state.UnsecuredEssence[player] = 0
+    state.Extracted[player] = true
+    pendingLoot[player] = nil
+
+    if secured > 0 then
+        ctx.Profile.AddEssence(player, secured)
+    end
+    ctx.Profile.Save(player)
+    teleportToHub(player)
+    ctx.Remotes.State:FireClient(player, "Notice", string.format("EXTRACTED — %d Essence secured (%d bank + %d risk bonus)", secured, bank, bonus))
+    ctx.Remotes.State:FireClient(player, "Run", {
+        Active = false,
+        Room = 0,
+        TotalRooms = ctx.Config.RoomCount,
+        RoomType = "Hub",
+        Cleared = false,
+        EnemyCount = 0,
+    })
+    sendExtractionState(player)
+
+    if #RunService.GetLivingParticipants() == 0 then
+        state.Active = false
+        state.Ending = true
+        destroyExtractionBeacon()
+        if ctx.Objectives then
+            ctx.Objectives.Reset()
+        end
+        finishCleanup(1.5)
+    else
+        broadcastExtractionState()
+    end
+    return true
 end
 
 function RunService.CompleteRun()
@@ -520,11 +714,17 @@ function RunService.CompleteRun()
 
     state.Active = false
     state.Ending = true
+    destroyExtractionBeacon()
     for _, player in ipairs(state.Participants) do
-        if player.Parent then
+        if player.Parent and not state.Extracted[player] then
+            local bank = state.UnsecuredEssence[player] or 0
+            if bank > 0 then
+                ctx.Profile.AddEssence(player, bank)
+                state.UnsecuredEssence[player] = 0
+            end
             ctx.Profile.RecordCompletion(player)
             ctx.Profile.Save(player)
-            ctx.Remotes.State:FireClient(player, "Notice", "BREACH COMPLETE — permanent rewards secured")
+            ctx.Remotes.State:FireClient(player, "Notice", string.format("BREACH COMPLETE — %d unsecured Essence banked + completion rewards", bank))
         end
     end
     finishCleanup(4)
@@ -538,24 +738,28 @@ function RunService.FailRun(reason)
     state.Active = false
     state.Ending = true
     ctx.Enemies.ClearAll()
+    destroyExtractionBeacon()
     if ctx.Objectives then
         ctx.Objectives.Reset()
     end
     for _, player in ipairs(state.Participants) do
-        if player.Parent then
+        if player.Parent and not state.Extracted[player] then
+            local lost = state.UnsecuredEssence[player] or 0
+            state.UnsecuredEssence[player] = 0
             ctx.Profile.Save(player)
-            ctx.Remotes.State:FireClient(player, "Notice", "BREACH FAILED — " .. (reason or "party lost"))
+            ctx.Remotes.State:FireClient(player, "Notice", string.format("BREACH FAILED — %s — %d unsecured Essence lost", reason or "squad lost", lost))
+            sendExtractionState(player)
         end
     end
     finishCleanup(2.5)
 end
 
 function RunService.OnPlayerDied(player)
-    if not state.Active or not state.ParticipantSet[player] or state.Dead[player] then
+    if not state.Active or not state.ParticipantSet[player] or state.Dead[player] or state.Extracted[player] then
         return
     end
     state.Dead[player] = true
-    ctx.Remotes.State:FireClient(player, "Notice", "Operator down. Surviving squad members can finish the breach.")
+    ctx.Remotes.State:FireClient(player, "Notice", string.format("Operator down. %d unsecured Essence remains at risk with the squad.", state.UnsecuredEssence[player] or 0))
     task.delay(0.5, function()
         if state.Active and #RunService.GetLivingParticipants() == 0 then
             RunService.FailRun("Squad wiped")
