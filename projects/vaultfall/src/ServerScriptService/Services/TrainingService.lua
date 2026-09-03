@@ -51,7 +51,7 @@ local function targets()
     return result
 end
 
-local function pickTarget(origin, direction, maxRange)
+local function pickTarget(origin, direction, maxRange, character)
     local best
     local bestScore = TARGET_DOT
     for _, target in ipairs(targets()) do
@@ -64,10 +64,10 @@ local function pickTarget(origin, direction, maxRange)
             if dot >= threshold and dot > bestScore - angularSlack then
                 local params = RaycastParams.new()
                 params.FilterType = Enum.RaycastFilterType.Exclude
-                params.FilterDescendantsInstances = {}
+                params.FilterDescendantsInstances = character and { character } or {}
                 params.IgnoreWater = true
                 local cast = Workspace:Raycast(origin, offset, params)
-                if not cast or cast.Instance == target or cast.Instance:IsDescendantOf(target.Parent) then
+                if cast and cast.Instance == target then
                     best = target
                     bestScore = dot
                 end
@@ -83,13 +83,18 @@ local function animateTarget(target, strength)
     end
     targetCooldowns[target] = true
     local original = target.CFrame
+    local originalColor = target.Color
     local tilt = math.rad(math.clamp(strength * 0.22, 5, 16))
     local direction = math.random() > 0.5 and 1 or -1
     local kick = original * CFrame.Angles(tilt, 0, math.rad(direction * tilt * 0.45))
+    target.Color = Color3.fromRGB(215, 129, 92)
     TweenService:Create(target, TweenInfo.new(0.055, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { CFrame = kick }):Play()
     task.delay(0.07, function()
         if target.Parent then
-            TweenService:Create(target, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { CFrame = original }):Play()
+            TweenService:Create(target, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+                CFrame = original,
+                Color = originalColor,
+            }):Play()
         end
         task.delay(0.22, function()
             targetCooldowns[target] = nil
@@ -153,7 +158,7 @@ function TrainingService.RecordShot(player, direction, maxRange, damage, archety
     session.Shots += 1
     session.Token += 1
     local token = session.Token
-    local target = pickTarget(root.Position + Vector3.new(0, 1.4, 0), direction.Unit, maxRange or 180)
+    local target = pickTarget(root.Position + Vector3.new(0, 1.4, 0), direction.Unit, maxRange or 180, player.Character)
     if target then
         local dealt = math.max(1, damage or 1)
         if archetype == "Shotgun" then
