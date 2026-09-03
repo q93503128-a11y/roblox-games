@@ -8,14 +8,9 @@
 
 모든 새 Roblox 작업:
 
-`GODBASE_MANIFEST.json → AGENT_PROTOCOL.md → QUICK_REFERENCE.md → regressions/FAILURE_LIBRARY.md → 작업 domain 문서`
+`GODBASE_MANIFEST.json → AGENT_PROTOCOL.md → QUICK_REFERENCE.md → regressions/FAILURE_LIBRARY.md → catalogs/DEPRECATED_LEGACY_WATCHLIST.md → 작업 domain 문서`
 
-새 프로젝트는 추가로:
-- `checklists/PROJECT_START_CHECKLIST.md`
-- `workflow/TOOLCHAIN_DECISION_MATRIX.md`
-- `workflow/AI_STUDIO_AUTONOMOUS_PLAYTEST.md`
-- `checklists/VERTICAL_SLICE_DONE_DEFINITION.md`
-- `level-design/LEVEL_DESIGN_WORLD_TRAVERSAL.md`
+새 프로젝트는 추가로 `PROJECT_START_CHECKLIST`, `TOOLCHAIN_DECISION_MATRIX`, `AI_STUDIO_AUTONOMOUS_PLAYTEST`, `VERTICAL_SLICE_DONE_DEFINITION`, `LEVEL_DESIGN_WORLD_TRAVERSAL`을 확인한다.
 
 ## 핵심 원칙
 
@@ -44,22 +39,53 @@ Rojo + Rokit + Wally + Git/CI + Studio MCP for QA
 
 기존 프로젝트는 Godbase 때문에 강제 migration하지 않는다.
 
-## 2026-09-03 오픈소스/에셋 선별 핵심
+## 최신 OSS / 테스트 / 구조 판단
 
-- `catalogs/OPEN_SOURCE_ECOSYSTEM_AUDIT.md` — 현재 Roblox OSS를 추천/조건부/전환/레거시로 분류.
-- `catalogs/LIBRARY_CATALOG.json` — AI가 읽는 canonical dependency catalog.
-- `networking/NETWORK_LIBRARY_DECISION_MATRIX.md` — native remotes vs ByteNet vs Zap vs legacy BridgeNet2.
-- `ui/UI_STORYBOOK_COMPONENT_WORKFLOW.md` — UI Labs/Flipbook을 이용한 component state 검증.
-- `assets/CREATOR_STORE_SEED_CATALOG.json` — 실제 Creator Store 후보의 첫 metadata catalog.
-- `assets/CREATOR_STORE_AUTOMATION_AND_SCORING.md` — API discovery → quarantine Studio audit → production-fit test 자동화 규칙.
+Canonical machine-readable catalog: `catalogs/LIBRARY_CATALOG.json`.
 
-중요 상태:
-- **Knit**: archived, 신규 기본값 금지.
-- **BridgeNet2**: 작성자 README가 ByteNet을 권장하므로 신규 기본값 금지.
-- **Zap**: 0.6.x 유지 + rewrite 병행, exact version/branch 확인 필수.
-- **Matter**: ECS가 실제로 필요한 게임에서만 조건부.
-- **Cmdr/Charm/Nevermore 개별 packages/UI storybook tools**: 문제에 맞으면 강한 후보.
-- Creator Store의 rating/vote는 discovery signal일 뿐 S-tier 증명이 아니다.
+현재 중요한 판정:
+- **Knit** → archived, 신규 기본값 금지.
+- **TestEZ** → archived; 신규 테스트는 Roblox가 현재 유지하는 **Jest Roblox** 우선 평가.
+- **ProfileService** → upstream README가 신규 프로젝트에 **ProfileStore 사용**을 직접 권고.
+- **BridgeNet2** → upstream이 ByteNet을 권고. 신규 기본값 금지.
+- **Zap** → 0.6.x 유지 + rewrite 병행, exact branch/version 필요.
+- **jecs** → 현재 활발한 ECS 후보. ECS가 필요한 신규 프로젝트에서 Matter와 비교하되 jecs를 먼저 검토할 가치가 큼.
+- **Matter** → 여전히 유효한 established ECS지만 무조건 기본값은 아님.
+- **Chickynoid** → custom server-authoritative character simulation의 연구/특수용 후보. 먼저 current Roblox native Server Authority를 검토.
+- **Flamework** → roblox-ts를 의도적으로 선택한 프로젝트에서만 조건부.
+- **Ripple** → UI/motion에 강한 현재 후보. 단순 TweenService로 충분하면 추가하지 않음.
+- **TopbarPlus** → 유용할 수 있으나 GitHub license metadata가 명확한 SPDX로 잡히지 않아 adoption 전 정확한 terms 검토.
+
+관련 문서:
+- `catalogs/OPEN_SOURCE_ECOSYSTEM_AUDIT.md`
+- `catalogs/DEPRECATED_LEGACY_WATCHLIST.md`
+- `architecture/ECS_CHARACTER_SIMULATION_DECISION.md`
+- `testing/LUAU_TESTING_FRAMEWORKS_AND_CI.md`
+- `networking/NETWORK_LIBRARY_DECISION_MATRIX.md`
+- `ui/UI_STORYBOOK_COMPONENT_WORKFLOW.md`
+- `ui/UI_MOTION_TOPBAR_MICROINTERACTIONS.md`
+
+## 테스트 방향
+
+Roblox 공식 `Jest Roblox`가 현재 유지되고 있으며 upstream README는 Roblox 내부 앱/CoreScripts/Studio plugins 등에 사용한다고 설명하고, **OCALE(Open Cloud API for Luau Execution)** 기반 CI 실행도 지원한다고 명시한다.
+
+Godbase 테스트 계층:
+```text
+pure/domain unit tests
+→ DataModel tests
+→ Studio integration
+→ Studio MCP end-to-end regression route
+```
+
+Unit test가 실제 Playtest를 대체하지 않는다.
+
+## Creator Store 공급망
+
+- `assets/CREATOR_STORE_SEED_CATALOG.json` — 실제 후보의 웹/API metadata seed.
+- `assets/CREATOR_STORE_AUTOMATION_AND_SCORING.md` — discovery → quarantine Studio audit → production-fit test.
+- `assets/CREATOR_STORE_AUDIT_AND_CATALOG.md` — 보안/출처/품질 정책.
+
+Rating/vote 수는 discovery signal일 뿐 S-tier 증명이 아니다. Scripted kit/plugin은 quarantine에서 먼저 검사한다. 대형 asset pack은 필요한 subset만 추출한다.
 
 ## 전문 문서 지도
 
@@ -76,9 +102,11 @@ Rojo + Rokit + Wally + Git/CI + Studio MCP for QA
 ### 구조/코드/OSS
 - `architecture/ENGINE_AND_NETWORKING.md`
 - `architecture/PROJECT_STRUCTURE_PATTERNS.md`
+- `architecture/ECS_CHARACTER_SIMULATION_DECISION.md`
 - `code/LUAU_ENGINEERING_PLAYBOOK.md`
 - `code/OPEN_SOURCE_STACK.md`
 - `catalogs/OPEN_SOURCE_ECOSYSTEM_AUDIT.md`
+- `catalogs/DEPRECATED_LEGACY_WATCHLIST.md`
 - `catalogs/LIBRARY_CATALOG.json`
 
 ### 네트워킹/보안
@@ -122,6 +150,7 @@ Rojo + Rokit + Wally + Git/CI + Studio MCP for QA
 - `design/UI_UX_PLAYBOOK.md`
 - `ui/CROSS_PLATFORM_ACCESSIBILITY_LOCALIZATION.md`
 - `ui/UI_STORYBOOK_COMPONENT_WORKFLOW.md`
+- `ui/UI_MOTION_TOPBAR_MICROINTERACTIONS.md`
 
 ### 데이터/경제/운영
 - `data/CLOUD_SERVICES_DECISION_MATRIX.md`
@@ -133,11 +162,12 @@ Rojo + Rokit + Wally + Git/CI + Studio MCP for QA
 - `publishing/POLICY_MARKETPLACE_LOCALIZATION.md`
 
 ### 품질/테스트
+- `testing/LUAU_TESTING_FRAMEWORKS_AND_CI.md`
+- `testing/AUTOMATED_ACCEPTANCE_GATES.md`
+- `testing/DEVICE_NETWORK_TEST_MATRIX.md`
 - `debugging/STUDIO_DEBUGGING_VISUALIZATION.md`
 - `performance/PERFORMANCE_AND_STREAMING.md`
 - `performance/LOADING_MEMORY_STREAMING_BUDGETS.md`
-- `testing/AUTOMATED_ACCEPTANCE_GATES.md`
-- `testing/DEVICE_NETWORK_TEST_MATRIX.md`
 - `checklists/ASSET_IMPORT_CHECKLIST.md`
 - `checklists/SHIP_CHECKLIST.md`
 
@@ -158,6 +188,6 @@ Rojo + Rokit + Wally + Git/CI + Studio MCP for QA
 
 ## 사용자 테스트 전
 
-`testing/AUTOMATED_ACCEPTANCE_GATES.md`를 적용한다. 최소 clean boot, unexpected Output error 0, 정상 spawn, primary loop 직접 완주, screenshot visual review, model integrity, desktop/mobile UI, server authority를 확인한다. 통과 전 상태는 `INTERNAL_PROTOTYPE`이다.
+`testing/AUTOMATED_ACCEPTANCE_GATES.md`를 적용한다. clean boot, unexpected Output error 0, 정상 spawn, primary loop 직접 완주, screenshot visual review, model integrity, desktop/mobile UI, server authority를 확인한다. 통과 전 상태는 `INTERNAL_PROTOTYPE`이다.
 
 Godbase는 완결된 백과사전이 아니라 **Roblox가 바뀔수록 같이 갱신되는 개발 운영체계**다.

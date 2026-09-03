@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "verifiedDate": "2026-09-03",
   "rule": "A catalog entry is a decision aid, never automatic adoption. Re-check exact release, license, maintenance and project fit before installing.",
   "statusLegend": {
@@ -8,10 +8,12 @@
     "TRANSITION": "Maintained but branch/API/rewrite is in motion",
     "EXPERIMENTAL": "Interesting but insufficient production maturity evidence",
     "TOOL_ONLY": "Developer tooling, not runtime architecture",
-    "LEGACY_MAINTENANCE_ONLY": "Existing projects may keep; new projects should not default to it"
+    "LEGACY_MAINTENANCE_ONLY": "Existing projects may keep; new projects should not default to it",
+    "LICENSE_REVIEW": "Potentially useful but exact usage/license terms must be checked before adoption"
   },
   "libraries": [
-    {"name":"ProfileStore","repo":"MadStudioRoblox/ProfileStore","status":"CURRENT_RECOMMENDED","grade":"A","license":"Apache-2.0","category":["data","player-profile","session-locking"],"useFor":["player progress","inventory profile","autosave","session locking"],"avoidFor":["global state","global leaderboard"]},
+    {"name":"ProfileStore","repo":"MadStudioRoblox/ProfileStore","status":"CURRENT_RECOMMENDED","grade":"A","license":"Apache-2.0","archived":false,"observedPush":"2025-07-31","category":["data","player-profile","session-locking"],"useFor":["player progress","inventory profile","autosave","session locking"],"avoidFor":["global state","global leaderboard"]},
+    {"name":"ProfileService","repo":"MadStudioRoblox/ProfileService","status":"LEGACY_MAINTENANCE_ONLY","grade":"C","license":"Apache-2.0","archived":false,"observedPush":"2024-10-13","category":["data","player-profile"],"useFor":["existing stable ProfileService projects"],"avoidFor":["new projects"],"replacement":"ProfileStore","note":"Upstream README explicitly says FOR NEW PROJECTS - USE ProfileStore and ProfileService is no longer supported."},
     {"name":"RbxUtil","repo":"Sleitnick/RbxUtil","status":"CURRENT_RECOMMENDED","grade":"A","license":"MIT","category":["utility"],"useFor":["Trove","Component","Signal","Comm","Spring","targeted utilities"],"avoidFor":["importing every module without need"]},
     {"name":"roblox-lua-promise","repo":"evaera/roblox-lua-promise","status":"CURRENT_RECOMMENDED","grade":"A","license":"MIT","category":["async"],"useFor":["async composition","timeout","retry","cancellation"],"avoidFor":["wrapping every simple yield"]},
     {"name":"Cmdr","repo":"evaera/Cmdr","status":"CURRENT_RECOMMENDED","grade":"A","license":"MIT","archived":false,"observedPush":"2026-09-02","category":["admin","developer-tools","commands"],"useFor":["developer console","QA commands","authorized admin workflows"],"avoidFor":["client-authoritative permissions"]},
@@ -20,16 +22,23 @@
     {"name":"Fusion","repo":"dphfox/Fusion","status":"CURRENT_RECOMMENDED","grade":"A","license":"MIT","category":["ui","reactive"],"useFor":["reactive Roblox UI","complex derived UI state"],"avoidFor":["small UI where vanilla Instances are clearer"]},
     {"name":"Vide","repo":"centau/vide","status":"CURRENT_CONDITIONAL","grade":"A-","license":"MIT","category":["ui","reactive"],"useFor":["typed/declarative reactive UI"],"avoidFor":["automatic migration of existing UI"]},
     {"name":"React Lua","repo":"jsdotlua/react-lua","status":"CURRENT_CONDITIONAL","grade":"A-","license":"MIT","category":["ui","react"],"useFor":["React-style component architecture"],"avoidFor":["small HUD solely because React is familiar"]},
+    {"name":"Ripple","repo":"littensy/ripple","status":"CURRENT_RECOMMENDED","grade":"A","license":"MIT","archived":false,"observedPush":"2026-07-18","category":["ui","motion","spring"],"useFor":["interruptible UI motion","shared spring/motion primitives"],"avoidFor":["replacing simple TweenService without benefit","decorative motion everywhere"]},
+    {"name":"TopbarPlus","repo":"1ForeverHD/TopbarPlus","status":"LICENSE_REVIEW","grade":"B","license":"NOASSERTION_AT_GITHUB_METADATA","archived":false,"observedPush":"2025-09-17","category":["ui","topbar"],"useFor":["topbar icons/themes/dropdowns when terms are acceptable"],"avoidFor":["adoption before exact license review"]},
     {"name":"UI Labs","repo":"PepeElToro41/ui-labs","status":"TOOL_ONLY","grade":"A","license":"GPL-3.0","archived":false,"observedPush":"2026-08-13","category":["ui","storybook","plugin"],"useFor":["component stories","visual state iteration"],"avoidFor":["copying GPL tool internals into runtime without license review"]},
     {"name":"Flipbook","repo":"flipbook-labs/flipbook","status":"TOOL_ONLY","grade":"A","license":"MIT","archived":false,"observedPush":"2026-08-27","category":["ui","storybook","plugin"],"useFor":["sandboxed UI stories","component visual testing"],"avoidFor":["installing alongside another storybook without need"]},
     {"name":"ByteNet","repo":"ffrostfall/ByteNet","status":"CURRENT_CONDITIONAL","grade":"A-","license":"MIT","archived":false,"observedPush":"2025-08-01","category":["networking","buffers"],"useFor":["typed high-volume networking","buffer serialization"],"avoidFor":["unmeasured optimization","treating serialization as anti-cheat"]},
     {"name":"Zap","repo":"red-blox/zap","status":"TRANSITION","grade":"B+","license":"MIT","archived":false,"observedPush":"2026-06-23","defaultBranch":"0.6.x","category":["networking","codegen","buffers"],"useFor":["version-pinned optimized networking"],"avoidFor":["mixing rewrite docs with 0.6.x"]},
     {"name":"BridgeNet2","repo":"ffrostfall/BridgeNet2","status":"LEGACY_MAINTENANCE_ONLY","grade":"C","license":"MIT","archived":false,"category":["networking"],"useFor":["existing stable BridgeNet2 projects"],"avoidFor":["new projects"],"replacement":"ByteNet or native remotes","note":"Project README recommends ByteNet over BridgeNet2."},
-    {"name":"Matter","repo":"matter-ecs/matter","status":"CURRENT_CONDITIONAL","grade":"B","license":"MIT","archived":false,"observedPush":"2024-12-31","category":["ecs"],"useFor":["large homogeneous entity simulations","data-oriented systems"],"avoidFor":["small games where ECS adds boilerplate"]},
+    {"name":"jecs","repo":"Ukendio/jecs","status":"CURRENT_RECOMMENDED","grade":"A","license":"MIT","archived":false,"observedPush":"2026-07-28","category":["ecs","data-oriented"],"useFor":["large homogeneous entity simulation","high-count component systems"],"avoidFor":["small games where domain modules are clearer"]},
+    {"name":"Matter","repo":"matter-ecs/matter","status":"CURRENT_CONDITIONAL","grade":"B","license":"MIT","archived":false,"observedPush":"2024-12-31","category":["ecs"],"useFor":["existing Matter projects","teams preferring established Matter API"],"avoidFor":["small games where ECS adds boilerplate"],"note":"New ECS projects should compare current jecs before selecting Matter."},
+    {"name":"Chickynoid","repo":"easy-games/chickynoid","status":"CURRENT_CONDITIONAL","grade":"B","license":"MIT","archived":false,"observedPush":"2024-05-27","category":["character-controller","prediction","server-authority"],"useFor":["specialized server-authoritative custom character simulation","netcode study"],"avoidFor":["casual default Humanoid games","adoption before evaluating current native Roblox Server Authority"]},
     {"name":"NevermoreEngine","repo":"Quenty/NevermoreEngine","status":"CURRENT_RECOMMENDED","grade":"A","license":"MIT","archived":false,"observedPush":"2026-09-03","category":["package-ecosystem"],"useFor":["select mature packages such as cleanup/reactive/math/camera utilities"],"avoidFor":["adopting entire ecosystem solely for one utility"]},
     {"name":"Lapis","repo":"nezuo/lapis","status":"EXPERIMENTAL","grade":"B","license":"MIT","archived":false,"observedPush":"2025-02-12","category":["data","session-locking","migrations"],"useFor":["study","controlled projects after tests"],"avoidFor":["universal production datastore default"],"note":"README warns it has not been battle-tested in a large production game."},
     {"name":"Knit","repo":"Sleitnick/Knit","status":"LEGACY_MAINTENANCE_ONLY","grade":"C","license":"MIT","archived":true,"observedPush":"2024-07-31","category":["framework"],"useFor":["existing stable Knit projects"],"avoidFor":["new project default"]},
+    {"name":"Flamework","repo":"rbxts-flamework/core","status":"CURRENT_CONDITIONAL","grade":"B+","license":"MIT","archived":false,"observedPush":"2025-09-04","category":["framework","roblox-ts","dependency-injection"],"useFor":["projects intentionally choosing roblox-ts and framework conventions"],"avoidFor":["forcing TypeScript onto Studio-first Luau projects"]},
     {"name":"GoodSignal","repo":"stravant/goodsignal","status":"CURRENT_CONDITIONAL","grade":"A-","license":"MIT","category":["signal"],"useFor":["standalone RBXScriptSignal-like signal"],"avoidFor":["duplicate signal abstractions"]},
+    {"name":"Jest Roblox","repo":"Roblox/jest-roblox","status":"CURRENT_RECOMMENDED","grade":"A","license":"MIT","archived":false,"observedPush":"2026-09-02","category":["testing","ci"],"useFor":["Luau unit tests","mocks","snapshots","OCALE-backed CI where suitable"],"avoidFor":["replacing Studio integration tests"],"creatorStoreAssetId":16031830738},
+    {"name":"TestEZ","repo":"Roblox/testez","status":"LEGACY_MAINTENANCE_ONLY","grade":"C","license":"Apache-2.0","archived":true,"observedPush":"2024-03-05","category":["testing"],"useFor":["existing stable TestEZ suites"],"avoidFor":["new project default"],"replacement":"Jest Roblox"},
     {"name":"Rojo","repo":"rojo-rbx/rojo","status":"CURRENT_RECOMMENDED","grade":"A","license":"MPL-2.0","category":["workflow"],"useFor":["filesystem source of truth","CI builds"],"avoidFor":["forcing onto Studio-first project without benefit"]},
     {"name":"Rokit","repo":"rojo-rbx/rokit","status":"CURRENT_RECOMMENDED","grade":"A","license":"MIT","category":["toolchain"],"useFor":["pinning CLI versions"]},
     {"name":"Wally","repo":"UpliftGames/wally","status":"CURRENT_RECOMMENDED","grade":"A","license":"MPL-2.0","category":["package-manager"],"useFor":["Luau dependency management"],"avoidFor":["treating registry presence as security review"]},
@@ -38,7 +47,11 @@
   ],
   "selectionDocs": [
     "knowledge/catalogs/OPEN_SOURCE_ECOSYSTEM_AUDIT.md",
+    "knowledge/catalogs/DEPRECATED_LEGACY_WATCHLIST.md",
     "knowledge/networking/NETWORK_LIBRARY_DECISION_MATRIX.md",
-    "knowledge/ui/UI_STORYBOOK_COMPONENT_WORKFLOW.md"
+    "knowledge/architecture/ECS_CHARACTER_SIMULATION_DECISION.md",
+    "knowledge/testing/LUAU_TESTING_FRAMEWORKS_AND_CI.md",
+    "knowledge/ui/UI_STORYBOOK_COMPONENT_WORKFLOW.md",
+    "knowledge/ui/UI_MOTION_TOPBAR_MICROINTERACTIONS.md"
   ]
 }
