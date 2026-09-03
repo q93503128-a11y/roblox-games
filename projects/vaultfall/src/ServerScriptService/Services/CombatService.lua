@@ -49,8 +49,19 @@ local function weaponDefinition(weapon)
     return Arsenal.Get(weapon.Archetype or "Carbine") or Arsenal.Get("Carbine")
 end
 
-local function magazineSize(weapon, definition)
-    return math.max(1, math.floor(definition.Magazine * (weapon.MagazineMultiplier or 1) + 0.5))
+local function modifiers(player)
+    if ctx.Augments then
+        return ctx.Augments.GetModifiers(player)
+    end
+    return {
+        Damage = 1, FireInterval = 1, Magazine = 1, Reload = 1, Recoil = 1,
+        Spread = 1, CritChance = 0, CritDamage = 1, EliteDamage = 1,
+    }
+end
+
+local function magazineSize(player, weapon, definition)
+    local mods = modifiers(player)
+    return math.max(1, math.floor(definition.Magazine * (weapon.MagazineMultiplier or 1) * mods.Magazine + 0.5))
 end
 
 local function stateFor(player)
@@ -61,7 +72,7 @@ local function stateFor(player)
     if not state or state.Key ~= key then
         state = {
             Key = key,
-            Ammo = magazineSize(weapon, definition),
+            Ammo = magazineSize(player, weapon, definition),
             Reloading = false,
             ReloadToken = 0,
             LastShot = 0,
@@ -72,14 +83,15 @@ local function stateFor(player)
 end
 
 local function combatPayload(player, state, weapon, definition)
+    local mods = modifiers(player)
     return {
         Ammo = state.Ammo,
-        Magazine = magazineSize(weapon, definition),
+        Magazine = magazineSize(player, weapon, definition),
         Reloading = state.Reloading,
         Archetype = weapon.Archetype or "Carbine",
         WeaponName = weapon.Name,
         FireMode = definition.FireMode,
-        ReloadTime = definition.ReloadTime * (weapon.ReloadMultiplier or 1),
+        ReloadTime = definition.ReloadTime * (weapon.ReloadMultiplier or 1) * mods.Reload,
     }
 end
 
@@ -96,28 +108,30 @@ local function beginReload(player)
         return
     end
     local state, weapon, definition = stateFor(player)
-    local capacity = magazineSize(weapon, definition)
+    local capacity = magazineSize(player, weapon, definition)
     if state.Reloading or state.Ammo >= capacity then
         return
     end
 
+    local mods = modifiers(player)
+    local reloadDuration = definition.ReloadTime * (weapon.ReloadMultiplier or 1) * mods.Reload
     state.Reloading = true
     state.ReloadToken += 1
     local token = state.ReloadToken
     pushCombat(player)
     ctx.Remotes.State:FireClient(player, "WeaponFX", {
         Kind = "Reload",
-        Duration = definition.ReloadTime * (weapon.ReloadMultiplier or 1),
+        Duration = reloadDuration,
         Archetype = weapon.Archetype or "Carbine",
     })
 
-    task.delay(definition.ReloadTime * (weapon.ReloadMultiplier or 1), function()
+    task.delay(reloadDuration, function()
         local current = weaponStates[player]
         if current ~= state or state.ReloadToken ~= token then
             return
         end
         state.Reloading = false
-        state.Ammo = capacity
+        state.Ammo = magazineSize(player, weapon, definition)
         pushCombat(player)
     end)
 end
@@ -125,12 +139,17 @@ end
 local function calculateDamage(player, weapon, definition)
     local attackMultiplier = ctx.Profile.GetAttackMultiplier(player)
     local archetypeScale = definition.BaseDamage / Arsenal.Weapons.Carbine.BaseDamage
-    return math.max(1, weapon.Power * archetypeScale * (weapon.DamageMultiplier or 1) * attackMultiplier)
+    local mods = modifiers(player)
+    return math.max(1, weapon.Power * archetypeScale * (weapon.DamageMultiplier or 1) * attackMultiplier * mods.Damage)
 end
 
 local function damageEnemy(player, enemy, amount, weapon, multiplier)
-    local crit = rng:NextNumber() <= (weapon.CritChance or 0)
-    local damage = amount * (multiplier or 1) * (crit and (weapon.CritMultiplier or 1.5) or 1)
+    local mods = modifiers(player)
+    local critChance = math.clamp((weapon.CritChance or 0) + mods.CritChance, 0, 0.85)
+    local crit = rng:NextNumber() <= critChance
+    local eliteMultiplier = (enemy.Data.Elite or enemy.Data.Boss) and mods.EliteDamage or 1
+    local critMultiplier = (weapon.CritMultiplier or 1.5) * mods.CritDamage
+    local damage = amount * (multiplier or 1) * eliteMultiplier * (crit and critMultiplier or 1)
     damage = math.floor(damage + 0.5)
     local killed = ctx.Enemies.Damage(enemy, damage, player)
     ctx.Remotes.State:FireClient(player, "Hit", {
@@ -139,6 +158,9 @@ local function damageEnemy(player, enemy, amount, weapon, multiplier)
         Kill = killed,
         Enemy = enemy.Type,
     })
+    if killed and ctx.Augments then
+        ctx.Augments.OnEnemyKilled(player)
+    end
     return killed
 end
 
@@ -157,7 +179,8 @@ local function fireWeapon(player, requestedDirection)
         return
     end
 
-    local interval = definition.FireInterval * (weapon.FireIntervalMultiplier or 1)
+    local mods = modifiers(player)
+    local interval = definition.FireInterval * (weapon.FireIntervalMultiplier or 1) * mods.FireInterval
     local now = os.clock()
     if now - state.LastShot < interval * 0.9 then
         return
@@ -170,7 +193,7 @@ local function fireWeapon(player, requestedDirection)
     state.LastShot = now
     state.Ammo -= 1
     local direction = getDirection(root, requestedDirection)
-    local spread = definition.Spread * (weapon.SpreadMultiplier or 1)
+    local spread = definition.Spread * (weapon.SpreadMultiplier or 1) * mods.Spread
     local coneDot = 1 - math.clamp(spread * 3.2, 0.002, 0.24)
     local candidates = ctx.Enemies.GetInRange(root.Position, definition.Range, direction, coneDot, ctx.Run.GetCurrentRoom())
     local baseDamage = calculateDamage(player, weapon, definition)
@@ -199,7 +222,7 @@ local function fireWeapon(player, requestedDirection)
     ctx.Remotes.State:FireClient(player, "WeaponFX", {
         Kind = "Shot",
         Archetype = archetype,
-        Recoil = definition.Recoil * (weapon.RecoilMultiplier or 1),
+        Recoil = definition.Recoil * (weapon.RecoilMultiplier or 1) * mods.Recoil,
         EmptyAfter = state.Ammo <= 0,
     })
     pushCombat(player)
