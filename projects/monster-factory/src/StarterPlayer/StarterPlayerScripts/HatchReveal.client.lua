@@ -16,6 +16,8 @@ local lastHatchCount = 0
 local initialized = false
 local revealQueue = {}
 local revealing = false
+local revealToken = 0
+local runQueue
 
 local rarityRank = {
     Common = 1,
@@ -70,10 +72,7 @@ cardStroke.Parent = card
 
 local cardGradient = Instance.new("UIGradient")
 cardGradient.Rotation = 90
-cardGradient.Color = ColorSequence.new(
-    Color3.fromRGB(38, 49, 66),
-    Color3.fromRGB(14, 19, 28)
-)
+cardGradient.Color = ColorSequence.new(Color3.fromRGB(38, 49, 66), Color3.fromRGB(14, 19, 28))
 cardGradient.Parent = card
 
 local scale = Instance.new("UIScale")
@@ -148,16 +147,16 @@ bonus.TextSize = 13
 bonus.ZIndex = 5
 bonus.Parent = card
 
-local dismiss = Instance.new("TextLabel")
-dismiss.Size = UDim2.new(1, -28, 0, 22)
-dismiss.Position = UDim2.fromOffset(14, 487)
-dismiss.BackgroundTransparency = 1
-dismiss.Text = "CLICK / TAP TO CONTINUE"
-dismiss.TextColor3 = Color3.fromRGB(137, 151, 171)
-dismiss.Font = Enum.Font.GothamMedium
-dismiss.TextSize = 10
-dismiss.ZIndex = 5
-dismiss.Parent = card
+local dismissLabel = Instance.new("TextLabel")
+dismissLabel.Size = UDim2.new(1, -28, 0, 22)
+dismissLabel.Position = UDim2.fromOffset(14, 487)
+dismissLabel.BackgroundTransparency = 1
+dismissLabel.Text = "CLICK / TAP TO CONTINUE"
+dismissLabel.TextColor3 = Color3.fromRGB(137, 151, 171)
+dismissLabel.Font = Enum.Font.GothamMedium
+dismissLabel.TextSize = 10
+dismissLabel.ZIndex = 5
+dismissLabel.Parent = card
 
 local function clearViewport()
     for _, child in ipairs(viewport:GetChildren()) do
@@ -166,42 +165,6 @@ local function clearViewport()
         end
     end
 end
-
-local dismissToken = 0
-local function dismissCurrent()
-    if not revealing then
-        return
-    end
-    dismissToken += 1
-    revealing = false
-
-    TweenService:Create(scale, TweenInfo.new(0.13, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
-        Scale = 0.82,
-    }):Play()
-    TweenService:Create(card, TweenInfo.new(0.13), {
-        BackgroundTransparency = 0.18,
-    }):Play()
-    TweenService:Create(backdrop, TweenInfo.new(0.15), {
-        BackgroundTransparency = 1,
-    }):Play()
-
-    task.delay(0.16, function()
-        card.Visible = false
-        backdrop.Visible = false
-        clearViewport()
-        card.BackgroundTransparency = 0.02
-        task.defer(function()
-            if #revealQueue > 0 then
-                local nextItem = table.remove(revealQueue, 1)
-                local show
-                show = nil
-                -- deferred below through the queue runner
-            end
-        end)
-    end)
-end
-
-backdrop.Activated:Connect(dismissCurrent)
 
 local function addBurst(accent, intensity)
     for i = 1, intensity do
@@ -230,19 +193,45 @@ local function addBurst(accent, intensity)
             BackgroundTransparency = 1,
         }):Play()
         task.delay(0.58, function()
-            if ray.Parent then ray:Destroy() end
+            if ray.Parent then
+                ray:Destroy()
+            end
         end)
     end
 end
+
+local function dismissCurrent()
+    if not revealing then
+        return
+    end
+
+    revealToken += 1
+    revealing = false
+    TweenService:Create(scale, TweenInfo.new(0.13, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Scale = 0.82 }):Play()
+    TweenService:Create(card, TweenInfo.new(0.13), { BackgroundTransparency = 0.18 }):Play()
+    TweenService:Create(backdrop, TweenInfo.new(0.15), { BackgroundTransparency = 1 }):Play()
+
+    task.delay(0.16, function()
+        card.Visible = false
+        backdrop.Visible = false
+        card.BackgroundTransparency = 0.02
+        clearViewport()
+        if runQueue then
+            task.defer(runQueue)
+        end
+    end)
+end
+
+backdrop.Activated:Connect(dismissCurrent)
 
 local function showReveal(item)
     if revealing or type(item) ~= "table" then
         return
     end
-    revealing = true
-    dismissToken += 1
-    local token = dismissToken
 
+    revealing = true
+    revealToken += 1
+    local token = revealToken
     local rarityName = item.Rarity or "Common"
     local accent = WorkerVisualFactory.GetRarityColor(rarityName)
     local rank = rarityRank[rarityName] or 1
@@ -285,37 +274,23 @@ local function showReveal(item)
 
     if rank >= 5 then
         task.delay(0.34, function()
-            if revealing and token == dismissToken then
+            if revealing and token == revealToken then
                 TweenService:Create(scale, TweenInfo.new(0.16), { Scale = 1 }):Play()
             end
         end)
     end
-
-    task.delay(2.8, function()
-        if revealing and token == dismissToken then
-            dismiss.Text = "CLICK / TAP TO CONTINUE"
-        end
-    end)
 end
 
-local function runQueue()
+runQueue = function()
     if revealing or #revealQueue == 0 then
         return
     end
-    local item = table.remove(revealQueue, 1)
-    showReveal(item)
-end
-
-local oldDismissCurrent = dismissCurrent
-dismissCurrent = function()
-    if not revealing then return end
-    oldDismissCurrent()
-    task.delay(0.2, runQueue)
+    showReveal(table.remove(revealQueue, 1))
 end
 
 local function seed(state)
-    known = {}
-    pendingNew = {}
+    table.clear(known)
+    table.clear(pendingNew)
     lastHatchCount = tonumber(state and state.HatchCount) or 0
     for _, item in ipairs((state and state.Inventory) or {}) do
         if item.Uid then
@@ -337,29 +312,29 @@ local function onMonsterState(state)
     for _, item in ipairs(state.Inventory or {}) do
         if item.Uid and not known[item.Uid] then
             known[item.Uid] = true
-            table.insert(pendingNew, item)
+            if not item.Shiny then
+                table.insert(pendingNew, item)
+            end
         end
+    end
+
+    while #pendingNew > 8 do
+        table.remove(pendingNew, 1)
     end
 
     local hatchCount = tonumber(state.HatchCount) or lastHatchCount
     local hatchDelta = math.max(0, hatchCount - lastHatchCount)
     if hatchDelta > 0 then
+        -- GrantMonster publishes once before HatchCount increments and the
+        -- hatch path publishes again immediately after incrementing it. The
+        -- newest pending non-Shiny item is therefore the canonical hatch.
         for _ = 1, hatchDelta do
             if #pendingNew > 0 then
-                table.insert(revealQueue, table.remove(pendingNew, 1))
+                table.insert(revealQueue, table.remove(pendingNew, #pendingNew))
             end
         end
         lastHatchCount = hatchCount
         runQueue()
-    else
-        -- A fusion can add a Shiny without increasing HatchCount. Keep the
-        -- candidate briefly so the second hatch-state push can claim it, but
-        -- discard obvious Shiny fusion additions from the hatch queue.
-        for i = #pendingNew, 1, -1 do
-            if pendingNew[i].Shiny then
-                table.remove(pendingNew, i)
-            end
-        end
     end
 end
 
