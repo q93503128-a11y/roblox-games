@@ -53,7 +53,17 @@ end
 
 function ProfileService.Init(context)
     ctx = context
-    store = DataStoreService:GetDataStore(ctx.Config.SaveKey)
+
+    local ok, result = pcall(function()
+        return DataStoreService:GetDataStore(ctx.Config.SaveKey)
+    end)
+
+    if ok then
+        store = result
+    else
+        store = nil
+        warn("[Vaultfall] DataStore unavailable; using session-only profile data:", result)
+    end
 end
 
 function ProfileService.Get(player)
@@ -102,12 +112,14 @@ function ProfileService.Load(player)
     end
 
     local data
-    local ok, err = pcall(function()
-        data = store:GetAsync("u_" .. player.UserId)
-    end)
+    if store then
+        local ok, err = pcall(function()
+            data = store:GetAsync("u_" .. player.UserId)
+        end)
 
-    if not ok then
-        warn("[Vaultfall] DataStore load failed for", player.UserId, err)
+        if not ok then
+            warn("[Vaultfall] DataStore load failed for", player.UserId, err)
+        end
     end
 
     local profile = sanitize(data)
@@ -129,7 +141,7 @@ end
 
 function ProfileService.Save(player)
     local profile = profiles[player]
-    if not profile then
+    if not profile or not store then
         return true
     end
 
