@@ -37,6 +37,34 @@ Config.RoomPath = {
     Vector3.new(1, 0, 4),
 }
 
+Config.Missions = {
+    [3] = {
+        Type = "Uplink",
+        Title = "GHOST UPLINK",
+        Brief = "Reconnect all three isolated uplinks while the sector is contested.",
+        Target = 3,
+    },
+    [6] = {
+        Type = "Holdout",
+        Title = "SIGNAL HOLD",
+        Brief = "Hold the defense uplink until the encrypted burst finishes transmitting.",
+        Duration = 24,
+        Target = 24,
+    },
+    [8] = {
+        Type = "Recovery",
+        Title = "BLACKBOX RECOVERY",
+        Brief = "Secure the three data cores before pushing deeper into the facility.",
+        Target = 3,
+    },
+    [11] = {
+        Type = "Sabotage",
+        Title = "THERMAL SABOTAGE",
+        Brief = "Plant breach charges on both coolant nodes and eliminate resistance.",
+        Target = 2,
+    },
+}
+
 Config.BasePlayerHealth = 120
 Config.BaseWalkSpeed = 17
 Config.StartingWeapon = {
