@@ -1,5 +1,30 @@
 # Changelog
 
+## Visual Rebuild 006
+
+### Worker presentation architecture
+- Added `WorkerVisualFactory.lua` as the shared procedural monster visual source.
+- Rewrote `WorkerCharacters.client.lua` to render equipped workers directly from canonical Monster/Zone state.
+- Removed the active runtime dependency on colored orb placeholders and orb parsing.
+- Retired `WorkerVisualService` into a compatibility no-op so existing service calls remain harmless while the old visual bridge is no longer published.
+- Kept the old worker compatibility function in `ClientBootstrap.client.lua` inert until the larger client-controller decomposition pass.
+
+### Hatch reveal
+- Added `HatchReveal.client.lua` with a centered rarity-aware reveal card and ViewportFrame monster preview.
+- Reused `WorkerVisualFactory` so hatch previews and in-world workers use the same visual definitions.
+- Added rarity-colored burst/border treatment and stronger Epic/Legendary headlines.
+- Added queued click/tap dismissal for successive real hatches.
+- Added responsive card scaling for narrow mobile viewports.
+- Reveal detection requires a real server-published HatchCount increase plus a newly observed non-Shiny inventory item, avoiding Shiny-fusion false positives.
+
+### Authority / safety
+- No new state-changing RemoteEvent was introduced.
+- Hatch odds, Cash spending, inventory grants, equip state, Shiny fusion and zone state remain server-authoritative.
+
+### Documentation
+- Added `docs/VISUAL_REBUILD_006_AUDIT.md`.
+- Promoted README visual baseline to Visual Rebuild 006.
+
 ## Visual Rebuild 005
 
 ### UI contract / external-art readiness
