@@ -1,5 +1,34 @@
 # Changelog
 
+## Visual Rebuild 007
+
+### Canonical HUD architecture
+- Replaced the 28k+ line/character legacy `ClientBootstrap.client.lua` UI/controller monolith with a minimal launcher.
+- Added `Client/HUDView.lua` as the canonical HUD tree and presentation owner.
+- Added `Client/HUDController.lua` as the canonical client state/action controller.
+- Deleted `VisualRefresh.client.lua`; the HUD is now created in final simulator-style form instead of being searched, reparented and restyled after creation.
+- Preserved stable GUI/window names (`MonsterFactoryHUD`, Shop, Monsters, Zones, Quests, Rewards, Achievements, Index) for current in-world integration.
+
+### Legacy cleanup
+- Physically removed the old Bootstrap placeholder left/right/top UI creation code with the monolith replacement.
+- Physically removed the old Bootstrap worker-orb creation path.
+- Removed text-search/reparent visual adaptation from the runtime by deleting VisualRefresh.
+- Visual Rebuild 006 direct worker rendering through `WorkerVisualFactory.lua` remains canonical.
+
+### UI contract
+- Promoted `UIVisualContract.lua` to version 2.
+- Added normalized legacy lowercase stat-slot aliases while retaining canonical semantic slot keys.
+- Runtime Creator Store loading remains prohibited.
+
+### Authority / behavior
+- Existing state-changing RemoteEvents remain unchanged.
+- Cash, monsters, zones, upgrades, rewards and purchases remain server-authoritative.
+- Marketplace prompts, claims, zone actions and monster Equip/Fuse callbacks moved into the dedicated HUD controller without changing server contracts.
+
+### Documentation
+- Added `docs/VISUAL_REBUILD_007_AUDIT.md`.
+- Promoted README visual baseline to Visual Rebuild 007.
+
 ## Visual Rebuild 006
 
 ### Worker presentation architecture
@@ -7,7 +36,7 @@
 - Rewrote `WorkerCharacters.client.lua` to render equipped workers directly from canonical Monster/Zone state.
 - Removed the active runtime dependency on colored orb placeholders and orb parsing.
 - Retired `WorkerVisualService` into a compatibility no-op so existing service calls remain harmless while the old visual bridge is no longer published.
-- Kept the old worker compatibility function in `ClientBootstrap.client.lua` inert until the larger client-controller decomposition pass.
+- Kept the old worker compatibility function in `ClientBootstrap.client.lua` inert until the larger client-controller decomposition pass; Visual Rebuild 007 later removed it physically.
 
 ### Hatch reveal
 - Added `HatchReveal.client.lua` with a centered rarity-aware reveal card and ViewportFrame monster preview.
