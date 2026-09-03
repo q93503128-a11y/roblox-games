@@ -171,9 +171,16 @@ local function healParticipants(fraction)
     end
 end
 
+local function objectiveComplete()
+    return not ctx.Objectives or ctx.Objectives.IsComplete(state.CurrentRoom)
+end
+
 local function resetState()
     ctx.Enemies.ClearAll()
     ctx.World.ResetGates()
+    if ctx.Objectives then
+        ctx.Objectives.Reset()
+    end
     table.clear(equippedWeapons)
     table.clear(pendingLoot)
     state.Active = false
@@ -382,6 +389,9 @@ function RunService.ActivateRoom(roomIndex)
     state.RoomCleared = false
     state.EnemyCount = 0
     ctx.World.SetExitOpen(roomIndex, false)
+    if ctx.Objectives then
+        ctx.Objectives.Reset()
+    end
 
     for _, player in ipairs(state.Participants) do
         if player.Parent then
@@ -414,6 +424,9 @@ function RunService.ActivateRoom(roomIndex)
     end
 
     spawnRoomEnemies(roomIndex)
+    if ctx.Objectives then
+        ctx.Objectives.StartRoom(roomIndex)
+    end
     sendRunState()
 end
 
@@ -438,7 +451,28 @@ function RunService.OnEnemyDied(enemy, attacker)
     state.EnemyCount = math.max(0, state.EnemyCount - 1)
     sendRunState()
     if state.EnemyCount == 0 then
+        if objectiveComplete() then
+            RunService.ClearRoom()
+        else
+            for _, player in ipairs(RunService.GetLivingParticipants()) do
+                ctx.Remotes.State:FireClient(player, "Notice", "Hostiles cleared — finish the sector objective")
+            end
+        end
+    end
+end
+
+function RunService.OnObjectiveComplete(roomIndex)
+    if not state.Active or state.RoomCleared or roomIndex ~= state.CurrentRoom then
+        return
+    end
+
+    if state.EnemyCount == 0 then
         RunService.ClearRoom()
+        return
+    end
+
+    for _, player in ipairs(RunService.GetLivingParticipants()) do
+        ctx.Remotes.State:FireClient(player, "Notice", "Objective complete — neutralize remaining hostiles")
     end
 end
 
@@ -446,11 +480,17 @@ function RunService.ClearRoom()
     if not state.Active or state.RoomCleared then
         return
     end
+    if state.EnemyCount > 0 or not objectiveComplete() then
+        return
+    end
 
     state.RoomCleared = true
     state.EnemyCount = 0
     local roomIndex = state.CurrentRoom
     local roomType = ctx.Config.RoomSequence[roomIndex]
+    if ctx.Objectives then
+        ctx.Objectives.EndRoom()
+    end
     sendRunState()
 
     if roomType == "Boss" then
@@ -498,6 +538,9 @@ function RunService.FailRun(reason)
     state.Active = false
     state.Ending = true
     ctx.Enemies.ClearAll()
+    if ctx.Objectives then
+        ctx.Objectives.Reset()
+    end
     for _, player in ipairs(state.Participants) do
         if player.Parent then
             ctx.Profile.Save(player)
