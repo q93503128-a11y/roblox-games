@@ -18,6 +18,7 @@ local OptionalOps = require(servicesFolder:WaitForChild("OptionalOpsService"))
 local HVT = require(servicesFolder:WaitForChild("HVTService"))
 local SectorModifiers = require(servicesFolder:WaitForChild("SectorModifierService"))
 local VisualAssets = require(servicesFolder:WaitForChild("VisualAssetService"))
+local Mastery = require(servicesFolder:WaitForChild("MasteryService"))
 
 local remotesFolder = ReplicatedStorage:FindFirstChild("VaultfallRemotes")
 if remotesFolder then
@@ -57,6 +58,7 @@ local context = {
     HVT = HVT,
     SectorModifiers = SectorModifiers,
     VisualAssets = VisualAssets,
+    Mastery = Mastery,
 }
 
 -- Publish any installed, sanitized Creator Store weapon visuals before clients
@@ -69,6 +71,9 @@ World.Init(context)
 Enemies.Init(context)
 Run.Init(context)
 Augments.Init(context)
+-- Weapon mastery layers permanent, weapon-specific handling/performance bonuses
+-- over the existing augment modifiers and records real takedowns through Run.
+Mastery.Init(context)
 Objectives.Init(context)
 Combat.Init(context)
 EncounterDirector.Init(context)
@@ -97,9 +102,13 @@ context.Remotes.Ready.OnServerEvent:Connect(function(player)
     if not Profile.Get(player) then
         Profile.Load(player)
     end
+    if not Mastery.GetLevel(player, "Carbine") and Mastery.Load then
+        Mastery.Load(player)
+    end
     Profile.Push(player)
     Run.PushState(player)
     Augments.PushState(player)
+    Mastery.PushState(player)
     Objectives.PushState(player)
     OptionalOps.PushState(player)
     HVT.PushState(player)
@@ -108,6 +117,7 @@ end)
 
 local function onPlayerAdded(player)
     Profile.Load(player)
+    Mastery.Load(player)
 
     player.CharacterAdded:Connect(function(character)
         task.defer(placeAtHub, player, character)
@@ -121,6 +131,7 @@ end
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(function(player)
     Augments.ClearPlayer(player)
+    Mastery.Unload(player)
     Profile.Unload(player)
 end)
 
@@ -130,6 +141,7 @@ end
 
 game:BindToClose(function()
     for _, player in ipairs(Players:GetPlayers()) do
+        Mastery.Save(player)
         Profile.Save(player)
     end
 end)
