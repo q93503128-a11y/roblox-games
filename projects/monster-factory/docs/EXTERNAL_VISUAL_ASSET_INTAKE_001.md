@@ -19,9 +19,9 @@ Use:
 - do not replace Monster Factory server/client gameplay logic with bundled scripts.
 
 Intake rule:
-- the model currently reports one bundled script,
-- remove or audit that script before any asset is retained,
-- keep `VisualRefresh.client.lua` as the functional layout fallback.
+- the model reports bundled scripting,
+- remove or audit all `Script`, `LocalScript`, `ModuleScript`, package loaders and external `require(assetId)` before retaining visual objects,
+- repository-owned UI logic remains authoritative.
 
 ### Low Poly Asset Pack
 
@@ -30,11 +30,12 @@ Creator Store asset: `7436760067`
 Source:
 https://create.roblox.com/store/asset/7436760067/Low-Poly-Asset-Pack
 
-The asset description explicitly permits use for simulator maps and includes trees, pine trees, palm trees, cactuses, hills/mountains, borders, fountains and other environment props.
+The asset description permits simulator-map use and includes environment props suitable for trees, cactus, hills, borders and general low-poly dressing.
 
 Use priority:
 - Meadow trees / bushes / hills,
 - Desert cactus / border pieces,
+- Frozen boundary substitutes only when stylistically appropriate,
 - general simulator boundary dressing.
 
 License note from the asset description:
@@ -62,8 +63,35 @@ Creator Store asset: `99176447965360`
 Do not ingest at this stage.
 
 Reason:
-- recent Creator Store review discussion raises a possible third-party icon redistribution/license issue,
+- Creator Store review discussion raises a possible third-party icon redistribution/license issue,
 - until provenance is independently cleared, the pack is not acceptable as a canonical project dependency.
+
+## Canonical import slots after Visual Rebuild 002
+
+Each zone in `src/Workspace/MonsterFactoryWorld.model.json` now contains an `ExternalArt` folder.
+
+Imported Creator Store visuals must be cleaned and moved into the matching zone's `ExternalArt` folder instead of replacing gameplay anchors directly.
+
+Examples:
+
+- `MonsterFactoryWorld/Meadow/ExternalArt`
+- `MonsterFactoryWorld/Desert/ExternalArt`
+- `MonsterFactoryWorld/Frozen/ExternalArt`
+
+The following anchors must remain repository-owned and must not be renamed by external art imports:
+
+- `FactorySpawn`
+- `Generator`
+- `ConveyorCore`
+- `Reactor`
+- `Collector`
+- `ZoneMarker`
+- `WorkerStations/WorkerStation_1..6`
+- `MeadowCapsuleMachine`
+- `DesertCapsuleMachine`
+- `FrozenCapsuleMachine`
+
+External meshes/models may visually cover or surround these anchors, but gameplay code must continue to target the stable repository-owned anchors.
 
 ## Import checklist
 
@@ -71,15 +99,17 @@ For every Creator Store model imported into Studio:
 
 1. inspect every descendant,
 2. delete unexpected `Script`, `LocalScript`, `ModuleScript`, package loader or external `require(assetId)`,
-3. inspect attributes and unusual constraints,
+3. inspect attributes, constraints, welds and unusual hidden descendants,
 4. keep only the visual objects actually used,
-5. rename/move them under a dedicated visual folder,
-6. preserve Monster Factory logical anchor names,
+5. rename/move retained objects into the matching `ExternalArt` folder,
+6. keep gameplay anchors intact,
 7. record the asset ID and changed usage here,
 8. never make paid/reward/data logic depend on the imported model.
 
-## Current relationship to Visual Rebuild 001
+## Current relationship to Visual Rebuild 002
 
-`VisualRefresh.client.lua` and `WorldVisualRefresh.server.lua` are the repository-owned visual fallback and layout contract.
+The map itself is now canonical static Rojo data. `WorldVisualRefresh.server.lua` was removed in Visual Rebuild 002; runtime world restyling is no longer part of the normal build.
+
+`VisualRefresh.client.lua` remains a single consolidated client presentation adapter while the underlying legacy HUD controller is progressively refactored. No additional visual overlay script should be added on top of it.
 
 External assets are replacements/enhancements for visible art only. They must remain removable without breaking Collect, Hatch, Upgrade, Monsters, Zones, Rebirth, rewards, purchases, saving, or worker placement.
