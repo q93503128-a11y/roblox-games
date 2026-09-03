@@ -2,7 +2,7 @@
 
 This file tracks external visual candidates for the first non-placeholder art pass.
 
-The project may use Creator Store assets for presentation, but gameplay logic must remain in the repository and must not depend on unknown bundled scripts.
+Creator Store assets may be used for presentation, but gameplay logic must remain repository-owned and must not depend on unknown bundled scripts or runtime asset loading.
 
 ## Approved first candidates
 
@@ -54,7 +54,21 @@ Use:
 - small rock / grass / simulator-border / tree set,
 - candidate for low-cost boundary dressing where the larger pack is unnecessary.
 
-## Rejected / hold candidates
+## Reference / hold candidates
+
+### Factory low poly
+
+Creator Store asset: `6247256567`
+
+Source:
+https://create.roblox.com/store/asset/6247256567
+
+Use:
+- industrial silhouette reference only for now.
+
+Reason for hold:
+- Creator Store acquisition is available, but explicit use/provenance language is weaker than the primary environment pack,
+- do not make it a canonical dependency until manually reviewed.
 
 ### Simulator Icon Pack
 
@@ -66,11 +80,39 @@ Reason:
 - Creator Store review discussion raises a possible third-party icon redistribution/license issue,
 - until provenance is independently cleared, the pack is not acceptable as a canonical project dependency.
 
-## Canonical import slots after Visual Rebuild 002
+## Canonical source of intake status
 
-Each zone in `src/Workspace/MonsterFactoryWorld.model.json` now contains an `ExternalArt` folder.
+Visual Rebuild 004 added:
 
-Imported Creator Store visuals must be cleaned and moved into the matching zone's `ExternalArt` folder instead of replacing gameplay anchors directly.
+`src/ReplicatedStorage/Shared/VisualAssetManifest.lua`
+
+This records the reviewed asset IDs, intended use and current status.
+
+Runtime external loading is explicitly forbidden.
+
+## Studio-only sanitation helper
+
+Visual Rebuild 004 added:
+
+`tools/studio/IMPORT_EXTERNAL_VISUALS.lua`
+
+This file is intentionally outside the Rojo runtime source tree.
+
+When deliberately run from the Studio Command Bar it stages approved models under:
+
+`ServerStorage/MonsterFactoryExternalAssetStaging`
+
+The helper removes scripts and common interactive/gameplay objects before review and anchors retained BaseParts.
+
+The helper does **not** automatically merge whole packs into the final game.
+
+Only reviewed descendants should be retained.
+
+## Canonical import slots
+
+Each zone in `src/Workspace/MonsterFactoryWorld.model.json` contains an `ExternalArt` folder.
+
+Imported Creator Store environment visuals must be cleaned and moved into the matching zone's `ExternalArt` folder instead of replacing gameplay anchors directly.
 
 Examples:
 
@@ -101,15 +143,18 @@ For every Creator Store model imported into Studio:
 2. delete unexpected `Script`, `LocalScript`, `ModuleScript`, package loader or external `require(assetId)`,
 3. inspect attributes, constraints, welds and unusual hidden descendants,
 4. keep only the visual objects actually used,
-5. rename/move retained objects into the matching `ExternalArt` folder,
+5. rename/move retained environment objects into the matching `ExternalArt` folder,
 6. keep gameplay anchors intact,
-7. record the asset ID and changed usage here,
-8. never make paid/reward/data logic depend on the imported model.
+7. record the asset ID and changed usage here / in `VisualAssetManifest.lua`,
+8. never make paid/reward/data logic depend on the imported model,
+9. do not rely on live `InsertService` / asset-ID loading in production.
 
-## Current relationship to Visual Rebuild 002
+## Relationship to Visual Rebuild 004
 
-The map itself is now canonical static Rojo data. `WorldVisualRefresh.server.lua` was removed in Visual Rebuild 002; runtime world restyling is no longer part of the normal build.
+The gameplay world remains canonical static Rojo data.
 
-`VisualRefresh.client.lua` remains a single consolidated client presentation adapter while the underlying legacy HUD controller is progressively refactored. No additional visual overlay script should be added on top of it.
+`MonsterFactoryArt004.model.json` is also static Rojo data and adds stronger zone silhouettes without runtime geometry generation.
 
-External assets are replacements/enhancements for visible art only. They must remain removable without breaking Collect, Hatch, Upgrade, Monsters, Zones, Rebirth, rewards, purchases, saving, or worker placement.
+`VisualRefresh.client.lua` remains the consolidated client HUD presentation adapter.
+
+External assets are replacements/enhancements for visible art only. They must remain removable without breaking Collect, Hatch, Upgrade, Monsters, Zones, Rebirth, rewards, purchases, saving, worker placement or zone travel.
