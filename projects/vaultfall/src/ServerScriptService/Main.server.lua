@@ -20,6 +20,7 @@ local SectorModifiers = require(servicesFolder:WaitForChild("SectorModifierServi
 local VisualAssets = require(servicesFolder:WaitForChild("VisualAssetService"))
 local Mastery = require(servicesFolder:WaitForChild("MasteryService"))
 local Contracts = require(servicesFolder:WaitForChild("ContractService"))
+local ContractEncounters = require(servicesFolder:WaitForChild("ContractEncounterService"))
 
 local remotesFolder = ReplicatedStorage:FindFirstChild("VaultfallRemotes")
 if remotesFolder then
@@ -62,6 +63,7 @@ local context = {
     VisualAssets = VisualAssets,
     Mastery = Mastery,
     Contracts = Contracts,
+    ContractEncounters = ContractEncounters,
 }
 
 -- Publish any installed, sanitized Creator Store weapon visuals before clients
@@ -77,9 +79,11 @@ Augments.Init(context)
 -- Weapon mastery layers permanent, weapon-specific handling/performance bonuses
 -- over the existing augment modifiers and records real takedowns through Run.
 Mastery.Init(context)
--- Contracts wrap the stable run/enemy entry points instead of duplicating combat.
--- Their selected threat/reward rules therefore affect the same authoritative run.
+-- Contracts own the selected reward/threat rule. The contract encounter layer is
+-- installed immediately after it so its composition changes still pass through
+-- the authoritative contract scaling wrapper instead of bypassing it.
 Contracts.Init(context)
+ContractEncounters.Init(context)
 Objectives.Init(context)
 Combat.Init(context)
 EncounterDirector.Init(context)
