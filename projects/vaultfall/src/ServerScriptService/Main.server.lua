@@ -12,6 +12,7 @@ local Enemies = require(servicesFolder:WaitForChild("EnemyService"))
 local Run = require(servicesFolder:WaitForChild("RunService"))
 local Combat = require(servicesFolder:WaitForChild("CombatService"))
 local EncounterDirector = require(servicesFolder:WaitForChild("EncounterDirector"))
+local Augments = require(servicesFolder:WaitForChild("AugmentService"))
 
 local remotesFolder = ReplicatedStorage:FindFirstChild("VaultfallRemotes")
 if remotesFolder then
@@ -35,6 +36,7 @@ local context = {
         Attack = makeRemote("Attack"),
         Skill = makeRemote("Skill"),
         ClaimLoot = makeRemote("ClaimLoot"),
+        ClaimAugment = makeRemote("ClaimAugment"),
         State = makeRemote("State"),
         Ready = makeRemote("Ready"),
     },
@@ -44,6 +46,7 @@ local context = {
     Run = Run,
     Combat = Combat,
     EncounterDirector = EncounterDirector,
+    Augments = Augments,
 }
 
 -- World construction must never depend on persistence. A local .rbxlx can have
@@ -51,6 +54,7 @@ local context = {
 World.Init(context)
 Enemies.Init(context)
 Run.Init(context)
+Augments.Init(context)
 Combat.Init(context)
 EncounterDirector.Init(context)
 World.Build()
@@ -77,6 +81,7 @@ context.Remotes.Ready.OnServerEvent:Connect(function(player)
     end
     Profile.Push(player)
     Run.PushState(player)
+    Augments.PushState(player)
 end)
 
 local function onPlayerAdded(player)
@@ -93,6 +98,7 @@ end
 
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(function(player)
+    Augments.ClearPlayer(player)
     Profile.Unload(player)
 end)
 
