@@ -225,6 +225,10 @@ function RunService.Init(context)
         if accept == true then
             equippedWeapons[player] = offer
             sendWeapon(player)
+            if ctx.Combat then
+                ctx.Combat.ResetPlayer(player)
+                ctx.Combat.PushState(player)
+            end
             ctx.Remotes.State:FireClient(player, "Notice", string.format("Equipped %s [%s]", offer.Name, offer.Rarity))
         else
             ctx.Remotes.State:FireClient(player, "Notice", "Loot skipped")
@@ -339,9 +343,16 @@ function RunService.StartRun(requester)
         state.Dead[player] = false
         equippedWeapons[player] = copyWeapon(ctx.Config.StartingWeapon)
         pendingLoot[player] = nil
+        if ctx.Combat then
+            ctx.Combat.ResetPlayer(player)
+        end
         sendWeapon(player)
         teleportCharacter(player, ctx.World.GetRoomSpawnCFrame(1) * CFrame.new((math.random() - 0.5) * 8, 0, (math.random() - 0.5) * 8))
-        ctx.Remotes.State:FireClient(player, "Notice", "Vault run started")
+        ctx.Remotes.State:FireClient(player, "Notice", "Breach initiated — adapt, descend, extract")
+    end
+
+    if ctx.Augments then
+        ctx.Augments.ResetRun(participants)
     end
 
     RunService.ActivateRoom(1)
@@ -392,7 +403,7 @@ function RunService.ActivateRoom(roomIndex)
         sendRunState()
         healParticipants(0.55)
         for _, player in ipairs(RunService.GetLivingParticipants()) do
-            ctx.Remotes.State:FireClient(player, "Notice", "The shrine restores your party")
+            ctx.Remotes.State:FireClient(player, "Notice", "Field station restored 55% health")
         end
         task.delay(0.6, function()
             if state.Active and state.CurrentRoom == roomIndex then
@@ -451,10 +462,14 @@ function RunService.ClearRoom()
     if roomType ~= "Treasure" and roomType ~= "Shrine" then
         local luck = roomType == "Elite" and 0.45 or roomType == "DeepCombat" and 0.30 or 0
         offerLoot(roomIndex, luck)
+        if ctx.Augments then
+            local rewardName = roomType == "Elite" and "ELITE PROTOCOL" or roomType == "DeepCombat" and "DEEP BREACH PROTOCOL" or "BREACH PROTOCOL"
+            ctx.Augments.OfferParty(rewardName)
+        end
     end
 
     for _, player in ipairs(RunService.GetLivingParticipants()) do
-        ctx.Remotes.State:FireClient(player, "Notice", string.format("Room %d cleared", roomIndex))
+        ctx.Remotes.State:FireClient(player, "Notice", string.format("Sector %d secured — choose your next advantage", roomIndex))
     end
 end
 
@@ -469,7 +484,7 @@ function RunService.CompleteRun()
         if player.Parent then
             ctx.Profile.RecordCompletion(player)
             ctx.Profile.Save(player)
-            ctx.Remotes.State:FireClient(player, "Notice", "VAULT CLEARED — permanent rewards secured")
+            ctx.Remotes.State:FireClient(player, "Notice", "BREACH COMPLETE — permanent rewards secured")
         end
     end
     finishCleanup(4)
@@ -486,7 +501,7 @@ function RunService.FailRun(reason)
     for _, player in ipairs(state.Participants) do
         if player.Parent then
             ctx.Profile.Save(player)
-            ctx.Remotes.State:FireClient(player, "Notice", "RUN FAILED — " .. (reason or "party lost"))
+            ctx.Remotes.State:FireClient(player, "Notice", "BREACH FAILED — " .. (reason or "party lost"))
         end
     end
     finishCleanup(2.5)
@@ -497,10 +512,10 @@ function RunService.OnPlayerDied(player)
         return
     end
     state.Dead[player] = true
-    ctx.Remotes.State:FireClient(player, "Notice", "You fell. Surviving allies can finish the run.")
+    ctx.Remotes.State:FireClient(player, "Notice", "Operator down. Surviving squad members can finish the breach.")
     task.delay(0.5, function()
         if state.Active and #RunService.GetLivingParticipants() == 0 then
-            RunService.FailRun("Party wiped")
+            RunService.FailRun("Squad wiped")
         end
     end)
 end
