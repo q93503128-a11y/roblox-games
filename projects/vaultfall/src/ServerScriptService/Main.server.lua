@@ -22,6 +22,7 @@ local Mastery = require(servicesFolder:WaitForChild("MasteryService"))
 local Contracts = require(servicesFolder:WaitForChild("ContractService"))
 local ContractEncounters = require(servicesFolder:WaitForChild("ContractEncounterService"))
 local Training = require(servicesFolder:WaitForChild("TrainingService"))
+local Career = require(servicesFolder:WaitForChild("CareerService"))
 
 local remotesFolder = ReplicatedStorage:FindFirstChild("VaultfallRemotes")
 if remotesFolder then
@@ -66,6 +67,7 @@ local context = {
     Contracts = Contracts,
     ContractEncounters = ContractEncounters,
     Training = Training,
+    Career = Career,
 }
 
 VisualAssets.Init(context)
@@ -83,8 +85,10 @@ EncounterDirector.Init(context)
 OptionalOps.Init(context)
 HVT.Init(context)
 SectorModifiers.Init(context)
+Career.Init(context)
 World.Build()
 Contracts.BindWorld()
+Career.BindWorld()
 Profile.Init(context)
 
 local function placeAtHub(player, character)
