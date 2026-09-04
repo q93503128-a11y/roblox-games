@@ -132,7 +132,43 @@ Creator Store 결과를 production place에 바로 넣지 않는다.
 
 문자열 패턴은 **악성 판결이 아니라 조사 신호**다. 예를 들어 HttpService 자체는 합법적인 코드에서도 쓰인다.
 
-## 5. Visual audit
+### Studio/MCP Output에서 JSON 추출
+
+감사 스크립트는 아래 marker 사이에 JSON을 출력한다.
+
+```text
+GODBASE_QUARANTINE_AUDIT_BEGIN
+...
+GODBASE_QUARANTINE_AUDIT_END
+```
+
+Output 로그를 저장한 뒤:
+
+```bash
+python tools/godbase/extract_quarantine_report.py \
+  tmp/godbase/studio-output.txt \
+  --output tmp/godbase/studio-audit.json
+```
+
+이 단계는 사람이 복붙하다 JSON을 잘라먹는 오류를 줄이기 위한 것이다.
+
+## 5. Evidence merge
+
+Metadata triage와 Studio audit를 canonical review draft로 합친다.
+
+```bash
+python tools/godbase/merge_creator_store_audit.py \
+  --asset-id 123 \
+  --source-url "https://create.roblox.com/store/asset/123/example" \
+  --creator "@creator" \
+  --triage tmp/godbase/nature-triage.json \
+  --studio-audit tmp/godbase/studio-audit.json \
+  --output tmp/godbase/asset-123-review.json
+```
+
+Merge 결과의 `decision.grade`는 항상 `PENDING`에서 시작한다. 자동화가 S/A를 선언하지 않는다.
+
+## 6. Visual audit
 
 스크립트를 끈 상태에서 다음 스크린샷을 남긴다.
 
@@ -155,7 +191,7 @@ Creator Store 결과를 production place에 바로 넣지 않는다.
 
 `보기 좋음`과 `현재 게임에 맞음`은 다르다.
 
-## 6. Production-fit test
+## 7. Production-fit test
 
 최종 후보만 실제 프로젝트의 복사본/테스트 place에서 시험한다.
 
@@ -170,7 +206,7 @@ Creator Store 결과를 production place에 바로 넣지 않는다.
 
 대형 source pack은 통째로 ship하지 않고 필요한 subset만 추출/normalize/package한다.
 
-## 7. Canonical record
+## 8. Canonical record
 
 `knowledge/assets/CREATOR_STORE_QUARANTINE_AUDIT_SCHEMA.json`의 template을 따른다.
 
@@ -197,6 +233,8 @@ search_asset
 → quarantine insertion
 → scripts disabled
 → quarantine_audit.luau
+→ extract_quarantine_report.py
+→ metadata/studio evidence merge
 → screenshot(s)
 → visual review
 → production-fit smoke test
@@ -204,6 +242,18 @@ search_asset
 ```
 
 하지만 자동화가 가능하다는 이유로 **수백 개 scripted model을 한 place에 자동 삽입하지 않는다.** batch size와 신뢰 경계를 유지한다.
+
+## CI
+
+Godbase CI는 다음을 검사한다.
+
+```text
+validate.py
+→ Python unit tests
+→ Python compileall
+```
+
+따라서 catalog/schema/path가 깨지는 문제뿐 아니라 metadata triage/report extraction/merge 로직의 기본 회귀도 막는다.
 
 ## 운영 규칙
 
