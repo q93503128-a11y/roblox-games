@@ -235,6 +235,7 @@ end
 
 function WorldPolishService.Init(context)
     ctx = context
+    assert(ctx, "WorldPolishService requires runtime context")
 end
 
 function WorldPolishService.Build()
