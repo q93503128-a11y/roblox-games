@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "verifiedDate": "2026-09-04",
+  "purpose": "Machine-readable routing matrix for Roblox Godbase genre starter recipes.",
+  "globalRules": {
+    "verticalSliceMinutes": "5-10",
+    "primaryReferenceCount": 1,
+    "secondaryReferenceRange": "2-4",
+    "mandatoryEvidence": ["cleanBoot", "p0Route", "console", "screenshot", "desktop", "mobile"],
+    "statusBeforeGatesPass": "INTERNAL_PROTOTYPE"
+  },
+  "genres": {
+    "actionRpgOpenWorld": {
+      "recipe": "knowledge/genres/ACTION_RPG_OPEN_WORLD.md",
+      "firstSlice": ["hub1", "field1", "enemy2", "boss1", "styles2", "quests2", "loot6to12"],
+      "godbase": ["knowledge/combat/COMBAT_FEEL_PLAYBOOK.md", "knowledge/level-design/LEVEL_DESIGN_WORLD_TRAVERSAL.md", "knowledge/gameplay/INVENTORY_EQUIPMENT_ARCHITECTURE.md", "knowledge/gameplay/QUEST_OBJECTIVE_MISSIONS.md"],
+      "qualityGate": "combat-feel-before-second-region"
+    },
+    "battlegroundsFighting": {
+      "recipe": "knowledge/genres/BATTLEGROUNDS_FIGHTING.md",
+      "firstSlice": ["arena1", "movesets2", "dummy1", "mobileControls", "livePvP"],
+      "godbase": ["knowledge/combat/COMBAT_FEEL_PLAYBOOK.md", "knowledge/combat/HIT_DETECTION_HITBOXES_PROJECTILES.md", "knowledge/networking/REPLICATION_PHYSICS_INPUT.md"],
+      "qualityGate": "two-polished-movesets-before-roster"
+    },
+    "simulatorCollection": {
+      "recipe": "knowledge/genres/SIMULATOR_COLLECTION.md",
+      "firstSlice": ["primaryAction1", "currencies1to2", "upgradeAxes2max", "collectibles12to30", "saveLoad"],
+      "godbase": ["knowledge/data/CLOUD_SERVICES_DECISION_MATRIX.md", "knowledge/data/ECONOMY_BALANCING_INFLATION.md", "knowledge/gameplay/TRADING_GIFTING_SECURITY_UX.md"],
+      "qualityGate": "repeat-loop-and-first-upgrade-before-more-currencies"
+    },
+    "tycoonManagement": {
+      "recipe": "knowledge/genres/TYCOON_MANAGEMENT.md",
+      "firstSlice": ["plot1", "buildMode", "pieces8to15", "agents1to2", "visibleBottleneck1", "saveLoad"],
+      "godbase": ["knowledge/ai/NPC_AI_AND_PATHFINDING.md", "knowledge/gameplay/INTERACTION_SYSTEMS.md", "knowledge/data/SAVE_SCHEMA_MIGRATION_RECOVERY.md"],
+      "qualityGate": "build-operate-improve-before-large-catalog"
+    },
+    "towerDefense": {
+      "recipe": "knowledge/genres/TOWER_DEFENSE.md",
+      "firstSlice": ["map1", "waves10", "enemyArchetypes5", "towers5", "solo", "coop2p"],
+      "godbase": ["knowledge/ai/NPC_AI_AND_PATHFINDING.md", "knowledge/gameplay/ROUND_GAME_STATE_ARCHITECTURE.md", "knowledge/multiplayer/TELEPORT_MATCHMAKING_RESERVED_SERVERS.md"],
+      "qualityGate": "five-distinct-towers-before-content-breadth"
+    },
+    "horrorRunBased": {
+      "recipe": "knowledge/genres/HORROR_RUN_BASED.md",
+      "firstSlice": ["rooms8to12", "threats3", "items3to5", "deathFeedback", "rapidRetry"],
+      "godbase": ["knowledge/audio/AUDIO_SYSTEMS_AND_MIXING.md", "knowledge/graphics/VISUAL_QUALITY_PIPELINE.md", "knowledge/camera/CAMERA_AND_GAME_FEEL.md"],
+      "qualityGate": "learnable-threats-before-more-entities"
+    },
+    "survivalExtractionCoop": {
+      "recipe": "knowledge/genres/SURVIVAL_EXTRACTION_COOP.md",
+      "firstSlice": ["hub1", "route1", "poi3to5", "enemy3", "loot4categories", "extraction", "coop2to4"],
+      "godbase": ["knowledge/gameplay/INVENTORY_EQUIPMENT_ARCHITECTURE.md", "knowledge/physics/VEHICLES_CONSTRAINTS_NETWORK_OWNERSHIP.md", "knowledge/security/SECURITY_AND_ANTICHEAT.md"],
+      "qualityGate": "risk-reward-route-before-procedural-world"
+    },
+    "roundMinigame": {
+      "recipe": "knowledge/genres/ROUND_MINIGAME.md",
+      "firstSlice": ["lobby1", "maps2", "stateMachine", "roles2to3", "spectator", "secondRoundReset"],
+      "godbase": ["knowledge/gameplay/ROUND_GAME_STATE_ARCHITECTURE.md", "knowledge/multiplayer/TELEPORT_MATCHMAKING_RESERVED_SERVERS.md", "knowledge/social/SOCIAL_PARTY_INVITES.md"],
+      "qualityGate": "stable-reset-before-more-maps"
+    },
+    "socialRoleplay": {
+      "recipe": "knowledge/genres/SOCIAL_ROLEPLAY.md",
+      "firstSlice": ["compactTown1", "landmarks5to8", "houses2to3", "vehicles2", "roles4", "props10"],
+      "godbase": ["knowledge/social/SOCIAL_PARTY_INVITES.md", "knowledge/avatar/AVATAR_CHARACTER_ACCESSORIES.md", "knowledge/operations/ADMIN_MODERATION_COMMANDS.md"],
+      "qualityGate": "encounter-density-and-shared-state-before-map-growth"
+    },
+    "shooterArena": {
+      "recipe": "knowledge/genres/SHOOTER_ARENA.md",
+      "firstSlice": ["map1", "mode1", "weapons5", "scoreboard", "mobileControls", "clients2to4"],
+      "godbase": ["knowledge/combat/HIT_DETECTION_HITBOXES_PROJECTILES.md", "knowledge/networking/REPLICATION_PHYSICS_INPUT.md", "knowledge/security/SECURITY_AND_ANTICHEAT.md"],
+      "qualityGate": "networked-five-weapon-feel-before-arsenal-growth"
+    }
+  }
+}
