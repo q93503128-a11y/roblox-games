@@ -9,6 +9,7 @@ local servicesFolder = script.Parent:WaitForChild("Services")
 local Profile = require(servicesFolder:WaitForChild("ProfileService"))
 local World = require(servicesFolder:WaitForChild("WorldService"))
 local WorldPolish = require(servicesFolder:WaitForChild("WorldPolishService"))
+local SectorPolish = require(servicesFolder:WaitForChild("SectorPolishService"))
 local Enemies = require(servicesFolder:WaitForChild("EnemyService"))
 local Run = require(servicesFolder:WaitForChild("RunService"))
 local Combat = require(servicesFolder:WaitForChild("CombatService"))
@@ -55,6 +56,7 @@ local context = {
     Profile = Profile,
     World = World,
     WorldPolish = WorldPolish,
+    SectorPolish = SectorPolish,
     Enemies = Enemies,
     Run = Run,
     Combat = Combat,
@@ -75,6 +77,7 @@ local context = {
 VisualAssets.Init(context)
 World.Init(context)
 WorldPolish.Init(context)
+SectorPolish.Init(context)
 Enemies.Init(context)
 Run.Init(context)
 Augments.Init(context)
@@ -91,6 +94,7 @@ SectorModifiers.Init(context)
 Career.Init(context)
 World.Build()
 WorldPolish.Build()
+SectorPolish.Build()
 Contracts.BindWorld()
 Career.BindWorld()
 Profile.Init(context)
