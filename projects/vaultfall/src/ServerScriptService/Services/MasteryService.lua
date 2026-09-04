@@ -295,7 +295,9 @@ function MasteryService.AwardKill(player, enemy)
         })
         MasteryService.Save(player)
         ctx.Remotes.State:FireClient(player, "Notice", string.format("%s MASTERY Lv.%d — new weapon calibration active", archetype, after))
-    elseif enemy and enemy.Data and (enemy.Data.HVT or enemy.Data.Boss) then
+    else
+        -- Keep the in-run mastery strip live. This is a tiny state payload and
+        -- gives every confirmed kill visible long-term progression feedback.
         push(player)
     end
 end
