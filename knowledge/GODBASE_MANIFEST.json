@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 8,
+  "schemaVersion": 9,
   "verifiedDate": "2026-09-04",
   "name": "Roblox Godbase",
   "status": "ACTIVE_CANONICAL_NOT_COMPLETE",
@@ -40,6 +40,8 @@
     "creatorStoreHarvester": "tools/godbase/creator_store_harvest.py",
     "creatorStoreMetadataTriage": "tools/godbase/creator_store_metadata_score.py",
     "creatorStoreStudioAudit": "tools/godbase/quarantine_audit.luau",
+    "creatorStoreAuditExtractor": "tools/godbase/extract_quarantine_report.py",
+    "creatorStoreAuditMerger": "tools/godbase/merge_creator_store_audit.py",
     "unitTests": "tools/godbase/tests"
   },
   "validation": "tools/godbase/validate.py",
