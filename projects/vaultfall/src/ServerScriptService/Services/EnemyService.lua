@@ -270,6 +270,61 @@ local function bossPulse(enemy)
     end)
 end
 
+local function getNavigationAreas(room)
+    local areas = {
+        {
+            Center = room.Origin,
+            Size = Vector2.new(ctx.Config.RoomSize.X - 10, ctx.Config.RoomSize.Z - 10),
+        },
+    }
+
+    local expansions = Workspace:FindFirstChild("VaultfallCombatExpansions")
+    if expansions then
+        for _, wing in ipairs(expansions:GetChildren()) do
+            if wing:GetAttribute("RoomIndex") == room.Index then
+                local floor = wing:FindFirstChild("WingFloor")
+                if floor and floor:IsA("BasePart") then
+                    table.insert(areas, {
+                        Center = floor.Position,
+                        Size = Vector2.new(math.max(4, floor.Size.X - 8), math.max(4, floor.Size.Z - 8)),
+                    })
+                end
+            end
+        end
+    end
+
+    return areas
+end
+
+local function clampToNavigation(room, candidate, y)
+    local areas = getNavigationAreas(room)
+    for _, area in ipairs(areas) do
+        local halfX = area.Size.X * 0.5
+        local halfZ = area.Size.Y * 0.5
+        if math.abs(candidate.X - area.Center.X) <= halfX and math.abs(candidate.Z - area.Center.Z) <= halfZ then
+            return Vector3.new(candidate.X, y, candidate.Z)
+        end
+    end
+
+    local best
+    local bestDistance = math.huge
+    for _, area in ipairs(areas) do
+        local halfX = area.Size.X * 0.5
+        local halfZ = area.Size.Y * 0.5
+        local projected = Vector3.new(
+            math.clamp(candidate.X, area.Center.X - halfX, area.Center.X + halfX),
+            y,
+            math.clamp(candidate.Z, area.Center.Z - halfZ, area.Center.Z + halfZ)
+        )
+        local distance = (Vector2.new(projected.X, projected.Z) - Vector2.new(candidate.X, candidate.Z)).Magnitude
+        if distance < bestDistance then
+            bestDistance = distance
+            best = projected
+        end
+    end
+    return best or Vector3.new(candidate.X, y, candidate.Z)
+end
+
 local function stepEnemy(enemy, dt)
     if not enemy.Alive or not enemy.Model.Parent then
         return
@@ -319,13 +374,7 @@ local function stepEnemy(enemy, dt)
     local room = ctx.World.GetRoom(enemy.RoomIndex)
     local candidate = enemy.Root.Position + direction * moveDistance
     if room then
-        local limitX = ctx.Config.RoomSize.X / 2 - 5
-        local limitZ = ctx.Config.RoomSize.Z / 2 - 5
-        candidate = Vector3.new(
-            math.clamp(candidate.X, room.Origin.X - limitX, room.Origin.X + limitX),
-            enemy.Root.Position.Y,
-            math.clamp(candidate.Z, room.Origin.Z - limitZ, room.Origin.Z + limitZ)
-        )
+        candidate = clampToNavigation(room, candidate, enemy.Root.Position.Y)
     end
 
     enemy.Model:PivotTo(CFrame.lookAt(candidate, candidate + direction))
