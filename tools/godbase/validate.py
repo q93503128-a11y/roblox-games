@@ -30,7 +30,7 @@ def collect_paths(value):
     elif isinstance(value, list):
         for child in value:
             yield from collect_paths(child)
-    elif isinstance(value, str) and value.startswith("knowledge/"):
+    elif isinstance(value, str) and value.startswith(("knowledge/", "tools/", ".github/")):
         yield value
 
 
@@ -44,10 +44,12 @@ else:
         fail(f"manifest JSON invalid: {exc}")
         manifest = {}
 
-# Every path routed by the manifest must exist.
+# Every local path routed by the manifest must exist. This covers both canonical
+# knowledge and executable/tooling paths so documentation cannot point to a
+# missing automation component.
 for rel in sorted(set(collect_paths(manifest))):
-    if not (ROOT / rel).is_file():
-        fail(f"manifest references missing file: {rel}")
+    if not (ROOT / rel).exists():
+        fail(f"manifest references missing path: {rel}")
 
 # Every JSON knowledge artifact must parse.
 json_files = sorted(KNOWLEDGE.rglob("*.json")) if KNOWLEDGE.exists() else []
