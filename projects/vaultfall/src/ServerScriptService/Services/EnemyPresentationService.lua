@@ -94,8 +94,8 @@ local function buildRig(enemy)
 
     local leftArm, leftArmMotor = motorPart(enemy.Model, root, "LeftArm", armSize, Vector3.new(-armX, armY, 0), color)
     local rightArm, rightArmMotor = motorPart(enemy.Model, root, "RightArm", armSize, Vector3.new(armX, armY, 0), color)
-    local leftLeg, leftLegMotor = motorPart(enemy.Model, root, "LeftLeg", legSize, Vector3.new(-legX, legY, 0), color:Lerp(Color3.new(0, 0, 0), 0.12))
-    local rightLeg, rightLegMotor = motorPart(enemy.Model, root, "RightLeg", legSize, Vector3.new(legX, legY, 0), color:Lerp(Color3.new(0, 0, 0), 0.12))
+    local _, leftLegMotor = motorPart(enemy.Model, root, "LeftLeg", legSize, Vector3.new(-legX, legY, 0), color:Lerp(Color3.new(0, 0, 0), 0.12))
+    local _, rightLegMotor = motorPart(enemy.Model, root, "RightLeg", legSize, Vector3.new(legX, legY, 0), color:Lerp(Color3.new(0, 0, 0), 0.12))
 
     addJointGlow(leftArm, "LeftShoulderGlow", accent, Vector3.new(0, armSize.Y * 0.42, 0), math.max(0.28, radius * 0.22))
     addJointGlow(rightArm, "RightShoulderGlow", accent, Vector3.new(0, armSize.Y * 0.42, 0), math.max(0.28, radius * 0.22))
@@ -138,7 +138,7 @@ local function buildRig(enemy)
     }
 end
 
-local function attackPose(rig, enemy, attackAge)
+local function attackPose(enemy, attackAge)
     if attackAge < 0 or attackAge > 0.42 then
         return nil
     end
@@ -180,7 +180,7 @@ local function animateRig(rig, dt, now)
     local gait = math.sin(now * (6.4 + enemy.Speed * 0.08) + rig.Phase)
     local stride = gait * 0.62 * rig.MoveBlend
     local idle = math.sin(now * 2.2 + rig.Phase) * 0.045 * (1 - rig.MoveBlend)
-    local attack = attackPose(rig, enemy, now - enemy.LastAttack)
+    local attack = attackPose(enemy, now - enemy.LastAttack)
 
     local leftArm = -stride + idle
     local rightArm = stride - idle
