@@ -12,6 +12,11 @@ local DEFAULT = {
     PowerRank = 0,
     AttackUpgrade = 0,
     HealthUpgrade = 0,
+    Extractions = 0,
+    FailedRuns = 0,
+    TotalSecured = 0,
+    HighestExtraction = 0,
+    BossKills = 0,
 }
 
 local function cloneDefault()
@@ -48,6 +53,11 @@ local function publicProfile(profile)
         PowerRank = profile.PowerRank,
         AttackUpgrade = profile.AttackUpgrade,
         HealthUpgrade = profile.HealthUpgrade,
+        Extractions = profile.Extractions,
+        FailedRuns = profile.FailedRuns,
+        TotalSecured = profile.TotalSecured,
+        HighestExtraction = profile.HighestExtraction,
+        BossKills = profile.BossKills,
     }
 end
 
@@ -68,6 +78,14 @@ end
 
 function ProfileService.Get(player)
     return profiles[player]
+end
+
+function ProfileService.GetPublic(player)
+    local profile = profiles[player]
+    if not profile then
+        return nil
+    end
+    return publicProfile(profile)
 end
 
 function ProfileService.Push(player)
@@ -176,6 +194,37 @@ function ProfileService.SetBestDepth(player, depth)
         return
     end
     profile.BestDepth = math.max(profile.BestDepth, math.floor(depth))
+    ProfileService.Push(player)
+end
+
+function ProfileService.RecordExtraction(player, secured, depth)
+    local profile = profiles[player]
+    if not profile then
+        return
+    end
+    local securedAmount = math.max(0, math.floor((secured or 0) + 0.5))
+    profile.Extractions += 1
+    profile.TotalSecured += securedAmount
+    profile.HighestExtraction = math.max(profile.HighestExtraction, securedAmount)
+    profile.BestDepth = math.max(profile.BestDepth, math.floor(depth or 0))
+    ProfileService.Push(player)
+end
+
+function ProfileService.RecordFailure(player)
+    local profile = profiles[player]
+    if not profile then
+        return
+    end
+    profile.FailedRuns += 1
+    ProfileService.Push(player)
+end
+
+function ProfileService.RecordBossKill(player)
+    local profile = profiles[player]
+    if not profile then
+        return
+    end
+    profile.BossKills += 1
     ProfileService.Push(player)
 end
 
