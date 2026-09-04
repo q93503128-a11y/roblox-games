@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "verifiedDate": "2026-09-04",
+  "purpose": "Machine-readable acceptance contract template for AI-driven Roblox Studio MCP playtests.",
+  "status": "TEMPLATE",
+  "requiredTopLevel": [
+    "project",
+    "studioTarget",
+    "boot",
+    "routes",
+    "visualStates",
+    "deviceMatrix",
+    "multiplayer",
+    "completion"
+  ],
+  "template": {
+    "project": {
+      "name": "example-project",
+      "revision": "git-sha-or-build-id",
+      "genre": ["rpg"],
+      "primaryLoop": "spawn -> travel -> fight -> reward"
+    },
+    "studioTarget": {
+      "expectedPlaceId": null,
+      "expectedName": "Example Place",
+      "requireExplicitStudioId": true
+    },
+    "boot": {
+      "spawnTimeoutSeconds": 20,
+      "unexpectedConsolePatterns": ["error", "stack begin", "infinite yield possible"],
+      "requiredInstances": ["game.Players.LocalPlayer.Character"],
+      "requiredUi": []
+    },
+    "routes": [
+      {
+        "id": "primary-loop",
+        "priority": "P0",
+        "preconditions": [],
+        "steps": [
+          {"action": "navigate", "target": "workspace.SpawnLocation"},
+          {"action": "keyboard", "key": "W", "durationSeconds": 1.0},
+          {"action": "assert", "expression": "project-specific observable state"}
+        ],
+        "expected": ["route completes without runtime error"],
+        "screenshots": ["primary-loop-final"]
+      }
+    ],
+    "visualStates": [
+      {
+        "id": "spawn",
+        "required": true,
+        "checks": ["no-z-fighting", "no-detached-model-parts", "ui-not-clipped", "coherent-scale"]
+      }
+    ],
+    "deviceMatrix": [
+      {"name": "phone-small", "width": 360, "height": 640, "orientation": "portrait"},
+      {"name": "phone-main", "width": 390, "height": 844, "orientation": "portrait"},
+      {"name": "tablet", "width": 768, "height": 1024, "orientation": "portrait"},
+      {"name": "desktop-hd", "width": 1280, "height": 720, "orientation": "landscape"},
+      {"name": "desktop-fhd", "width": 1920, "height": 1080, "orientation": "landscape"}
+    ],
+    "multiplayer": {
+      "required": false,
+      "maxClients": 8,
+      "scenarios": []
+    },
+    "completion": {
+      "allowedFinalStates": ["INTERNAL_PROTOTYPE", "READY_FOR_USER_TEST"],
+      "readyRequires": [
+        "cleanBoot",
+        "zeroUnexpectedRuntimeErrors",
+        "allP0RoutesPass",
+        "visualReviewPass",
+        "requiredDeviceProfilesPass",
+        "requiredMultiplayerScenariosPass",
+        "knownLimitationsRecorded"
+      ]
+    }
+  }
+}
