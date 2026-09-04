@@ -1,38 +1,143 @@
 {
-  "schemaVersion": 12,
+  "schemaVersion": 13,
   "verifiedDate": "2026-09-04",
   "name": "Roblox Godbase",
   "status": "ACTIVE_CANONICAL_NOT_COMPLETE",
   "purpose": "Canonical research and operating knowledge for every Roblox project in this monorepo.",
-  "principles": ["official-docs-first","studio-validation-first","source-and-license-before-reuse","server-authority-for-valuable-state","reference-before-invention","official-parts-before-reimplementation","vertical-slice-before-breadth","playtest-before-handoff","failure-to-regression-knowledge","knowledge-is-versioned-and-time-sensitive"],
+  "initialFoundation": {
+    "status": "INITIAL_FOUNDATION_COMPLETE",
+    "completedDate": "2026-09-04",
+    "audit": "knowledge/research/INITIAL_FOUNDATION_FINAL_AUDIT_2026-09-04.md",
+    "handoff": "knowledge/GODBASE_NEXT_CHAT_HANDOFF.md",
+    "nextChatPrompt": "knowledge/NEXT_CHAT_PROMPT.md",
+    "nextPhase": "PROJECT_USAGE_AND_EMPIRICAL_FEEDBACK"
+  },
+  "principles": [
+    "official-docs-first",
+    "studio-validation-first",
+    "source-and-license-before-reuse",
+    "server-authority-for-valuable-state",
+    "reference-before-invention",
+    "official-parts-before-reimplementation",
+    "vertical-slice-before-breadth",
+    "playtest-before-handoff",
+    "failure-to-regression-knowledge",
+    "knowledge-is-versioned-and-time-sensitive"
+  ],
   "mandatoryReads": {
-    "allNewProjects": ["knowledge/AGENT_PROTOCOL.md","knowledge/QUICK_REFERENCE.md","knowledge/checklists/PROJECT_START_CHECKLIST.md","knowledge/regressions/FAILURE_LIBRARY.md","knowledge/catalogs/DEPRECATED_LEGACY_WATCHLIST.md","knowledge/workflow/STUDIO_MCP_AUTONOMOUS_BUILD_HARNESS.md","knowledge/workflow/AI_STUDIO_AUTONOMOUS_PLAYTEST.md","knowledge/checklists/VERTICAL_SLICE_DONE_DEFINITION.md","knowledge/genres/README.md","knowledge/genres/STARTER_RECIPE_MATRIX.json"],
-    "genreRecipes": ["knowledge/genres/README.md","knowledge/genres/STARTER_RECIPE_MATRIX.json"],
-    "ossDependencySelection": ["knowledge/catalogs/OPEN_SOURCE_ECOSYSTEM_AUDIT.md","knowledge/catalogs/LIBRARY_CATALOG.json"],
-    "testing": ["knowledge/testing/LUAU_TESTING_FRAMEWORKS_AND_CI.md","knowledge/testing/AUTOMATED_ACCEPTANCE_GATES.md","knowledge/testing/MCP_PLAYTEST_CONTRACT_SCHEMA.json"],
-    "studioMcpAutomation": ["knowledge/workflow/STUDIO_MCP_AUTONOMOUS_BUILD_HARNESS.md","knowledge/testing/MCP_PLAYTEST_CONTRACT_SCHEMA.json","knowledge/testing/DEVICE_NETWORK_TEST_MATRIX.md","knowledge/regressions/FAILURE_LIBRARY.md"],
-    "ecsOrCustomSimulation": ["knowledge/architecture/ECS_CHARACTER_SIMULATION_DECISION.md","knowledge/performance/PERFORMANCE_AND_STREAMING.md"],
-    "highTrafficNetworking": ["knowledge/networking/REPLICATION_PHYSICS_INPUT.md","knowledge/networking/NETWORK_LIBRARY_DECISION_MATRIX.md","knowledge/security/SECURITY_AND_ANTICHEAT.md"],
-    "uiHeavy": ["knowledge/ui/CROSS_PLATFORM_ACCESSIBILITY_LOCALIZATION.md","knowledge/ui/UI_STORYBOOK_COMPONENT_WORKFLOW.md","knowledge/ui/UI_MOTION_TOPBAR_MICROINTERACTIONS.md"],
-    "thirdPartyAssets": ["knowledge/assets/CREATOR_STORE_AUDIT_AND_CATALOG.md","knowledge/assets/CREATOR_STORE_AUTOMATION_AND_SCORING.md","knowledge/assets/CREATOR_STORE_RED_FLAGS_AND_QUARANTINE.md","knowledge/checklists/ASSET_IMPORT_CHECKLIST.md"],
-    "assetProcurement": ["knowledge/assets/CREATOR_STORE_SUPPLY_CATALOG.json","knowledge/assets/OFFICIAL_ROBLOX_ASSET_PACKS.md","knowledge/assets/ASSET_SELECTION_BY_GENRE.md","knowledge/assets/CREATOR_STORE_RED_FLAGS_AND_QUARANTINE.md"],
-    "creatorStoreAutomation": ["knowledge/assets/CREATOR_STORE_HARVESTER_AND_QUARANTINE_PIPELINE.md","knowledge/assets/CREATOR_STORE_BATCH_AND_PROMOTION.md","knowledge/assets/CREATOR_STORE_SEARCH_PROFILES.json","knowledge/assets/CREATOR_STORE_QUARANTINE_AUDIT_SCHEMA.json","knowledge/assets/CREATOR_STORE_AUTOMATION_AND_SCORING.md"],
+    "allNewProjects": [
+      "knowledge/AGENT_PROTOCOL.md",
+      "knowledge/QUICK_REFERENCE.md",
+      "knowledge/checklists/PROJECT_START_CHECKLIST.md",
+      "knowledge/regressions/FAILURE_LIBRARY.md",
+      "knowledge/catalogs/DEPRECATED_LEGACY_WATCHLIST.md",
+      "knowledge/workflow/STUDIO_MCP_AUTONOMOUS_BUILD_HARNESS.md",
+      "knowledge/checklists/VERTICAL_SLICE_DONE_DEFINITION.md",
+      "knowledge/genres/README.md",
+      "knowledge/genres/STARTER_RECIPE_MATRIX.json"
+    ],
+    "genreRecipes": [
+      "knowledge/genres/README.md",
+      "knowledge/genres/STARTER_RECIPE_MATRIX.json"
+    ],
+    "ossDependencySelection": [
+      "knowledge/catalogs/OPEN_SOURCE_ECOSYSTEM_AUDIT.md",
+      "knowledge/catalogs/LIBRARY_CATALOG.json"
+    ],
+    "testing": [
+      "knowledge/testing/LUAU_TESTING_FRAMEWORKS_AND_CI.md",
+      "knowledge/testing/AUTOMATED_ACCEPTANCE_GATES.md",
+      "knowledge/testing/MCP_PLAYTEST_CONTRACT_SCHEMA.json"
+    ],
+    "studioMcpAutomation": [
+      "knowledge/workflow/STUDIO_MCP_AUTONOMOUS_BUILD_HARNESS.md",
+      "knowledge/testing/MCP_PLAYTEST_CONTRACT_SCHEMA.json",
+      "knowledge/testing/DEVICE_NETWORK_TEST_MATRIX.md",
+      "knowledge/regressions/FAILURE_LIBRARY.md"
+    ],
+    "ecsOrCustomSimulation": [
+      "knowledge/architecture/ECS_CHARACTER_SIMULATION_DECISION.md",
+      "knowledge/performance/PERFORMANCE_AND_STREAMING.md"
+    ],
+    "highTrafficNetworking": [
+      "knowledge/networking/REPLICATION_PHYSICS_INPUT.md",
+      "knowledge/networking/NETWORK_LIBRARY_DECISION_MATRIX.md",
+      "knowledge/security/SECURITY_AND_ANTICHEAT.md"
+    ],
+    "uiHeavy": [
+      "knowledge/ui/CROSS_PLATFORM_ACCESSIBILITY_LOCALIZATION.md",
+      "knowledge/ui/UI_STORYBOOK_COMPONENT_WORKFLOW.md",
+      "knowledge/ui/UI_MOTION_TOPBAR_MICROINTERACTIONS.md"
+    ],
+    "thirdPartyAssets": [
+      "knowledge/assets/CREATOR_STORE_AUDIT_AND_CATALOG.md",
+      "knowledge/assets/CREATOR_STORE_AUTOMATION_AND_SCORING.md",
+      "knowledge/assets/CREATOR_STORE_RED_FLAGS_AND_QUARANTINE.md",
+      "knowledge/checklists/ASSET_IMPORT_CHECKLIST.md"
+    ],
+    "assetProcurement": [
+      "knowledge/assets/CREATOR_STORE_SUPPLY_CATALOG.json",
+      "knowledge/assets/OFFICIAL_ROBLOX_ASSET_PACKS.md",
+      "knowledge/assets/ASSET_SELECTION_BY_GENRE.md",
+      "knowledge/assets/CREATOR_STORE_RED_FLAGS_AND_QUARANTINE.md"
+    ],
+    "creatorStoreAutomation": [
+      "knowledge/assets/CREATOR_STORE_HARVESTER_AND_QUARANTINE_PIPELINE.md",
+      "knowledge/assets/CREATOR_STORE_BATCH_AND_PROMOTION.md",
+      "knowledge/assets/CREATOR_STORE_SEARCH_PROFILES.json",
+      "knowledge/assets/CREATOR_STORE_QUARANTINE_AUDIT_SCHEMA.json",
+      "knowledge/assets/CREATOR_STORE_AUTOMATION_AND_SCORING.md"
+    ],
     "interactionHeavy": ["knowledge/gameplay/INTERACTION_SYSTEMS.md"],
-    "inventoryLootRpg": ["knowledge/gameplay/INVENTORY_EQUIPMENT_ARCHITECTURE.md","knowledge/gameplay/LOOT_DROP_CRAFTING.md","knowledge/gameplay/QUEST_OBJECTIVE_MISSIONS.md"],
-    "trading": ["knowledge/gameplay/TRADING_GIFTING_SECURITY_UX.md","knowledge/data/SAVE_SCHEMA_MIGRATION_RECOVERY.md"],
+    "inventoryLootRpg": [
+      "knowledge/gameplay/INVENTORY_EQUIPMENT_ARCHITECTURE.md",
+      "knowledge/gameplay/LOOT_DROP_CRAFTING.md",
+      "knowledge/gameplay/QUEST_OBJECTIVE_MISSIONS.md"
+    ],
+    "trading": [
+      "knowledge/gameplay/TRADING_GIFTING_SECURITY_UX.md",
+      "knowledge/data/SAVE_SCHEMA_MIGRATION_RECOVERY.md"
+    ],
     "roundGames": ["knowledge/gameplay/ROUND_GAME_STATE_ARCHITECTURE.md"],
     "proceduralGames": ["knowledge/gameplay/PROCEDURAL_GENERATION_DETERMINISM.md"],
     "socialGames": ["knowledge/social/SOCIAL_PARTY_INVITES.md"],
     "adminLiveOps": ["knowledge/operations/ADMIN_MODERATION_COMMANDS.md"],
-    "worldDesign": ["knowledge/level-design/LEVEL_DESIGN_WORLD_TRAVERSAL.md","knowledge/graphics/TERRAIN_ENVIRONMENT_PIPELINE.md","knowledge/graphics/VISUAL_QUALITY_PIPELINE.md","knowledge/assets/ASSET_SELECTION_BY_GENRE.md"],
-    "networkedGames": ["knowledge/architecture/ENGINE_AND_NETWORKING.md","knowledge/networking/REPLICATION_PHYSICS_INPUT.md","knowledge/security/SECURITY_AND_ANTICHEAT.md"],
-    "combatGames": ["knowledge/combat/COMBAT_FEEL_PLAYBOOK.md","knowledge/combat/HIT_DETECTION_HITBOXES_PROJECTILES.md","knowledge/graphics/VFX_TELEGRAPHS_EFFECT_BUDGETS.md","knowledge/camera/CAMERA_AND_GAME_FEEL.md","knowledge/animation/ANIMATION_AND_RIGGING_PIPELINE.md","knowledge/audio/AUDIO_SYSTEMS_AND_MIXING.md","knowledge/assets/ASSET_SELECTION_BY_GENRE.md"],
+    "worldDesign": [
+      "knowledge/level-design/LEVEL_DESIGN_WORLD_TRAVERSAL.md",
+      "knowledge/graphics/TERRAIN_ENVIRONMENT_PIPELINE.md",
+      "knowledge/graphics/VISUAL_QUALITY_PIPELINE.md",
+      "knowledge/assets/ASSET_SELECTION_BY_GENRE.md"
+    ],
+    "networkedGames": [
+      "knowledge/architecture/ENGINE_AND_NETWORKING.md",
+      "knowledge/networking/REPLICATION_PHYSICS_INPUT.md",
+      "knowledge/security/SECURITY_AND_ANTICHEAT.md"
+    ],
+    "combatGames": [
+      "knowledge/combat/COMBAT_FEEL_PLAYBOOK.md",
+      "knowledge/combat/HIT_DETECTION_HITBOXES_PROJECTILES.md",
+      "knowledge/graphics/VFX_TELEGRAPHS_EFFECT_BUDGETS.md",
+      "knowledge/camera/CAMERA_AND_GAME_FEEL.md",
+      "knowledge/animation/ANIMATION_AND_RIGGING_PIPELINE.md",
+      "knowledge/audio/AUDIO_SYSTEMS_AND_MIXING.md",
+      "knowledge/assets/ASSET_SELECTION_BY_GENRE.md"
+    ],
     "npcGames": ["knowledge/ai/NPC_AI_AND_PATHFINDING.md"],
     "physicsVehicles": ["knowledge/physics/VEHICLES_CONSTRAINTS_NETWORK_OWNERSHIP.md"],
     "multiPlaceOrInstanced": ["knowledge/multiplayer/TELEPORT_MATCHMAKING_RESERVED_SERVERS.md"],
     "avatarGames": ["knowledge/avatar/AVATAR_CHARACTER_ACCESSORIES.md"],
-    "persistentGames": ["knowledge/data/CLOUD_SERVICES_DECISION_MATRIX.md","knowledge/data/SAVE_SCHEMA_MIGRATION_RECOVERY.md","knowledge/data/ECONOMY_BALANCING_INFLATION.md"],
-    "release": ["knowledge/testing/AUTOMATED_ACCEPTANCE_GATES.md","knowledge/testing/DEVICE_NETWORK_TEST_MATRIX.md","knowledge/checklists/SHIP_CHECKLIST.md","knowledge/workflow/OPEN_CLOUD_CI_RELEASE_AUTOMATION.md","knowledge/publishing/POLICY_MARKETPLACE_LOCALIZATION.md"],
+    "persistentGames": [
+      "knowledge/data/CLOUD_SERVICES_DECISION_MATRIX.md",
+      "knowledge/data/SAVE_SCHEMA_MIGRATION_RECOVERY.md",
+      "knowledge/data/ECONOMY_BALANCING_INFLATION.md"
+    ],
+    "release": [
+      "knowledge/testing/AUTOMATED_ACCEPTANCE_GATES.md",
+      "knowledge/testing/DEVICE_NETWORK_TEST_MATRIX.md",
+      "knowledge/checklists/SHIP_CHECKLIST.md",
+      "knowledge/workflow/OPEN_CLOUD_CI_RELEASE_AUTOMATION.md",
+      "knowledge/publishing/POLICY_MARKETPLACE_LOCALIZATION.md"
+    ],
     "debugging": ["knowledge/debugging/STUDIO_DEBUGGING_VISUALIZATION.md"]
   },
   "genreRouting": {
@@ -47,9 +152,48 @@
     "socialRoleplay": "knowledge/genres/SOCIAL_ROLEPLAY.md",
     "shooterArena": "knowledge/genres/SHOOTER_ARENA.md"
   },
-  "sourceIndexes": {"creatorDocs":"https://create.roblox.com/docs/llms.txt","creatorDocsFull":"https://create.roblox.com/docs/llms-full.txt","engineApi":"https://create.roblox.com/docs/reference/engine/llms.txt","openCloud":"https://create.roblox.com/docs/cloud/llms.txt","creatorStoreCloud":"https://create.roblox.com/docs/cloud/reference/features/creator-store","creatorStoreScopes":"https://create.roblox.com/docs/cloud/reference/scopes","studioMcp":"https://create.roblox.com/docs/studio/mcp","discovery":"https://create.roblox.com/docs/discovery","creatorDocsRepo":"https://github.com/Roblox/creator-docs"},
-  "currentPreferredWorkflowCandidates": {"studioFirst":["Roblox Studio","Studio MCP","Script Sync","Git","Luau LSP","StyLua","selene"],"filesystemFirst":["Rojo","Rokit","Wally","Git","Luau LSP","StyLua","selene","Studio MCP for QA"]},
-  "catalogs": ["knowledge/assets/OFFICIAL_ASSET_CATALOG.json","knowledge/assets/CREATOR_STORE_SEED_CATALOG.json","knowledge/assets/CREATOR_STORE_SUPPLY_CATALOG.json","knowledge/assets/CREATOR_STORE_SEARCH_PROFILES.json","knowledge/assets/CREATOR_STORE_QUARANTINE_AUDIT_SCHEMA.json","knowledge/testing/MCP_PLAYTEST_CONTRACT_SCHEMA.json","knowledge/genres/STARTER_RECIPE_MATRIX.json","knowledge/catalogs/LIBRARY_CATALOG.json"],
+  "sourceIndexes": {
+    "creatorDocs": "https://create.roblox.com/docs/llms.txt",
+    "creatorDocsFull": "https://create.roblox.com/docs/llms-full.txt",
+    "engineApi": "https://create.roblox.com/docs/reference/engine/llms.txt",
+    "openCloud": "https://create.roblox.com/docs/cloud/llms.txt",
+    "creatorStoreCloud": "https://create.roblox.com/docs/cloud/reference/features/creator-store",
+    "creatorStoreScopes": "https://create.roblox.com/docs/cloud/reference/scopes",
+    "studioMcp": "https://create.roblox.com/docs/studio/mcp",
+    "discovery": "https://create.roblox.com/docs/discovery",
+    "creatorDocsRepo": "https://github.com/Roblox/creator-docs"
+  },
+  "currentPreferredWorkflowCandidates": {
+    "studioFirst": [
+      "Roblox Studio",
+      "Studio MCP",
+      "Script Sync",
+      "Git",
+      "Luau LSP",
+      "StyLua",
+      "selene"
+    ],
+    "filesystemFirst": [
+      "Rojo",
+      "Rokit",
+      "Wally",
+      "Git",
+      "Luau LSP",
+      "StyLua",
+      "selene",
+      "Studio MCP for QA"
+    ]
+  },
+  "catalogs": [
+    "knowledge/assets/OFFICIAL_ASSET_CATALOG.json",
+    "knowledge/assets/CREATOR_STORE_SEED_CATALOG.json",
+    "knowledge/assets/CREATOR_STORE_SUPPLY_CATALOG.json",
+    "knowledge/assets/CREATOR_STORE_SEARCH_PROFILES.json",
+    "knowledge/assets/CREATOR_STORE_QUARANTINE_AUDIT_SCHEMA.json",
+    "knowledge/testing/MCP_PLAYTEST_CONTRACT_SCHEMA.json",
+    "knowledge/genres/STARTER_RECIPE_MATRIX.json",
+    "knowledge/catalogs/LIBRARY_CATALOG.json"
+  ],
   "automationTools": {
     "creatorStoreHarvester": "tools/godbase/creator_store_harvest.py",
     "creatorStoreProfileRunner": "tools/godbase/run_creator_store_profiles.py",
@@ -64,5 +208,5 @@
   "validation": "tools/godbase/validate.py",
   "continuousResearch": "knowledge/research/CONTINUOUS_RESEARCH_ROADMAP.md",
   "failureLibrary": "knowledge/regressions/FAILURE_LIBRARY.md",
-  "note": "Godbase is intentionally never declared permanently complete because Roblox engine, policies, assets, successful game patterns and ecosystem change."
+  "note": "Initial foundation is complete, but Godbase is intentionally never declared permanently complete because Roblox engine, policies, assets, successful game patterns and ecosystem change."
 }
