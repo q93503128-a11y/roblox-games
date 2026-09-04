@@ -59,17 +59,16 @@ def bool_by_keys(value: Any, *keys: str) -> bool | None:
 
 
 def text_blob(value: Any) -> str:
+    if isinstance(value, str):
+        return value.lower()
     parts: list[str] = []
     if isinstance(value, dict):
-        for _, child in value.items():
-            if isinstance(child, str):
-                parts.append(child)
-            else:
-                parts.append(text_blob(child))
+        for child in value.values():
+            parts.append(text_blob(child))
     elif isinstance(value, list):
         for child in value:
             parts.append(text_blob(child))
-    return " ".join(parts).lower()
+    return " ".join(part for part in parts if part).lower()
 
 
 def asset_id(value: Any) -> int | None:
