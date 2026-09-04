@@ -12,6 +12,7 @@ local WorldPolish = require(servicesFolder:WaitForChild("WorldPolishService"))
 local SectorPolish = require(servicesFolder:WaitForChild("SectorPolishService"))
 local EnvironmentalHazards = require(servicesFolder:WaitForChild("EnvironmentalHazardService"))
 local Enemies = require(servicesFolder:WaitForChild("EnemyService"))
+local EnemyTactics = require(servicesFolder:WaitForChild("EnemyTacticsService"))
 local BossPatterns = require(servicesFolder:WaitForChild("BossPatternService"))
 local Run = require(servicesFolder:WaitForChild("RunService"))
 local Combat = require(servicesFolder:WaitForChild("CombatService"))
@@ -61,6 +62,7 @@ local context = {
     SectorPolish = SectorPolish,
     EnvironmentalHazards = EnvironmentalHazards,
     Enemies = Enemies,
+    EnemyTactics = EnemyTactics,
     BossPatterns = BossPatterns,
     Run = Run,
     Combat = Combat,
@@ -84,6 +86,7 @@ WorldPolish.Init(context)
 SectorPolish.Init(context)
 EnvironmentalHazards.Init(context)
 Enemies.Init(context)
+EnemyTactics.Init(context)
 BossPatterns.Init(context)
 Run.Init(context)
 Augments.Init(context)
