@@ -27,3 +27,7 @@ jobs:
           python-version: "3.12"
       - name: Validate Godbase
         run: python tools/godbase/validate.py
+      - name: Run Godbase unit tests
+        run: python -m unittest discover -s tools/godbase/tests -p 'test_*.py' -v
+      - name: Compile Godbase Python tools
+        run: python -m compileall -q tools/godbase
