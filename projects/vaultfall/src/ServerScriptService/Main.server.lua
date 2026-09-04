@@ -28,6 +28,7 @@ local Contracts = require(servicesFolder:WaitForChild("ContractService"))
 local ContractEncounters = require(servicesFolder:WaitForChild("ContractEncounterService"))
 local Training = require(servicesFolder:WaitForChild("TrainingService"))
 local Career = require(servicesFolder:WaitForChild("CareerService"))
+local PressureOverride = require(servicesFolder:WaitForChild("PressureOverrideService"))
 
 local remotesFolder = ReplicatedStorage:FindFirstChild("VaultfallRemotes")
 if remotesFolder then
@@ -78,6 +79,7 @@ local context = {
     ContractEncounters = ContractEncounters,
     Training = Training,
     Career = Career,
+    PressureOverride = PressureOverride,
 }
 
 VisualAssets.Init(context)
@@ -89,6 +91,7 @@ Enemies.Init(context)
 EnemyTactics.Init(context)
 BossPatterns.Init(context)
 Run.Init(context)
+PressureOverride.Init(context)
 Augments.Init(context)
 Mastery.Init(context)
 Contracts.Init(context)
