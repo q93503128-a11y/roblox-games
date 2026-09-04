@@ -9,6 +9,7 @@ local servicesFolder = script.Parent:WaitForChild("Services")
 local Profile = require(servicesFolder:WaitForChild("ProfileService"))
 local World = require(servicesFolder:WaitForChild("WorldService"))
 local WorldPolish = require(servicesFolder:WaitForChild("WorldPolishService"))
+local SafehouseExperience = require(servicesFolder:WaitForChild("SafehouseExperienceService"))
 local SectorPolish = require(servicesFolder:WaitForChild("SectorPolishService"))
 local EnvironmentalHazards = require(servicesFolder:WaitForChild("EnvironmentalHazardService"))
 local Enemies = require(servicesFolder:WaitForChild("EnemyService"))
@@ -60,6 +61,7 @@ local context = {
     Profile = Profile,
     World = World,
     WorldPolish = WorldPolish,
+    SafehouseExperience = SafehouseExperience,
     SectorPolish = SectorPolish,
     EnvironmentalHazards = EnvironmentalHazards,
     Enemies = Enemies,
@@ -85,6 +87,7 @@ local context = {
 VisualAssets.Init(context)
 World.Init(context)
 WorldPolish.Init(context)
+SafehouseExperience.Init(context)
 SectorPolish.Init(context)
 EnvironmentalHazards.Init(context)
 Enemies.Init(context)
@@ -106,6 +109,7 @@ SectorModifiers.Init(context)
 Career.Init(context)
 World.Build()
 WorldPolish.Build()
+SafehouseExperience.Build()
 SectorPolish.Build()
 EnvironmentalHazards.Build()
 Contracts.BindWorld()
