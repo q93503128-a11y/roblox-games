@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "verifiedDate": "2026-09-04",
+  "purpose": "Reusable Creator Store discovery profiles. These produce PENDING_STUDIO candidates, never production approvals.",
+  "defaults": {
+    "maxPageSize": 100,
+    "searchView": "Full",
+    "includeOnlyVerifiedCreators": true,
+    "sortCategory": "Ratings",
+    "sortDirection": "Descending"
+  },
+  "profiles": [
+    {"id":"stylized-nature","searchCategoryType":"Model","query":"stylized low poly nature forest rocks trees","pages":3,"role":"SOURCE_LIBRARY"},
+    {"id":"realistic-nature","searchCategoryType":"Model","query":"realistic forest foliage rocks nature PBR","pages":3,"role":"SOURCE_LIBRARY"},
+    {"id":"modular-medieval","searchCategoryType":"Model","query":"modular medieval fantasy village dungeon","pages":3,"role":"SOURCE_LIBRARY"},
+    {"id":"modular-city","searchCategoryType":"Model","query":"modular city road buildings urban props","pages":3,"role":"SOURCE_LIBRARY"},
+    {"id":"stylized-weapons","searchCategoryType":"Model","query":"stylized fantasy weapons sword staff bow shield","pages":3,"role":"SECONDARY"},
+    {"id":"npc-rigs","searchCategoryType":"Model","query":"NPC rig enemy monster animated","pages":3,"role":"HERO"},
+    {"id":"combat-vfx","searchCategoryType":"Model","query":"combat VFX impact slash magic telegraph","pages":3,"role":"VFX"},
+    {"id":"ui-icon-packs","searchCategoryType":"Decal","query":"game UI icons RPG inventory skills","pages":3,"role":"UI"},
+    {"id":"audio-impact","searchCategoryType":"Audio","query":"combat impact sword hit whoosh","pages":2,"role":"AUDIO"},
+    {"id":"audio-ui","searchCategoryType":"Audio","query":"UI click hover notification game","pages":2,"role":"AUDIO"},
+    {"id":"studio-plugins-building","searchCategoryType":"Plugin","query":"building modeling workflow","pages":2,"role":"TOOL"},
+    {"id":"studio-plugins-vfx","searchCategoryType":"Plugin","query":"VFX particles effect editor","pages":2,"role":"TOOL"}
+  ],
+  "rules": [
+    "Run project-specific searches in addition to generic profiles.",
+    "Prefer verified creators for first-pass discovery, but verification is not a security guarantee.",
+    "Do not bulk-insert results into a trusted place.",
+    "Metadata score only prioritizes the quarantine queue.",
+    "Visual/style fit is evaluated after Studio insertion and screenshots."
+  ]
+}
