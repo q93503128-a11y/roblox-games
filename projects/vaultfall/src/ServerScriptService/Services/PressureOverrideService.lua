@@ -7,6 +7,8 @@ local armed = false
 local activeRoom = 0
 local consoleModel
 local promptBusy = false
+local spawnSerial = 0
+local hooksInstalled = false
 
 local HOSTILE_TYPES = {
     Combat = true,
@@ -21,6 +23,13 @@ local function destroyConsole()
         consoleModel = nil
     end
     promptBusy = false
+end
+
+local function resetState()
+    armed = false
+    activeRoom = 0
+    spawnSerial = 0
+    destroyConsole()
 end
 
 local function part(parent, name, size, cframe, color, material)
@@ -41,13 +50,18 @@ local function neon(parent, name, size, cframe, color)
     return item
 end
 
-local function addLabel(parent, text, subtext)
+local function addLabel(parent, name, text, subtext, titleColor)
+    local previous = parent:FindFirstChild(name)
+    if previous then
+        previous:Destroy()
+    end
+
     local gui = Instance.new("BillboardGui")
-    gui.Name = "PressureReadout"
-    gui.Size = UDim2.fromOffset(330, 92)
+    gui.Name = name
+    gui.Size = UDim2.fromOffset(350, 94)
     gui.StudsOffset = Vector3.new(0, 5.2, 0)
     gui.AlwaysOnTop = true
-    gui.MaxDistance = 70
+    gui.MaxDistance = 72
     gui.Parent = parent
 
     local title = Instance.new("TextLabel")
@@ -55,7 +69,7 @@ local function addLabel(parent, text, subtext)
     title.Size = UDim2.new(1, 0, 0.52, 0)
     title.Font = Enum.Font.GothamBold
     title.Text = text
-    title.TextColor3 = Color3.fromRGB(255, 180, 72)
+    title.TextColor3 = titleColor
     title.TextStrokeTransparency = 0.55
     title.TextScaled = true
     title.Parent = gui
@@ -79,6 +93,12 @@ local function hasFutureHostile(roomIndex)
         end
     end
     return false
+end
+
+local function notifyLiving(message)
+    for _, player in ipairs(ctx.Run.GetLivingParticipants()) do
+        ctx.Remotes.State:FireClient(player, "Notice", message)
+    end
 end
 
 local function buildConsole(roomIndex)
@@ -113,10 +133,13 @@ local function buildConsole(roomIndex)
         core.Shape = Enum.PartType.Cylinder
     end
 
-    local railLeft = neon(model, "PowerRail", Vector3.new(0.32, 0.32, 7.5), CFrame.new(origin + Vector3.new(-2.1, 0.9, 0)), Color3.fromRGB(255, 126, 36))
-    local railRight = neon(model, "PowerRail", Vector3.new(0.32, 0.32, 7.5), CFrame.new(origin + Vector3.new(2.1, 0.9, 0)), Color3.fromRGB(255, 126, 36))
-    railLeft.Transparency = 0.22
-    railRight.Transparency = 0.22
+    for _, x in ipairs({ -2.1, 2.1 }) do
+        local rail = neon(model, "PowerRail", Vector3.new(0.32, 0.32, 7.5), CFrame.new(origin + Vector3.new(x, 0.9, 0)), Color3.fromRGB(255, 126, 36))
+        rail.Transparency = 0.22
+    end
+
+    local warningPlate = neon(model, "WarningPlate", Vector3.new(7.4, 0.12, 2.2), CFrame.new(origin + Vector3.new(0, 1.25, -3.0)), Color3.fromRGB(255, 92, 40))
+    warningPlate.Transparency = 0.25
 
     local light = Instance.new("PointLight")
     light.Color = Color3.fromRGB(255, 152, 52)
@@ -125,7 +148,7 @@ local function buildConsole(roomIndex)
     light.Shadows = true
     light.Parent = screen
 
-    addLabel(screen, "PRESSURE OVERRIDE", "+35% ESSENCE  •  +LOOT  •  HEAVIER NEXT HOSTILE SECTOR")
+    addLabel(screen, "PressureReadout", "PRESSURE OVERRIDE", "+35% ESSENCE  •  BETTER LOOT  •  HARDER NEXT HOSTILE SECTOR", Color3.fromRGB(255, 180, 72))
 
     local prompt = Instance.new("ProximityPrompt")
     prompt.Name = "PressureOverridePrompt"
@@ -136,16 +159,15 @@ local function buildConsole(roomIndex)
     prompt.RequiresLineOfSight = false
     prompt.Parent = screen
 
-    local pulseTween = TweenService:Create(screen, TweenInfo.new(0.75, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
+    TweenService:Create(screen, TweenInfo.new(0.75, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
         Transparency = 0.28,
-    })
-    pulseTween:Play()
+    }):Play()
 
     prompt.Triggered:Connect(function(player)
         if promptBusy or armed or not ctx.Run.IsParticipant(player) then
             return
         end
-        if ctx.Run.GetCurrentRoom() ~= roomIndex or not ctx.Run.IsRoomCleared() then
+        if ctx.Run.GetCurrentRoom() ~= roomIndex then
             return
         end
 
@@ -154,83 +176,127 @@ local function buildConsole(roomIndex)
         prompt.Enabled = false
         screen.Color = Color3.fromRGB(255, 78, 42)
         light.Color = screen.Color
-        addLabel(screen, "OVERRIDE ARMED", "NEXT HOSTILE SECTOR: HIGH PRESSURE / HIGH YIELD")
+        addLabel(screen, "PressureReadout", "OVERRIDE ARMED", "NEXT HOSTILE SECTOR: HIGH PRESSURE / HIGH YIELD", Color3.fromRGB(255, 100, 58))
+        notifyLiving("PRESSURE OVERRIDE ARMED — next hostile sector hits harder; Essence +35% and clearance loot quality boosted")
+    end)
+end
 
-        for _, teammate in ipairs(ctx.Run.GetLivingParticipants()) do
-            ctx.Remotes.State:FireClient(teammate, "Notice", "PRESSURE OVERRIDE ARMED — next hostile sector gains reinforcements; Essence +35% and loot quality boosted")
+local function installHooks()
+    if hooksInstalled then
+        return
+    end
+    hooksInstalled = true
+
+    local originalStartRun = ctx.Run.StartRun
+    ctx.Run.StartRun = function(requester)
+        resetState()
+        return originalStartRun(requester)
+    end
+
+    local originalActivateRoom = ctx.Run.ActivateRoom
+    ctx.Run.ActivateRoom = function(roomIndex)
+        destroyConsole()
+        spawnSerial = 0
+        if armed and HOSTILE_TYPES[ctx.Config.RoomSequence[roomIndex]] then
+            armed = false
+            activeRoom = roomIndex
+        else
+            activeRoom = 0
         end
 
-        task.delay(0.9, function()
-            if model.Parent then
-                for _, descendant in ipairs(model:GetDescendants()) do
-                    if descendant:IsA("BasePart") and descendant.Material == Enum.Material.Neon then
-                        TweenService:Create(descendant, TweenInfo.new(0.35), { Transparency = math.max(descendant.Transparency, 0.48) }):Play()
-                    end
-                end
+        local result = originalActivateRoom(roomIndex)
+        if activeRoom == roomIndex then
+            notifyLiving("HIGH-PRESSURE SECTOR — hostiles upgraded; +35% unsecured Essence and enhanced clearance loot")
+            for _, player in ipairs(ctx.Run.GetLivingParticipants()) do
+                ctx.Remotes.State:FireClient(player, "Pressure", {
+                    Active = true,
+                    Room = roomIndex,
+                    EssenceMultiplier = 1.35,
+                    LootLuck = 0.45,
+                })
             end
-        end)
-    end)
+        end
+        return result
+    end
+
+    local originalSpawn = ctx.Enemies.Spawn
+    ctx.Enemies.Spawn = function(enemyType, roomIndex, position, difficulty)
+        if activeRoom == roomIndex then
+            spawnSerial += 1
+            difficulty *= 1.24
+            if enemyType == "Shade" and spawnSerial % 4 == 0 then
+                enemyType = roomIndex >= 6 and "Brute" or "Archer"
+            elseif enemyType == "Archer" and roomIndex >= 8 and spawnSerial % 5 == 0 then
+                enemyType = "Brute"
+            end
+        end
+        return originalSpawn(enemyType, roomIndex, position, difficulty)
+    end
+
+    local originalGenerateWeapon = ctx.Loot.GenerateWeapon
+    ctx.Loot.GenerateWeapon = function(rng, depth, rank, luckBonus)
+        local pressureLuck = activeRoom > 0 and 0.45 or 0
+        return originalGenerateWeapon(rng, depth, rank, (luckBonus or 0) + pressureLuck)
+    end
+
+    local originalEnemyDied = ctx.Run.OnEnemyDied
+    ctx.Run.OnEnemyDied = function(enemy, attacker)
+        if activeRoom == enemy.RoomIndex and enemy.Data then
+            local proxy = table.clone(enemy)
+            proxy.Data = table.clone(enemy.Data)
+            proxy.Data.Essence = math.max(1, math.floor((proxy.Data.Essence or 1) * 1.35 + 0.5))
+            return originalEnemyDied(proxy, attacker)
+        end
+        return originalEnemyDied(enemy, attacker)
+    end
+
+    local originalClearRoom = ctx.Run.ClearRoom
+    ctx.Run.ClearRoom = function()
+        local roomIndex = ctx.Run.GetCurrentRoom()
+        local wasPressure = activeRoom == roomIndex
+        local result = originalClearRoom()
+        local room = ctx.World.GetRoom(roomIndex)
+        local cleared = room and room.ExitGate and room.ExitGate.Transparency >= 0.95
+
+        if cleared then
+            if wasPressure then
+                for _, player in ipairs(ctx.Run.GetLivingParticipants()) do
+                    ctx.Remotes.State:FireClient(player, "Pressure", { Active = false, Room = roomIndex })
+                end
+                notifyLiving("PRESSURE BROKEN — enhanced sector rewards secured")
+            end
+            activeRoom = 0
+            buildConsole(roomIndex)
+        end
+        return result
+    end
+
+    local originalCompleteRun = ctx.Run.CompleteRun
+    ctx.Run.CompleteRun = function(...)
+        activeRoom = 0
+        destroyConsole()
+        return originalCompleteRun(...)
+    end
+
+    local originalFailRun = ctx.Run.FailRun
+    ctx.Run.FailRun = function(...)
+        activeRoom = 0
+        destroyConsole()
+        return originalFailRun(...)
+    end
 end
 
 function PressureOverrideService.Init(context)
     ctx = context
+    installHooks()
 end
 
 function PressureOverrideService.Reset()
-    armed = false
-    activeRoom = 0
-    destroyConsole()
-end
-
-function PressureOverrideService.OnRoomActivated(roomIndex)
-    destroyConsole()
-    local roomType = ctx.Config.RoomSequence[roomIndex]
-    if armed and HOSTILE_TYPES[roomType] then
-        armed = false
-        activeRoom = roomIndex
-        for _, player in ipairs(ctx.Run.GetLivingParticipants()) do
-            ctx.Remotes.State:FireClient(player, "Notice", "HIGH-PRESSURE SECTOR — reinforced hostiles active; +35% Essence and enhanced clearance loot")
-            ctx.Remotes.State:FireClient(player, "Pressure", {
-                Active = true,
-                Room = roomIndex,
-                EssenceMultiplier = 1.35,
-                LootLuck = 0.45,
-            })
-        end
-    else
-        activeRoom = 0
-    end
-end
-
-function PressureOverrideService.OnRoomCleared(roomIndex)
-    local wasActive = activeRoom == roomIndex
-    activeRoom = 0
-    if wasActive then
-        for _, player in ipairs(ctx.Run.GetLivingParticipants()) do
-            ctx.Remotes.State:FireClient(player, "Pressure", { Active = false, Room = roomIndex })
-            ctx.Remotes.State:FireClient(player, "Notice", "PRESSURE BROKEN — enhanced sector rewards secured")
-        end
-    end
-    buildConsole(roomIndex)
+    resetState()
 end
 
 function PressureOverrideService.IsActive(roomIndex)
     return activeRoom == roomIndex
-end
-
-function PressureOverrideService.GetEssenceMultiplier(roomIndex)
-    return activeRoom == roomIndex and 1.35 or 1
-end
-
-function PressureOverrideService.GetLootLuck(roomIndex)
-    return activeRoom == roomIndex and 0.45 or 0
-end
-
-function PressureOverrideService.GetReinforcementCount(roomIndex, baseCount)
-    if activeRoom ~= roomIndex then
-        return 0
-    end
-    return math.max(2, math.ceil(baseCount * 0.28))
 end
 
 return PressureOverrideService
