@@ -15,6 +15,7 @@ local CombatSectorExpansion = require(servicesFolder:WaitForChild("CombatSectorE
 local CombatUtilities = require(servicesFolder:WaitForChild("CombatUtilityService"))
 local EnvironmentalHazards = require(servicesFolder:WaitForChild("EnvironmentalHazardService"))
 local Enemies = require(servicesFolder:WaitForChild("EnemyService"))
+local EnemyPresentation = require(servicesFolder:WaitForChild("EnemyPresentationService"))
 local EnemyTactics = require(servicesFolder:WaitForChild("EnemyTacticsService"))
 local BossPatterns = require(servicesFolder:WaitForChild("BossPatternService"))
 local Run = require(servicesFolder:WaitForChild("RunService"))
@@ -69,6 +70,7 @@ local context = {
     CombatUtilities = CombatUtilities,
     EnvironmentalHazards = EnvironmentalHazards,
     Enemies = Enemies,
+    EnemyPresentation = EnemyPresentation,
     EnemyTactics = EnemyTactics,
     BossPatterns = BossPatterns,
     Run = Run,
@@ -97,6 +99,7 @@ CombatSectorExpansion.Init(context)
 CombatUtilities.Init(context)
 EnvironmentalHazards.Init(context)
 Enemies.Init(context)
+EnemyPresentation.Init(context)
 EnemyTactics.Init(context)
 BossPatterns.Init(context)
 Run.Init(context)
