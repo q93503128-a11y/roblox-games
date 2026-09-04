@@ -6,10 +6,12 @@ local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 local remotes = ReplicatedStorage:WaitForChild("VaultfallRemotes")
 local stateRemote = remotes:WaitForChild("State")
+local readyRemote = remotes:WaitForChild("Ready")
 
 local currentArchetype = "Carbine"
 local entriesByArchetype = {}
 local flashSerial = 0
+local receivedMastery = false
 
 local gui = Instance.new("ScreenGui")
 gui.Name = "WeaponMasteryFeedback"
@@ -26,6 +28,7 @@ panel.Size = UDim2.fromOffset(300, 48)
 panel.BackgroundColor3 = Color3.fromRGB(16, 20, 24)
 panel.BackgroundTransparency = 0.12
 panel.BorderSizePixel = 0
+panel.Visible = false
 panel.Parent = gui
 
 local panelCorner = Instance.new("UICorner")
@@ -249,6 +252,7 @@ stateRemote.OnClientEvent:Connect(function(kind, payload)
         currentArchetype = payload.Archetype or currentArchetype
         refreshStrip()
     elseif kind == "Mastery" and type(payload) == "table" then
+        receivedMastery = true
         if type(payload.Entries) == "table" then
             for _, entry in ipairs(payload.Entries) do
                 if type(entry) == "table" and entry.Archetype then
@@ -262,5 +266,13 @@ stateRemote.OnClientEvent:Connect(function(kind, payload)
         end
     elseif kind == "Run" and type(payload) == "table" then
         panel.BackgroundTransparency = payload.Active and 0.12 or 0.22
+    end
+end)
+
+-- StarterPlayerScripts start independently. Ask for one state replay if this
+-- presentation script missed the main HUD's initial Ready handshake.
+task.delay(0.75, function()
+    if not receivedMastery then
+        readyRemote:FireServer()
     end
 end)
