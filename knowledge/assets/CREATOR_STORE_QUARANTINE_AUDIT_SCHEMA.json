@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "verifiedDate": "2026-09-04",
+  "name": "Creator Store Quarantine Audit Record",
+  "required": [
+    "assetId",
+    "sourceUrl",
+    "creator",
+    "capturedAt",
+    "metadataTriage",
+    "studioAudit",
+    "visualReview",
+    "productionFit",
+    "decision"
+  ],
+  "template": {
+    "assetId": null,
+    "sourceUrl": null,
+    "creator": null,
+    "capturedAt": null,
+    "metadataTriage": {
+      "status": "QUARANTINE_NORMAL",
+      "riskScore": 0,
+      "reasons": []
+    },
+    "studioAudit": {
+      "placeIsQuarantineOnly": true,
+      "scriptsDisabledBeforeInspection": true,
+      "descendantCount": null,
+      "classHistogram": {},
+      "scriptCount": null,
+      "localScriptCount": null,
+      "moduleScriptCount": null,
+      "suspiciousSourceFindings": [],
+      "assetDependencies": [],
+      "meshPartCount": null,
+      "partCount": null,
+      "particleEmitterCount": null,
+      "soundCount": null,
+      "animationCount": null,
+      "pivotOkay": null,
+      "collisionOkay": null,
+      "rigOkay": null,
+      "unexpectedOriginParts": null,
+      "warnings": []
+    },
+    "visualReview": {
+      "screenshots": [],
+      "silhouette": null,
+      "materialQuality": null,
+      "styleFit": null,
+      "scaleFit": null,
+      "readabilityNear": null,
+      "readabilityFar": null,
+      "notes": []
+    },
+    "productionFit": {
+      "mobileMeasured": false,
+      "repetitionCountTested": null,
+      "streamingTested": false,
+      "pathfindingTested": false,
+      "combatCameraTested": false,
+      "vfxWorstCaseTested": false,
+      "performanceNotes": []
+    },
+    "decision": {
+      "grade": "PENDING",
+      "allowedUse": [],
+      "requiredModifications": [],
+      "sourceAttributionRecord": null,
+      "reviewer": null,
+      "reviewedAt": null
+    }
+  },
+  "gradeRules": {
+    "S": "Production-ready after minor normalization; all hard gates passed.",
+    "A": "Strong candidate with defined modifications before production.",
+    "B": "Useful for prototype/secondary/reference use; not a default production component.",
+    "C": "Reference/study only.",
+    "REJECT": "Do not use.",
+    "PENDING": "Not fully audited."
+  },
+  "hardRules": [
+    "Metadata alone can never produce S or A.",
+    "Unresolved malicious-loader/backdoor evidence forces REJECT.",
+    "Unclear or incompatible reuse terms force HOLD/REJECT until resolved.",
+    "Scripted assets are never executed merely to see what they do.",
+    "A high marketplace rating cannot override a concrete security finding."
+  ]
+}
