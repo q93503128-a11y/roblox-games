@@ -12,6 +12,7 @@ local WorldPolish = require(servicesFolder:WaitForChild("WorldPolishService"))
 local SafehouseExperience = require(servicesFolder:WaitForChild("SafehouseExperienceService"))
 local SectorPolish = require(servicesFolder:WaitForChild("SectorPolishService"))
 local CombatSectorExpansion = require(servicesFolder:WaitForChild("CombatSectorExpansionService"))
+local CombatUtilities = require(servicesFolder:WaitForChild("CombatUtilityService"))
 local EnvironmentalHazards = require(servicesFolder:WaitForChild("EnvironmentalHazardService"))
 local Enemies = require(servicesFolder:WaitForChild("EnemyService"))
 local EnemyTactics = require(servicesFolder:WaitForChild("EnemyTacticsService"))
@@ -65,6 +66,7 @@ local context = {
     SafehouseExperience = SafehouseExperience,
     SectorPolish = SectorPolish,
     CombatSectorExpansion = CombatSectorExpansion,
+    CombatUtilities = CombatUtilities,
     EnvironmentalHazards = EnvironmentalHazards,
     Enemies = Enemies,
     EnemyTactics = EnemyTactics,
@@ -92,6 +94,7 @@ WorldPolish.Init(context)
 SafehouseExperience.Init(context)
 SectorPolish.Init(context)
 CombatSectorExpansion.Init(context)
+CombatUtilities.Init(context)
 EnvironmentalHazards.Init(context)
 Enemies.Init(context)
 EnemyTactics.Init(context)
@@ -115,6 +118,7 @@ WorldPolish.Build()
 SafehouseExperience.Build()
 SectorPolish.Build()
 CombatSectorExpansion.Build()
+CombatUtilities.Build()
 EnvironmentalHazards.Build()
 Contracts.BindWorld()
 Career.BindWorld()
