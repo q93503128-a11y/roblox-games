@@ -17,6 +17,7 @@ local EnvironmentalHazards = require(servicesFolder:WaitForChild("EnvironmentalH
 local Enemies = require(servicesFolder:WaitForChild("EnemyService"))
 local EnemyPresentation = require(servicesFolder:WaitForChild("EnemyPresentationService"))
 local EnemyTactics = require(servicesFolder:WaitForChild("EnemyTacticsService"))
+local CombatReinforcements = require(servicesFolder:WaitForChild("CombatReinforcementService"))
 local BossPatterns = require(servicesFolder:WaitForChild("BossPatternService"))
 local Run = require(servicesFolder:WaitForChild("RunService"))
 local Combat = require(servicesFolder:WaitForChild("CombatService"))
@@ -72,6 +73,7 @@ local context = {
     Enemies = Enemies,
     EnemyPresentation = EnemyPresentation,
     EnemyTactics = EnemyTactics,
+    CombatReinforcements = CombatReinforcements,
     BossPatterns = BossPatterns,
     Run = Run,
     Combat = Combat,
@@ -103,6 +105,7 @@ EnemyPresentation.Init(context)
 EnemyTactics.Init(context)
 BossPatterns.Init(context)
 Run.Init(context)
+CombatReinforcements.Init(context)
 PressureOverride.Init(context)
 Augments.Init(context)
 Mastery.Init(context)
