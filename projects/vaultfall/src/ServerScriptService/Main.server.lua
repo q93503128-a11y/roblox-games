@@ -10,6 +10,7 @@ local Profile = require(servicesFolder:WaitForChild("ProfileService"))
 local World = require(servicesFolder:WaitForChild("WorldService"))
 local WorldPolish = require(servicesFolder:WaitForChild("WorldPolishService"))
 local SectorPolish = require(servicesFolder:WaitForChild("SectorPolishService"))
+local EnvironmentalHazards = require(servicesFolder:WaitForChild("EnvironmentalHazardService"))
 local Enemies = require(servicesFolder:WaitForChild("EnemyService"))
 local Run = require(servicesFolder:WaitForChild("RunService"))
 local Combat = require(servicesFolder:WaitForChild("CombatService"))
@@ -57,6 +58,7 @@ local context = {
     World = World,
     WorldPolish = WorldPolish,
     SectorPolish = SectorPolish,
+    EnvironmentalHazards = EnvironmentalHazards,
     Enemies = Enemies,
     Run = Run,
     Combat = Combat,
@@ -78,6 +80,7 @@ VisualAssets.Init(context)
 World.Init(context)
 WorldPolish.Init(context)
 SectorPolish.Init(context)
+EnvironmentalHazards.Init(context)
 Enemies.Init(context)
 Run.Init(context)
 Augments.Init(context)
@@ -95,6 +98,7 @@ Career.Init(context)
 World.Build()
 WorldPolish.Build()
 SectorPolish.Build()
+EnvironmentalHazards.Build()
 Contracts.BindWorld()
 Career.BindWorld()
 Profile.Init(context)
