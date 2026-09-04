@@ -257,10 +257,6 @@ function WorldPolishService.Build()
     root:SetAttribute("ProductionWorldDressing", true)
     root:SetAttribute("SelfContainedFallback", true)
     root:SetAttribute("BuildVersion", 1)
-
-    if ctx and ctx.Remotes and ctx.Remotes.State then
-        -- Attribute is intentionally passive; clients already receive state through existing services.
-    end
 end
 
 return WorldPolishService
