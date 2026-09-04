@@ -64,21 +64,17 @@ local function bindRunHooks()
 
     local originalExtract = ctx.Run.ExtractPlayer
     ctx.Run.ExtractPlayer = function(player)
-        local before = ctx.Profile.Get(player)
+        local before = ctx.Profile.GetPublic(player)
         local oldExtractions = before and before.Extractions or 0
+        local beforeEssence = before and before.Essence or 0
+        local depth = ctx.Run.GetCurrentRoom()
         local result = originalExtract(player)
         if result then
             local profile = ctx.Profile.Get(player)
             if profile and profile.Extractions == oldExtractions then
-                -- RunService performs the secure payout; record career statistics after success.
-                -- The exact payout is sent to the client there, while the career service tracks
-                -- the persistent extraction count. HighestExtraction is updated through
-                -- RecordExtraction when the payout can be inferred by the profile delta below.
-                local public = ctx.Profile.GetPublic(player)
-                local currentEssence = public and public.Essence or 0
-                local previousEssence = before and before.Essence or currentEssence
-                local secured = math.max(0, currentEssence - previousEssence)
-                ctx.Profile.RecordExtraction(player, secured, ctx.Run.GetCurrentRoom())
+                local after = ctx.Profile.GetPublic(player)
+                local secured = math.max(0, (after and after.Essence or beforeEssence) - beforeEssence)
+                ctx.Profile.RecordExtraction(player, secured, depth)
                 ctx.Profile.Save(player)
                 CareerService.PushState(player)
             end
@@ -104,7 +100,6 @@ function CareerService.BindWorld()
         return
     end
 
-    local wall = safehouse:FindFirstChild("SafehouseWall")
     local marker
     for _, descendant in ipairs(safehouse:GetDescendants()) do
         if descendant.Name == "WorldLabel" and descendant:IsA("BillboardGui") then
@@ -115,13 +110,12 @@ function CareerService.BindWorld()
             end
         end
     end
-    wall = marker or wall
-    if not wall or not wall:IsA("BasePart") then
+    if not marker or not marker:IsA("BasePart") then
         warn("[Vaultfall] CareerService trophy wall marker unavailable")
         return
     end
 
-    local prompt = wall:FindFirstChild("OperatorRecordPrompt")
+    local prompt = marker:FindFirstChild("OperatorRecordPrompt")
     if not prompt then
         prompt = Instance.new("ProximityPrompt")
         prompt.Name = "OperatorRecordPrompt"
@@ -130,7 +124,7 @@ function CareerService.BindWorld()
         prompt.HoldDuration = 0.25
         prompt.MaxActivationDistance = 12
         prompt.RequiresLineOfSight = false
-        prompt.Parent = wall
+        prompt.Parent = marker
         prompt.Triggered:Connect(function(player)
             CareerService.PushState(player)
         end)
