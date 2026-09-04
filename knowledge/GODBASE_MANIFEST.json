@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 7,
+  "schemaVersion": 8,
   "verifiedDate": "2026-09-04",
   "name": "Roblox Godbase",
   "status": "ACTIVE_CANONICAL_NOT_COMPLETE",
@@ -14,6 +14,7 @@
     "uiHeavy": ["knowledge/ui/CROSS_PLATFORM_ACCESSIBILITY_LOCALIZATION.md","knowledge/ui/UI_STORYBOOK_COMPONENT_WORKFLOW.md","knowledge/ui/UI_MOTION_TOPBAR_MICROINTERACTIONS.md"],
     "thirdPartyAssets": ["knowledge/assets/CREATOR_STORE_AUDIT_AND_CATALOG.md","knowledge/assets/CREATOR_STORE_AUTOMATION_AND_SCORING.md","knowledge/assets/CREATOR_STORE_RED_FLAGS_AND_QUARANTINE.md","knowledge/checklists/ASSET_IMPORT_CHECKLIST.md"],
     "assetProcurement": ["knowledge/assets/CREATOR_STORE_SUPPLY_CATALOG.json","knowledge/assets/OFFICIAL_ROBLOX_ASSET_PACKS.md","knowledge/assets/ASSET_SELECTION_BY_GENRE.md","knowledge/assets/CREATOR_STORE_RED_FLAGS_AND_QUARANTINE.md"],
+    "creatorStoreAutomation": ["knowledge/assets/CREATOR_STORE_HARVESTER_AND_QUARANTINE_PIPELINE.md","knowledge/assets/CREATOR_STORE_SEARCH_PROFILES.json","knowledge/assets/CREATOR_STORE_QUARANTINE_AUDIT_SCHEMA.json","knowledge/assets/CREATOR_STORE_AUTOMATION_AND_SCORING.md"],
     "interactionHeavy": ["knowledge/gameplay/INTERACTION_SYSTEMS.md"],
     "inventoryLootRpg": ["knowledge/gameplay/INVENTORY_EQUIPMENT_ARCHITECTURE.md","knowledge/gameplay/LOOT_DROP_CRAFTING.md","knowledge/gameplay/QUEST_OBJECTIVE_MISSIONS.md"],
     "trading": ["knowledge/gameplay/TRADING_GIFTING_SECURITY_UX.md","knowledge/data/SAVE_SCHEMA_MIGRATION_RECOVERY.md"],
@@ -32,9 +33,15 @@
     "release": ["knowledge/testing/AUTOMATED_ACCEPTANCE_GATES.md","knowledge/testing/DEVICE_NETWORK_TEST_MATRIX.md","knowledge/checklists/SHIP_CHECKLIST.md","knowledge/workflow/OPEN_CLOUD_CI_RELEASE_AUTOMATION.md","knowledge/publishing/POLICY_MARKETPLACE_LOCALIZATION.md"],
     "debugging": ["knowledge/debugging/STUDIO_DEBUGGING_VISUALIZATION.md"]
   },
-  "sourceIndexes": {"creatorDocs":"https://create.roblox.com/docs/llms.txt","creatorDocsFull":"https://create.roblox.com/docs/llms-full.txt","engineApi":"https://create.roblox.com/docs/reference/engine/llms.txt","openCloud":"https://create.roblox.com/docs/cloud/llms.txt","creatorStoreCloud":"https://create.roblox.com/docs/cloud/reference/features/creator-store","creatorDocsRepo":"https://github.com/Roblox/creator-docs"},
+  "sourceIndexes": {"creatorDocs":"https://create.roblox.com/docs/llms.txt","creatorDocsFull":"https://create.roblox.com/docs/llms-full.txt","engineApi":"https://create.roblox.com/docs/reference/engine/llms.txt","openCloud":"https://create.roblox.com/docs/cloud/llms.txt","creatorStoreCloud":"https://create.roblox.com/docs/cloud/reference/features/creator-store","creatorStoreScopes":"https://create.roblox.com/docs/cloud/reference/scopes","creatorDocsRepo":"https://github.com/Roblox/creator-docs"},
   "currentPreferredWorkflowCandidates": {"studioFirst":["Roblox Studio","Studio MCP","Script Sync","Git","Luau LSP","StyLua","selene"],"filesystemFirst":["Rojo","Rokit","Wally","Git","Luau LSP","StyLua","selene","Studio MCP for QA"]},
-  "catalogs": ["knowledge/assets/OFFICIAL_ASSET_CATALOG.json","knowledge/assets/CREATOR_STORE_SEED_CATALOG.json","knowledge/assets/CREATOR_STORE_SUPPLY_CATALOG.json","knowledge/catalogs/LIBRARY_CATALOG.json"],
+  "catalogs": ["knowledge/assets/OFFICIAL_ASSET_CATALOG.json","knowledge/assets/CREATOR_STORE_SEED_CATALOG.json","knowledge/assets/CREATOR_STORE_SUPPLY_CATALOG.json","knowledge/assets/CREATOR_STORE_SEARCH_PROFILES.json","knowledge/assets/CREATOR_STORE_QUARANTINE_AUDIT_SCHEMA.json","knowledge/catalogs/LIBRARY_CATALOG.json"],
+  "automationTools": {
+    "creatorStoreHarvester": "tools/godbase/creator_store_harvest.py",
+    "creatorStoreMetadataTriage": "tools/godbase/creator_store_metadata_score.py",
+    "creatorStoreStudioAudit": "tools/godbase/quarantine_audit.luau",
+    "unitTests": "tools/godbase/tests"
+  },
   "validation": "tools/godbase/validate.py",
   "continuousResearch": "knowledge/research/CONTINUOUS_RESEARCH_ROADMAP.md",
   "failureLibrary": "knowledge/regressions/FAILURE_LIBRARY.md",
