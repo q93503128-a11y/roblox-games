@@ -186,7 +186,7 @@ local function createElevatedRoute(parent, room, direction, center, across)
     return deckCenter
 end
 
-local function createCover(parent, room, direction, center, across)
+local function createCover(parent, _room, direction, center, across)
     local coverColor = Color3.fromRGB(73, 78, 82)
     local heavyColor = Color3.fromRGB(57, 62, 66)
 
