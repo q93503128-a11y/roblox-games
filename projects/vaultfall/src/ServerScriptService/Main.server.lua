@@ -134,8 +134,41 @@ Contracts.BindWorld()
 Career.BindWorld()
 Profile.Init(context)
 
+local function isLivingParticipant(player)
+    if not Run.IsParticipant(player) then
+        return false
+    end
+
+    for _, participant in ipairs(Run.GetLivingParticipants()) do
+        if participant == player then
+            return true
+        end
+    end
+    return false
+end
+
+local function pushHubRunState(player)
+    context.Remotes.State:FireClient(player, "Run", {
+        Active = false,
+        Room = 0,
+        TotalRooms = Config.RoomCount,
+        RoomType = "Hub",
+        Cleared = false,
+        EnemyCount = 0,
+    })
+    context.Remotes.State:FireClient(player, "Extraction", {
+        Active = false,
+        Available = false,
+        Room = 0,
+        Bank = 0,
+        Bonus = 0,
+        Total = 0,
+    })
+end
+
 local function placeAtHub(player, character)
-    if Run.IsParticipant(player) then
+    local wasRunParticipant = Run.IsParticipant(player)
+    if wasRunParticipant and isLivingParticipant(player) then
         return
     end
 
@@ -147,6 +180,13 @@ local function placeAtHub(player, character)
     character:PivotTo(World.GetHubSpawnCFrame())
     root.AssemblyLinearVelocity = Vector3.zero
     root.AssemblyAngularVelocity = Vector3.zero
+
+    -- Eliminated operators remain part of the run's historical participant set
+    -- until cleanup. If Roblox auto-respawns them while squadmates continue, keep
+    -- that new character safely in the hub and clear stale in-run HUD state.
+    if wasRunParticipant and not isLivingParticipant(player) then
+        pushHubRunState(player)
+    end
 end
 
 context.Remotes.Ready.OnServerEvent:Connect(function(player)
