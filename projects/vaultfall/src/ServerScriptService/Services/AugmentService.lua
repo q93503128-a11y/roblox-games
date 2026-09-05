@@ -133,10 +133,19 @@ local function defaultModifiers()
     }
 end
 
+local function newPlayerState()
+    return {
+        Stacks = {},
+        Modifiers = defaultModifiers(),
+        Picks = 0,
+        LastOfferRoom = 0,
+    }
+end
+
 local function stateFor(player)
     local state = playerState[player]
     if not state then
-        state = { Stacks = {}, Modifiers = defaultModifiers(), Picks = 0 }
+        state = newPlayerState()
         playerState[player] = state
     end
     return state
@@ -255,7 +264,7 @@ end
 function AugmentService.ResetRun(players)
     table.clear(pendingChoices)
     for _, player in ipairs(players or {}) do
-        playerState[player] = { Stacks = {}, Modifiers = defaultModifiers(), Picks = 0 }
+        playerState[player] = newPlayerState()
         rebuild(player)
         pushState(player)
     end
@@ -279,6 +288,12 @@ function AugmentService.Offer(player, source)
         return false
     end
 
+    local state = stateFor(player)
+    local room = ctx.Run.GetCurrentRoom()
+    if room > 0 and state.LastOfferRoom == room then
+        return false
+    end
+
     local pool = eligibleIds(player)
     if #pool == 0 then
         return false
@@ -290,6 +305,7 @@ function AugmentService.Offer(player, source)
         table.insert(ids, table.remove(pool, index))
     end
     pendingChoices[player] = ids
+    state.LastOfferRoom = room
 
     local choices = {}
     for _, id in ipairs(ids) do
