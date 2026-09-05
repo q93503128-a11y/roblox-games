@@ -103,8 +103,20 @@ local function pushCombat(player)
     ctx.Remotes.State:FireClient(player, "Combat", combatPayload(player, state, weapon, definition))
 end
 
+local function isLivingRunParticipant(player)
+    if not ctx.Run.IsParticipant(player) then
+        return false
+    end
+    for _, participant in ipairs(ctx.Run.GetLivingParticipants()) do
+        if participant == player then
+            return true
+        end
+    end
+    return false
+end
+
 local function canUseWeapon(player)
-    return ctx.Run.IsParticipant(player) or (ctx.Training and ctx.Training.IsAvailable(player))
+    return isLivingRunParticipant(player) or (ctx.Training and ctx.Training.IsAvailable(player))
 end
 
 local function beginReload(player)
@@ -132,6 +144,10 @@ local function beginReload(player)
     task.delay(reloadDuration, function()
         local current = weaponStates[player]
         if current ~= state or state.ReloadToken ~= token then
+            return
+        end
+        if not canUseWeapon(player) then
+            state.Reloading = false
             return
         end
         state.Reloading = false
@@ -169,7 +185,7 @@ local function damageEnemy(player, enemy, amount, weapon, multiplier)
 end
 
 local function fireWeapon(player, requestedDirection)
-    local isRun = ctx.Run.IsParticipant(player)
+    local isRun = isLivingRunParticipant(player)
     local isTraining = not isRun and ctx.Training and ctx.Training.IsAvailable(player)
     if not isRun and not isTraining then
         return
@@ -248,7 +264,7 @@ local function fireWeapon(player, requestedDirection)
 end
 
 local function performDash(player, requestedDirection)
-    if not ctx.Run.IsParticipant(player) then
+    if not isLivingRunParticipant(player) then
         return
     end
 
