@@ -10,6 +10,7 @@ local Profile = require(servicesFolder:WaitForChild("ProfileService"))
 local World = require(servicesFolder:WaitForChild("WorldService"))
 local WorldPolish = require(servicesFolder:WaitForChild("WorldPolishService"))
 local SafehouseExperience = require(servicesFolder:WaitForChild("SafehouseExperienceService"))
+local SelfContainedDressing = require(servicesFolder:WaitForChild("SelfContainedDressingService"))
 local SectorPolish = require(servicesFolder:WaitForChild("SectorPolishService"))
 local CombatSectorExpansion = require(servicesFolder:WaitForChild("CombatSectorExpansionService"))
 local CombatUtilities = require(servicesFolder:WaitForChild("CombatUtilityService"))
@@ -66,6 +67,7 @@ local context = {
     World = World,
     WorldPolish = WorldPolish,
     SafehouseExperience = SafehouseExperience,
+    SelfContainedDressing = SelfContainedDressing,
     SectorPolish = SectorPolish,
     CombatSectorExpansion = CombatSectorExpansion,
     CombatUtilities = CombatUtilities,
@@ -96,6 +98,7 @@ VisualAssets.Init(context)
 World.Init(context)
 WorldPolish.Init(context)
 SafehouseExperience.Init(context)
+SelfContainedDressing.Init(context)
 SectorPolish.Init(context)
 CombatSectorExpansion.Init(context)
 CombatUtilities.Init(context)
@@ -122,6 +125,7 @@ Career.Init(context)
 World.Build()
 WorldPolish.Build()
 SafehouseExperience.Build()
+SelfContainedDressing.Build()
 SectorPolish.Build()
 CombatSectorExpansion.Build()
 CombatUtilities.Build()
