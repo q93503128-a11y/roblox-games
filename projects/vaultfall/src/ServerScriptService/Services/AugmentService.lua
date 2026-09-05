@@ -3,6 +3,8 @@ local ctx
 
 local playerState = {}
 local pendingChoices = {}
+local pendingSources = {}
+local queuedBonusSources = {}
 local rng = Random.new()
 
 local AUGMENTS = {
@@ -116,6 +118,13 @@ local ORDER = {
     "blood_circuit", "pursuit", "stabilizer", "capacitor", "emergency_mesh", "hunter_protocol",
 }
 
+local BONUS_SOURCES = {
+    ["HVT BOUNTY"] = true,
+    ["OVERLOAD CACHE"] = true,
+    ["RELAY SWEEP"] = true,
+    ["CONTAINMENT HOLD"] = true,
+}
+
 local function defaultModifiers()
     return {
         Damage = 1,
@@ -138,7 +147,8 @@ local function newPlayerState()
         Stacks = {},
         Modifiers = defaultModifiers(),
         Picks = 0,
-        LastOfferRoom = 0,
+        LastStandardOfferRoom = 0,
+        LastBonusOfferRoom = 0,
     }
 end
 
@@ -219,6 +229,22 @@ local function buildChoice(id)
     }
 end
 
+local function isBonusSource(source)
+    return BONUS_SOURCES[source or ""] == true
+end
+
+local function queueBonus(player, source)
+    if not isBonusSource(source) then
+        return false
+    end
+    if queuedBonusSources[player] then
+        return false
+    end
+    queuedBonusSources[player] = source
+    ctx.Remotes.State:FireClient(player, "Notice", string.format("%s reward queued — install your current augment first", source))
+    return true
+end
+
 function AugmentService.Init(context)
     ctx = context
 
@@ -243,6 +269,7 @@ function AugmentService.Init(context)
         end
 
         pendingChoices[player] = nil
+        pendingSources[player] = nil
         local state = stateFor(player)
         local def = AUGMENTS[choiceId]
         state.Stacks[choiceId] = math.min(def.MaxStacks, (state.Stacks[choiceId] or 0) + 1)
@@ -258,11 +285,23 @@ function AugmentService.Init(context)
 
         pushState(player)
         ctx.Remotes.State:FireClient(player, "Notice", string.format("Augment installed: %s", def.Name))
+
+        local queued = queuedBonusSources[player]
+        if queued then
+            queuedBonusSources[player] = nil
+            task.defer(function()
+                if player.Parent and ctx.Run.IsParticipant(player) then
+                    AugmentService.Offer(player, queued)
+                end
+            end)
+        end
     end)
 end
 
 function AugmentService.ResetRun(players)
     table.clear(pendingChoices)
+    table.clear(pendingSources)
+    table.clear(queuedBonusSources)
     for _, player in ipairs(players or {}) do
         playerState[player] = newPlayerState()
         rebuild(player)
@@ -273,6 +312,8 @@ end
 function AugmentService.ClearPlayer(player)
     playerState[player] = nil
     pendingChoices[player] = nil
+    pendingSources[player] = nil
+    queuedBonusSources[player] = nil
 end
 
 function AugmentService.GetModifiers(player)
@@ -284,14 +325,25 @@ function AugmentService.PushState(player)
 end
 
 function AugmentService.Offer(player, source)
-    if not player.Parent or not ctx.Run.IsParticipant(player) or pendingChoices[player] then
+    if not player.Parent or not ctx.Run.IsParticipant(player) then
         return false
+    end
+
+    if pendingChoices[player] then
+        return queueBonus(player, source)
     end
 
     local state = stateFor(player)
     local room = ctx.Run.GetCurrentRoom()
-    if room > 0 and state.LastOfferRoom == room then
-        return false
+    local bonus = isBonusSource(source)
+    if room > 0 then
+        if bonus then
+            if state.LastBonusOfferRoom == room then
+                return false
+            end
+        elseif state.LastStandardOfferRoom == room then
+            return false
+        end
     end
 
     local pool = eligibleIds(player)
@@ -305,7 +357,14 @@ function AugmentService.Offer(player, source)
         table.insert(ids, table.remove(pool, index))
     end
     pendingChoices[player] = ids
-    state.LastOfferRoom = room
+    pendingSources[player] = source
+    if room > 0 then
+        if bonus then
+            state.LastBonusOfferRoom = room
+        else
+            state.LastStandardOfferRoom = room
+        end
+    end
 
     local choices = {}
     for _, id in ipairs(ids) do
