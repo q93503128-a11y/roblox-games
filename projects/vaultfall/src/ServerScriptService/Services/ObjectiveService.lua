@@ -68,6 +68,21 @@ local function setDeviceState(model, done)
     end
 end
 
+local function rewardObjectiveCompletion()
+    local participants = ctx.Run.GetLivingParticipants()
+    for _, player in ipairs(participants) do
+        local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid and humanoid.Health > 0 then
+            humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * 0.08)
+        end
+        ctx.Remotes.State:FireClient(player, "Notice", "Objective secured — field repair + protocol choice unlocked")
+    end
+
+    if ctx.Augments then
+        ctx.Augments.OfferParty("OBJECTIVE PROTOCOL")
+    end
+end
+
 local function completeObjective()
     if active.Complete or not active.Type then
         return
@@ -76,6 +91,7 @@ local function completeObjective()
     active.Current = active.Target
     active.TimeRemaining = 0
     broadcast()
+    rewardObjectiveCompletion()
     if ctx.Run and ctx.Run.OnObjectiveComplete then
         ctx.Run.OnObjectiveComplete(active.RoomIndex)
     end
