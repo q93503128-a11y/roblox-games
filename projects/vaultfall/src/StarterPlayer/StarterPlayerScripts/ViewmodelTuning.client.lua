@@ -9,6 +9,7 @@ local stateRemote = remotes:WaitForChild("State")
 local currentArchetype = "Carbine"
 local correction = CFrame.identity
 local tunedModel
+local tunedParts = {}
 
 -- The legacy viewmodel animator still supplies recoil/reload/bob. This layer is the
 -- final ergonomic pass and deliberately keeps the fallback weapon away from the
@@ -44,6 +45,16 @@ local tuning = {
     },
 }
 
+local function collectTunedParts(model)
+    table.clear(tunedParts)
+    for _, descendant in ipairs(model:GetDescendants()) do
+        if descendant:IsA("BasePart") then
+            table.insert(tunedParts, descendant)
+            descendant.LocalTransparencyModifier = 0
+        end
+    end
+end
+
 local function retuneModel(model)
     if tunedModel == model then
         return
@@ -58,6 +69,19 @@ local function retuneModel(model)
     pcall(function()
         model:ScaleTo(config.Scale)
     end)
+    collectTunedParts(model)
+end
+
+local function setViewmodelFade(amount)
+    local fade = math.clamp(amount, 0, 0.94)
+    for index = #tunedParts, 1, -1 do
+        local part = tunedParts[index]
+        if part.Parent == nil then
+            table.remove(tunedParts, index)
+        elseif math.abs(part.LocalTransparencyModifier - fade) > 0.01 then
+            part.LocalTransparencyModifier = fade
+        end
+    end
 end
 
 stateRemote.OnClientEvent:Connect(function(kind, payload)
@@ -78,8 +102,9 @@ RunService:BindToRenderStep("BreachViewmodelTuning", Enum.RenderPriority.Last.Va
     local nearWall = tonumber(player:GetAttribute("VaultfallNearWall")) or 0
     local modal = player:GetAttribute("VaultfallInputModal") == true
 
-    -- Client.client.lua still contains an old FOV lerp. Own the final camera value at
-    -- the end of the render pipeline so ADS cannot oscillate between two controllers.
+    -- Own the final camera value at the end of the render pipeline. The older HUD
+    -- animator still lerps FOV earlier in the frame, so this final pass prevents a
+    -- visible tug-of-war while keeping one authoritative ADS target.
     local targetFov = aiming and config.AdsFov or config.HipFov
     local fovAlpha = 1 - math.exp(-dt * (aiming and 18 or 13))
     camera.FieldOfView += (targetFov - camera.FieldOfView) * fovAlpha
@@ -87,6 +112,7 @@ RunService:BindToRenderStep("BreachViewmodelTuning", Enum.RenderPriority.Last.Va
     local model = camera:FindFirstChild("BreachWeaponViewmodel")
     if not model or not model:IsA("Model") or not model.PrimaryPart then
         tunedModel = nil
+        table.clear(tunedParts)
         return
     end
     retuneModel(model)
@@ -94,7 +120,7 @@ RunService:BindToRenderStep("BreachViewmodelTuning", Enum.RenderPriority.Last.Va
     local target = aiming and config.ADS or config.Hip
 
     -- Near a wall the weapon drops aggressively and pulls inward. At full obstruction
-    -- it is almost entirely below the sightline instead of clipping through geometry.
+    -- it sits below the sightline instead of clipping through geometry.
     if nearWall > 0 then
         target *= CFrame.new(0.12 * nearWall, -0.62 * nearWall, 0.40 * nearWall)
             * CFrame.Angles(math.rad(24 * nearWall), math.rad(-6 * nearWall), math.rad(7 * nearWall))
@@ -111,4 +137,13 @@ RunService:BindToRenderStep("BreachViewmodelTuning", Enum.RenderPriority.Last.Va
     -- Client.client.lua owns recoil/reload/bob. Apply only a final ergonomic correction
     -- after that animation so those systems remain intact.
     model:PivotTo(model:GetPivot() * correction)
+
+    -- Position alone cannot completely hide camera/doorframe intersections. Fade only
+    -- the local viewmodel as the muzzle enters nearby geometry; world objects remain
+    -- fully opaque and the sightline stays readable. Menus fade it even further.
+    local obstructionFade = math.clamp((nearWall - 0.58) / 0.42, 0, 1) * 0.84
+    if modal then
+        obstructionFade = math.max(obstructionFade, 0.90)
+    end
+    setViewmodelFade(obstructionFade)
 end)
