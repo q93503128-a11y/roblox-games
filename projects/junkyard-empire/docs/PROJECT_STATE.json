@@ -1,0 +1,124 @@
+{
+  "projectId": "junkyard-empire",
+  "displayName": "Junkyard Empire",
+  "workingTitle": true,
+  "lastUpdated": "2026-09-06",
+  "repository": "q93503128-a11y/roblox-games",
+  "branch": "main",
+  "initialRepoHeadBeforeProject": "9a6daa1f38b68f5027648a4ae2ee923218550fe2",
+  "mainHeadMustBeQueriedFresh": true,
+  "stage": {
+    "id": "P0",
+    "name": "Design / preproduction initialized",
+    "status": "IN_PROGRESS"
+  },
+  "baseline": {
+    "playable": false,
+    "mcpGameplayTested": false,
+    "humanTested": false,
+    "productionPlaceAssigned": false,
+    "testPlaceAssigned": false,
+    "studioMcpCodexConnectionVerified": true,
+    "workflow": "Studio-first: Roblox Studio + Studio MCP + Codex CLI + GitHub documentation/source synchronization",
+    "sourceSyncConfigured": false
+  },
+  "design": {
+    "primaryGenre": "Tycoon / Management",
+    "secondaryGenre": "Simulator / Collection",
+    "oneLineFantasy": "Pick up junk, turn a tiny scrapyard into an automated recycling empire, and hunt increasingly rare scrap.",
+    "coreLoop": [
+      "collect scrap",
+      "carry in backpack",
+      "return to personal yard",
+      "process scrap",
+      "earn Cash",
+      "buy visible factory/player upgrades",
+      "unlock richer zones",
+      "complete collections",
+      "sell company for permanent progression"
+    ],
+    "earlyCurrencies": [
+      "Cash",
+      "Company Stars after prestige is introduced"
+    ],
+    "firstSliceTarget": "spawn -> yard -> collect -> backpack -> unload/process -> Cash -> first purchase -> visible improvement"
+  },
+  "completed": [
+    "Project concept chosen",
+    "Roblox-focused mass-producible tycoon/simulator direction chosen",
+    "Studio MCP and Codex CLI connection manually verified",
+    "Studio-first workflow chosen",
+    "Full game design canon created",
+    "Development rules created",
+    "Economy/monetization plan created",
+    "Roadmap/status structure created"
+  ],
+  "notStarted": [
+    "Studio project DataModel scaffold",
+    "Source synchronization configuration",
+    "Greybox yard",
+    "Starter scrap zone",
+    "Cash service",
+    "Scrap catalog/spawner/collection",
+    "Backpack",
+    "Processing/unload",
+    "Purchase pad",
+    "Minimal HUD",
+    "Persistence",
+    "Prestige",
+    "Monetization implementation",
+    "Analytics",
+    "Human playtest"
+  ],
+  "nextBatch": {
+    "id": "P0.1",
+    "name": "Studio project foundation + one-loop greybox",
+    "steps": [
+      "Query current GitHub main and read canonical project docs",
+      "List open Roblox Studio instances through MCP and explicitly select the intended target",
+      "Inspect Workspace, ReplicatedStorage, ServerScriptService, StarterPlayer and StarterGui",
+      "Establish clean Junkyard Empire project namespace/module skeleton",
+      "Choose/configure source synchronization strategy",
+      "Greybox one personal yard and one starter scrap area",
+      "Implement server-authoritative Cash and a tiny scrap catalog",
+      "Implement scrap collection, backpack, unload/process and one purchase pad",
+      "Implement one visible upgrade and minimal HUD",
+      "Run the full P0 route in Play through Studio MCP",
+      "Inspect Output/errors and document what was actually verified",
+      "Update ROADMAP_AND_STATUS.md and PROJECT_STATE.json"
+    ]
+  },
+  "blockedUntilP1Passes": [
+    "Company Sale/prestige",
+    "Daily rewards",
+    "Game Passes/Developer Products",
+    "Large scrap catalog",
+    "Additional zones",
+    "Offline income",
+    "Trading",
+    "Pets",
+    "Combat",
+    "Worker NPC system",
+    "Freeform build mode",
+    "Global leaderboards"
+  ],
+  "canonicalDocsInReadOrder": [
+    "projects/junkyard-empire/README.md",
+    "projects/junkyard-empire/docs/GAME_DESIGN_FULL.md",
+    "projects/junkyard-empire/docs/DEVELOPMENT_RULES.md",
+    "projects/junkyard-empire/docs/MONETIZATION_AND_ECONOMY.md",
+    "projects/junkyard-empire/docs/ROADMAP_AND_STATUS.md",
+    "projects/junkyard-empire/docs/PROJECT_STATE.json",
+    "projects/junkyard-empire/docs/NEXT_CHAT_HANDOFF.md",
+    "projects/junkyard-empire/ASSET_SOURCES.md"
+  ],
+  "criticalRules": [
+    "Inspect current GitHub main and actual Studio before modifying",
+    "Server owns Cash, rewards, purchases, progression, prestige, saves and monetization fulfillment",
+    "External assets are encouraged for visuals but imported code is untrusted until audited",
+    "Do not layer duplicate replacement systems; remove obsolete implementation when replacing it",
+    "Do not claim completion without the required Studio playtest",
+    "Update status docs after each meaningful implementation batch",
+    "Do not expand content before the core route is stable and understandable"
+  ]
+}
