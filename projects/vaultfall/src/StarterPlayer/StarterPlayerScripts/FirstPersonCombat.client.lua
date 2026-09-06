@@ -22,6 +22,7 @@ local aiming = false
 local nextShotAt = 0
 local hiddenCharacter
 local hiddenParts = {}
+local hiddenEffects = {}
 
 local function makeButtonModal(instance)
     if instance:IsA("GuiButton") then
@@ -34,21 +35,28 @@ for _, descendant in ipairs(playerGui:GetDescendants()) do
 end
 playerGui.DescendantAdded:Connect(makeButtonModal)
 
-local function registerHiddenPart(instance)
+local function registerHiddenVisual(instance)
     if instance:IsA("BasePart") then
         hiddenParts[instance] = true
         instance.LocalTransparencyModifier = 1
+    elseif instance:IsA("Decal") or instance:IsA("Texture") then
+        hiddenEffects[instance] = "Transparency"
+        instance.Transparency = 1
+    elseif instance:IsA("ParticleEmitter") or instance:IsA("Trail") or instance:IsA("Beam") then
+        hiddenEffects[instance] = "Enabled"
+        instance.Enabled = false
     end
 end
 
 local function hideLocalCharacter(character)
     hiddenCharacter = character
     table.clear(hiddenParts)
+    table.clear(hiddenEffects)
 
     for _, descendant in ipairs(character:GetDescendants()) do
-        registerHiddenPart(descendant)
+        registerHiddenVisual(descendant)
     end
-    character.DescendantAdded:Connect(registerHiddenPart)
+    character.DescendantAdded:Connect(registerHiddenVisual)
 end
 
 local function enforceFirstPerson()
@@ -61,6 +69,7 @@ enforceFirstPerson()
 player:SetAttribute("VaultfallADS", false)
 player:SetAttribute("VaultfallInputModal", false)
 player:SetAttribute("VaultfallNearWall", 0)
+player:SetAttribute("VaultfallWeaponBlocked", false)
 
 player.CharacterAdded:Connect(function(character)
     enforceFirstPerson()
@@ -114,6 +123,12 @@ end
 
 local function requestFire()
     if modalOpen() or UserInputService:GetFocusedTextBox() then
+        return
+    end
+
+    -- Do not let the camera-origin shot bypass a wall while the weapon is visibly
+    -- shouldered into geometry. The server remains authoritative for ammo/damage.
+    if player:GetAttribute("VaultfallWeaponBlocked") == true then
         return
     end
 
@@ -233,14 +248,24 @@ RunService:BindToRenderStep("BreachFirstPerson", Enum.RenderPriority.Last.Value 
         requestFire()
     end
 
-    -- Reassert only registered character parts instead of walking the full hierarchy
-    -- every render frame. This prevents body/head flashes without unnecessary work.
+    -- Character scripts and avatar accessories can rewrite local visibility after
+    -- spawn. Reassert only registered visuals so first-person never flashes body parts,
+    -- face decals, accessory particles, trails or beams into the camera.
     if player.Character == hiddenCharacter then
         for part in pairs(hiddenParts) do
             if part.Parent == nil then
                 hiddenParts[part] = nil
             elseif part.LocalTransparencyModifier < 1 then
                 part.LocalTransparencyModifier = 1
+            end
+        end
+        for effect, property in pairs(hiddenEffects) do
+            if effect.Parent == nil then
+                hiddenEffects[effect] = nil
+            elseif property == "Transparency" and effect.Transparency < 1 then
+                effect.Transparency = 1
+            elseif property == "Enabled" and effect.Enabled then
+                effect.Enabled = false
             end
         end
     end
@@ -262,4 +287,5 @@ RunService:BindToRenderStep("BreachFirstPerson", Enum.RenderPriority.Last.Value 
     local wallAlpha = 1 - math.exp(-dt * 18)
     smoothedNearWall += (nearWall - smoothedNearWall) * wallAlpha
     player:SetAttribute("VaultfallNearWall", smoothedNearWall)
+    player:SetAttribute("VaultfallWeaponBlocked", smoothedNearWall >= 0.82)
 end)
