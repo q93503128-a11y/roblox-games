@@ -20,6 +20,8 @@ local currentDefinition = Arsenal.Get("Carbine")
 local triggerHeld = false
 local aiming = false
 local nextShotAt = 0
+local hiddenCharacter
+local hiddenParts = {}
 
 local function makeButtonModal(instance)
     if instance:IsA("GuiButton") then
@@ -32,31 +34,36 @@ for _, descendant in ipairs(playerGui:GetDescendants()) do
 end
 playerGui.DescendantAdded:Connect(makeButtonModal)
 
-local hiddenCharacter
-local function hideLocalCharacter(character)
-    hiddenCharacter = character
-
-    local function hide(instance)
-        if instance:IsA("BasePart") then
-            instance.LocalTransparencyModifier = 1
-        end
+local function registerHiddenPart(instance)
+    if instance:IsA("BasePart") then
+        hiddenParts[instance] = true
+        instance.LocalTransparencyModifier = 1
     end
-
-    for _, descendant in ipairs(character:GetDescendants()) do
-        hide(descendant)
-    end
-    character.DescendantAdded:Connect(hide)
 end
 
-player.CameraMode = Enum.CameraMode.LockFirstPerson
-player.CameraMinZoomDistance = 0.5
-player.CameraMaxZoomDistance = 0.5
+local function hideLocalCharacter(character)
+    hiddenCharacter = character
+    table.clear(hiddenParts)
+
+    for _, descendant in ipairs(character:GetDescendants()) do
+        registerHiddenPart(descendant)
+    end
+    character.DescendantAdded:Connect(registerHiddenPart)
+end
+
+local function enforceFirstPerson()
+    player.CameraMode = Enum.CameraMode.LockFirstPerson
+    player.CameraMinZoomDistance = 0.5
+    player.CameraMaxZoomDistance = 0.5
+end
+
+enforceFirstPerson()
 player:SetAttribute("VaultfallADS", false)
 player:SetAttribute("VaultfallInputModal", false)
 player:SetAttribute("VaultfallNearWall", 0)
 
 player.CharacterAdded:Connect(function(character)
-    player.CameraMode = Enum.CameraMode.LockFirstPerson
+    enforceFirstPerson()
     task.defer(hideLocalCharacter, character)
 end)
 if player.Character then
@@ -131,12 +138,9 @@ local function fireAction(_, inputState)
     if inputState == Enum.UserInputState.Begin then
         triggerHeld = true
         requestFire()
-        return Enum.ContextActionResult.Sink
     elseif inputState == Enum.UserInputState.End or inputState == Enum.UserInputState.Cancel then
         triggerHeld = false
-        return Enum.ContextActionResult.Sink
     end
-
     return Enum.ContextActionResult.Sink
 end
 
@@ -164,12 +168,13 @@ local function reloadAction(_, inputState)
         return Enum.ContextActionResult.Pass
     end
 
+    -- Canonical keyboard reload. The server remains authoritative for ammo state.
     attackRemote:FireServer("Reload")
     return Enum.ContextActionResult.Sink
 end
 
--- Own desktop FPS inputs at a higher priority than the legacy HUD client.
--- R is deliberately the canonical keyboard reload binding.
+-- Own desktop FPS inputs at a higher priority than the legacy HUD client. This keeps
+-- the old local-ammo path from consuming ammunition before server confirmation.
 ContextActionService:BindActionAtPriority(
     "BreachFPSFire",
     fireAction,
@@ -201,20 +206,14 @@ stateRemote.OnClientEvent:Connect(function(kind, payload)
     end
 end)
 
-local adsFov = {
-    Carbine = 64,
-    SMG = 66,
-    Shotgun = 67,
-    RailRifle = 61,
-}
-
 local raycastParams = RaycastParams.new()
 raycastParams.FilterType = Enum.RaycastFilterType.Exclude
 raycastParams.IgnoreWater = true
+local smoothedNearWall = 0
 
 RunService:BindToRenderStep("BreachFirstPerson", Enum.RenderPriority.Last.Value - 5, function(dt)
     if player.CameraMode ~= Enum.CameraMode.LockFirstPerson then
-        player.CameraMode = Enum.CameraMode.LockFirstPerson
+        enforceFirstPerson()
     end
 
     local isModal = modalOpen() or UserInputService:GetFocusedTextBox() ~= nil
@@ -225,40 +224,42 @@ RunService:BindToRenderStep("BreachFirstPerson", Enum.RenderPriority.Last.Value 
     player:SetAttribute("VaultfallADS", aiming)
     player:SetAttribute("VaultfallInputModal", isModal)
 
-    -- LockFirstPerson normally owns the pointer. UI choices still need a usable cursor.
+    -- Lock the pointer every frame outside menus so closing a modal cannot leave the
+    -- player in an accidental free-cursor state.
     UserInputService.MouseIconEnabled = isModal
-    if isModal then
-        UserInputService.MouseBehavior = Enum.MouseBehavior.Default
-    end
+    UserInputService.MouseBehavior = isModal and Enum.MouseBehavior.Default or Enum.MouseBehavior.LockCenter
 
     if triggerHeld and currentDefinition.FireMode == "Auto" then
         requestFire()
     end
 
-    -- Character transparency can be rewritten by Roblox character scripts after spawn.
-    -- Reassert it cheaply so the head/arms never flash into the first-person camera.
-    local character = player.Character
-    if character and character == hiddenCharacter then
-        for _, descendant in ipairs(character:GetDescendants()) do
-            if descendant:IsA("BasePart") and descendant.LocalTransparencyModifier < 1 then
-                descendant.LocalTransparencyModifier = 1
+    -- Reassert only registered character parts instead of walking the full hierarchy
+    -- every render frame. This prevents body/head flashes without unnecessary work.
+    if player.Character == hiddenCharacter then
+        for part in pairs(hiddenParts) do
+            if part.Parent == nil then
+                hiddenParts[part] = nil
+            elseif part.LocalTransparencyModifier < 1 then
+                part.LocalTransparencyModifier = 1
             end
         end
     end
 
     local camera = workspace.CurrentCamera
-    if camera then
-        raycastParams.FilterDescendantsInstances = character and { character } or {}
-        local wallHit = workspace:Raycast(camera.CFrame.Position, camera.CFrame.LookVector * 3, raycastParams)
-        local nearWall = 0
-        if wallHit then
-            nearWall = 1 - math.clamp(wallHit.Distance / 3, 0, 1)
-        end
-        player:SetAttribute("VaultfallNearWall", nearWall)
-
-        -- ADS focuses the view without forcing the weapon directly over the target.
-        local archetype = currentWeapon.Archetype or "Carbine"
-        local targetFov = aiming and (adsFov[archetype] or 64) or 72
-        camera.FieldOfView += (targetFov - camera.FieldOfView) * math.min(1, dt * 14)
+    if not camera then
+        return
     end
+
+    local character = player.Character
+    raycastParams.FilterDescendantsInstances = character and { character } or {}
+    local wallHit = workspace:Raycast(camera.CFrame.Position, camera.CFrame.LookVector * 3.4, raycastParams)
+    local nearWall = 0
+    if wallHit then
+        nearWall = 1 - math.clamp(wallHit.Distance / 3.4, 0, 1)
+    end
+
+    -- Smooth wall proximity so the gun does not snap up/down on railings and doorframes.
+    local wallAlpha = 1 - math.exp(-dt * 18)
+    smoothedNearWall += (nearWall - smoothedNearWall) * wallAlpha
+    player:SetAttribute("VaultfallNearWall", smoothedNearWall)
 end)
