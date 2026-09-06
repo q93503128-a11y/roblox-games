@@ -61,7 +61,7 @@ local PROFILES = {
     },
 }
 
-local function profile()
+local function getProfile()
     return PROFILES[currentArchetype] or PROFILES.Carbine
 end
 
@@ -85,36 +85,30 @@ local function registerShot(payload)
         smgBurstCount = 0
     end
 
-    local p = profile()
+    local activeProfile = getProfile()
     local side = (shotSequence % 2 == 0) and 1 or -1
 
     if currentArchetype == "Carbine" then
-        -- Stable service-rifle rhythm: mostly vertical, tiny alternating side step.
-        pitchImpulse += p.Pitch
-        yawImpulse += p.Yaw * side
-        rollImpulse += p.Roll * -side
-        pushImpulse += p.Push
+        pitchImpulse += activeProfile.Pitch
+        yawImpulse += activeProfile.Yaw * side
+        rollImpulse -= activeProfile.Roll * side
+        pushImpulse += activeProfile.Push
     elseif currentArchetype == "SMG" then
-        -- Fast fire should feel lively rather than heavy. Sustained bursts climb a
-        -- little while lateral chatter grows, encouraging short controlled bursts.
         local burst = math.clamp((smgBurstCount - 1) / 8, 0, 1)
-        pitchImpulse += p.Pitch * (1 + burst * 0.48)
-        yawImpulse += p.Yaw * side * (1 + burst * 0.35)
-        rollImpulse += p.Roll * -side
-        pushImpulse += p.Push
+        pitchImpulse += activeProfile.Pitch * (1 + burst * 0.48)
+        yawImpulse += activeProfile.Yaw * side * (1 + burst * 0.35)
+        rollImpulse -= activeProfile.Roll * side
+        pushImpulse += activeProfile.Push
     elseif currentArchetype == "Shotgun" then
-        -- One blunt rearward thump with a brief uneven shoulder roll.
-        pitchImpulse += p.Pitch
-        yawImpulse += p.Yaw * side
-        rollImpulse += p.Roll * side
-        pushImpulse += p.Push
+        pitchImpulse += activeProfile.Pitch
+        yawImpulse += activeProfile.Yaw * side
+        rollImpulse += activeProfile.Roll * side
+        pushImpulse += activeProfile.Push
     elseif currentArchetype == "RailRifle" then
-        -- Rail recoil is deliberate rather than snappy: strong straight impulse,
-        -- very little horizontal noise, and slower recovery than the shotgun.
-        pitchImpulse += p.Pitch
-        yawImpulse += p.Yaw * side
-        rollImpulse += p.Roll * -side
-        pushImpulse += p.Push
+        pitchImpulse += activeProfile.Pitch
+        yawImpulse += activeProfile.Yaw * side
+        rollImpulse -= activeProfile.Roll * side
+        pushImpulse += activeProfile.Push
     end
 
     pitchImpulse = math.clamp(pitchImpulse, 0, 0.65)
@@ -131,8 +125,6 @@ stateRemote.OnClientEvent:Connect(function(kind, payload)
         if payload.Kind == "Shot" then
             registerShot(payload)
         elseif payload.Kind == "Reload" then
-            -- Reset automatic-fire cadence so the first post-reload burst does not
-            -- inherit artificial climb from the previous magazine.
             smgBurstCount = 0
         end
     end
@@ -144,20 +136,19 @@ RunService:BindToRenderStep("BreachWeaponCadenceIdentity", Enum.RenderPriority.C
         return
     end
 
-    local p = profile()
-    pitchImpulse *= math.exp(-dt * p.PitchRecovery)
-    yawImpulse *= math.exp(-dt * p.YawRecovery)
-    rollImpulse *= math.exp(-dt * p.RollRecovery)
-    pushImpulse *= math.exp(-dt * p.PushRecovery)
+    local activeProfile = getProfile()
+    pitchImpulse *= math.exp(-dt * activeProfile.PitchRecovery)
+    yawImpulse *= math.exp(-dt * activeProfile.YawRecovery)
+    rollImpulse *= math.exp(-dt * activeProfile.RollRecovery)
+    pushImpulse *= math.exp(-dt * activeProfile.PushRecovery)
 
     if pitchImpulse < 0.0001 and math.abs(yawImpulse) < 0.0001 and math.abs(rollImpulse) < 0.0001 and pushImpulse < 0.0001 then
         return
     end
 
-    -- Apply after the core camera/viewmodel pass. Translation is intentionally
-    -- tiny so recoil reads through feel without causing motion sickness or ADS loss.
-    camera.CFrame *= CFrame.new(0, 0, pushImpulse)
+    local recoilTransform = CFrame.new(0, 0, pushImpulse)
         * CFrame.Angles(math.rad(-pitchImpulse), math.rad(yawImpulse), math.rad(rollImpulse))
+    camera.CFrame *= recoilTransform
 end)
 
 player.CharacterAdded:Connect(function()
