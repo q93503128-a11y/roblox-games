@@ -59,6 +59,9 @@ local currentRoom = 0
 local currentArchetype = "Carbine"
 local lastShotAt = 0
 local lastImpactAt = 0
+local lastArchetypeShotAt = 0
+local lastShotArchetype = ""
+local burstShotCount = 0
 local shotCounter = 0
 local ambienceToken = 0
 local transientDuckToken = 0
@@ -117,6 +120,18 @@ local function setRunMix(isActive, room)
     end
 end
 
+local function nextBurstShot(archetype, now)
+    local resetWindow = archetype == "SMG" and 0.20 or 0.28
+    if archetype ~= lastShotArchetype or now - lastArchetypeShotAt > resetWindow then
+        burstShotCount = 1
+    else
+        burstShotCount += 1
+    end
+    lastShotArchetype = archetype
+    lastArchetypeShotAt = now
+    return burstShotCount
+end
+
 local function layeredShot(archetype)
     local now = os.clock()
     if now - lastShotAt < 0.035 then
@@ -124,6 +139,7 @@ local function layeredShot(archetype)
     end
     lastShotAt = now
     shotCounter += 1
+    local burstIndex = nextBurstShot(archetype, now)
 
     if archetype == "Shotgun" then
         duckAmbience(0.34, 0.22)
@@ -148,22 +164,33 @@ local function layeredShot(archetype)
             oneShot("RailTail", SOUND.Ping, 0.085, 0.66, 2)
         end)
     elseif archetype == "SMG" then
-        duckAmbience(0.13, 0.07)
+        duckAmbience(burstIndex == 1 and 0.13 or 0.08, 0.07)
         local variation = (shotCounter % 4) * 0.018
-        oneShot("SmgBody", SOUND.Step, 0.25, 1.54 + variation, 2)
-        oneShot("SmgSnap", SOUND.Ping, 0.12, 2.34 + variation, 2)
-        if shotCounter % 3 == 0 then
-            oneShot("SmgLow", SOUND.Bass, 0.055, 2.72, 2)
+        oneShot("SmgBody", SOUND.Step, burstIndex == 1 and 0.27 or 0.22, 1.54 + variation, 1.2)
+
+        -- Preserve a crisp first-round signature while reducing stacked transient
+        -- voices during sustained automatic fire. The high snap returns every
+        -- third round so the burst stays legible without becoming a wall of pings.
+        if burstIndex == 1 or burstIndex % 3 == 0 then
+            oneShot("SmgSnap", SOUND.Ping, burstIndex == 1 and 0.14 or 0.09, 2.34 + variation, 1.2)
+        end
+        if burstIndex == 1 or burstIndex % 5 == 0 then
+            oneShot("SmgLow", SOUND.Bass, burstIndex == 1 and 0.070 or 0.045, 2.72, 1.4)
         end
     else
-        duckAmbience(0.19, 0.10)
+        duckAmbience(burstIndex == 1 and 0.19 or 0.13, 0.10)
         local variation = (shotCounter % 3) * 0.018
-        oneShot("CarbineBody", SOUND.Impact, 0.36, 0.90 + variation, 2)
-        oneShot("CarbineCrack", SOUND.Ping, 0.16, 1.92 + variation, 2)
-        oneShot("CarbineLow", SOUND.Bass, 0.17, 2.24, 2)
-        if shotCounter % 2 == 0 then
+        oneShot("CarbineBody", SOUND.Impact, burstIndex == 1 and 0.38 or 0.33, 0.90 + variation, 1.5)
+        oneShot("CarbineCrack", SOUND.Ping, burstIndex == 1 and 0.18 or 0.14, 1.92 + variation, 1.4)
+
+        -- The carbine keeps a weightier first shot, then a lighter sustained body
+        -- so controlled bursts sound intentional instead of progressively louder.
+        if burstIndex == 1 or burstIndex % 3 == 0 then
+            oneShot("CarbineLow", SOUND.Bass, burstIndex == 1 and 0.19 or 0.12, 2.24, 1.5)
+        end
+        if burstIndex == 1 or burstIndex % 4 == 0 then
             task.delay(0.035, function()
-                oneShot("CarbineTail", SOUND.Wind, 0.040, 2.52, 2)
+                oneShot("CarbineTail", SOUND.Wind, burstIndex == 1 and 0.050 or 0.032, 2.52, 1.3)
             end)
         end
     end
