@@ -47,10 +47,11 @@ Minimum read order:
 1. `projects/junkyard-empire/README.md`
 2. `projects/junkyard-empire/docs/GAME_DESIGN_FULL.md`
 3. `projects/junkyard-empire/docs/DEVELOPMENT_RULES.md`
-4. `projects/junkyard-empire/docs/MONETIZATION_AND_ECONOMY.md`
-5. `projects/junkyard-empire/docs/ROADMAP_AND_STATUS.md`
-6. `projects/junkyard-empire/docs/PROJECT_STATE.json`
-7. `projects/junkyard-empire/ASSET_SOURCES.md`
+4. `projects/junkyard-empire/docs/MCP_PLAYTEST_CONTRACT.md`
+5. `projects/junkyard-empire/docs/MONETIZATION_AND_ECONOMY.md`
+6. `projects/junkyard-empire/docs/ROADMAP_AND_STATUS.md`
+7. `projects/junkyard-empire/docs/PROJECT_STATE.json`
+8. `projects/junkyard-empire/ASSET_SOURCES.md`
 
 Also use the shared Roblox Godbase when needed, especially:
 
@@ -159,7 +160,7 @@ If current GitHub still says P0/P0.1, the next batch is:
 10. implement one purchase pad;
 11. make purchase create one obvious 3D factory improvement;
 12. implement minimal Cash/backpack HUD;
-13. Play-test the full route through MCP;
+13. Play-test the full route through MCP according to `MCP_PLAYTEST_CONTRACT.md`;
 14. inspect Output;
 15. update status docs.
 
@@ -234,7 +235,7 @@ Repository: q93503128-a11y/roblox-games
 Branch: main
 Project path: projects/junkyard-empire/
 
-First query the current GitHub main and reconstruct the latest canonical state. Read, at minimum, the project README, GAME_DESIGN_FULL.md, DEVELOPMENT_RULES.md, MONETIZATION_AND_ECONOMY.md, ROADMAP_AND_STATUS.md, PROJECT_STATE.json and ASSET_SOURCES.md.
+First query the current GitHub main and reconstruct the latest canonical state. Read, at minimum, the project README, GAME_DESIGN_FULL.md, DEVELOPMENT_RULES.md, MCP_PLAYTEST_CONTRACT.md, MONETIZATION_AND_ECONOMY.md, ROADMAP_AND_STATUS.md, PROJECT_STATE.json and ASSET_SOURCES.md.
 
 If Studio implementation/testing is needed, list the currently open Roblox Studio instances through MCP, explicitly identify the correct target, and inspect the existing DataModel/scripts before modifying anything. Do not assume an old handoff status is still current.
 
