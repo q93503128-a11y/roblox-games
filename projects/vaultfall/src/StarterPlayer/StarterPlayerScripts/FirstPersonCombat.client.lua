@@ -32,7 +32,10 @@ for _, descendant in ipairs(playerGui:GetDescendants()) do
 end
 playerGui.DescendantAdded:Connect(makeButtonModal)
 
+local hiddenCharacter
 local function hideLocalCharacter(character)
+    hiddenCharacter = character
+
     local function hide(instance)
         if instance:IsA("BasePart") then
             instance.LocalTransparencyModifier = 1
@@ -48,6 +51,9 @@ end
 player.CameraMode = Enum.CameraMode.LockFirstPerson
 player.CameraMinZoomDistance = 0.5
 player.CameraMaxZoomDistance = 0.5
+player:SetAttribute("VaultfallADS", false)
+player:SetAttribute("VaultfallInputModal", false)
+player:SetAttribute("VaultfallNearWall", 0)
 
 player.CharacterAdded:Connect(function(character)
     player.CameraMode = Enum.CameraMode.LockFirstPerson
@@ -137,6 +143,7 @@ end
 local function aimAction(_, inputState)
     if modalOpen() or UserInputService:GetFocusedTextBox() then
         aiming = false
+        player:SetAttribute("VaultfallADS", false)
         return Enum.ContextActionResult.Pass
     end
 
@@ -145,6 +152,7 @@ local function aimAction(_, inputState)
     elseif inputState == Enum.UserInputState.End or inputState == Enum.UserInputState.Cancel then
         aiming = false
     end
+    player:SetAttribute("VaultfallADS", aiming)
     return Enum.ContextActionResult.Sink
 end
 
@@ -160,8 +168,8 @@ local function reloadAction(_, inputState)
     return Enum.ContextActionResult.Sink
 end
 
--- Own the desktop FPS inputs at a higher priority than the legacy HUD client.
--- This prevents rejected safehouse shots from locally consuming fake ammo.
+-- Own desktop FPS inputs at a higher priority than the legacy HUD client.
+-- R is deliberately the canonical keyboard reload binding.
 ContextActionService:BindActionAtPriority(
     "BreachFPSFire",
     fireAction,
@@ -193,20 +201,64 @@ stateRemote.OnClientEvent:Connect(function(kind, payload)
     end
 end)
 
+local adsFov = {
+    Carbine = 64,
+    SMG = 66,
+    Shotgun = 67,
+    RailRifle = 61,
+}
+
+local raycastParams = RaycastParams.new()
+raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+raycastParams.IgnoreWater = true
+
 RunService:BindToRenderStep("BreachFirstPerson", Enum.RenderPriority.Last.Value - 5, function(dt)
     if player.CameraMode ~= Enum.CameraMode.LockFirstPerson then
         player.CameraMode = Enum.CameraMode.LockFirstPerson
+    end
+
+    local isModal = modalOpen() or UserInputService:GetFocusedTextBox() ~= nil
+    if isModal then
+        triggerHeld = false
+        aiming = false
+    end
+    player:SetAttribute("VaultfallADS", aiming)
+    player:SetAttribute("VaultfallInputModal", isModal)
+
+    -- LockFirstPerson normally owns the pointer. UI choices still need a usable cursor.
+    UserInputService.MouseIconEnabled = isModal
+    if isModal then
+        UserInputService.MouseBehavior = Enum.MouseBehavior.Default
     end
 
     if triggerHeld and currentDefinition.FireMode == "Auto" then
         requestFire()
     end
 
+    -- Character transparency can be rewritten by Roblox character scripts after spawn.
+    -- Reassert it cheaply so the head/arms never flash into the first-person camera.
+    local character = player.Character
+    if character and character == hiddenCharacter then
+        for _, descendant in ipairs(character:GetDescendants()) do
+            if descendant:IsA("BasePart") and descendant.LocalTransparencyModifier < 1 then
+                descendant.LocalTransparencyModifier = 1
+            end
+        end
+    end
+
     local camera = workspace.CurrentCamera
     if camera then
-        -- Keep RMB as a clean focus aim instead of moving the blocky fallback gun
-        -- into the middle of the target. The server ray still follows camera aim.
-        local targetFov = aiming and 64 or 72
-        camera.FieldOfView += (targetFov - camera.FieldOfView) * math.min(1, dt * 16)
+        raycastParams.FilterDescendantsInstances = character and { character } or {}
+        local wallHit = workspace:Raycast(camera.CFrame.Position, camera.CFrame.LookVector * 3, raycastParams)
+        local nearWall = 0
+        if wallHit then
+            nearWall = 1 - math.clamp(wallHit.Distance / 3, 0, 1)
+        end
+        player:SetAttribute("VaultfallNearWall", nearWall)
+
+        -- ADS focuses the view without forcing the weapon directly over the target.
+        local archetype = currentWeapon.Archetype or "Carbine"
+        local targetFov = aiming and (adsFov[archetype] or 64) or 72
+        camera.FieldOfView += (targetFov - camera.FieldOfView) * math.min(1, dt * 14)
     end
 end)
