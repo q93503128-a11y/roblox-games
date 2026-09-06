@@ -44,12 +44,9 @@ local function retuneModel(model)
 
     -- The self-contained fallback was authored too large for a first-person camera.
     -- Scale it once per freshly-created model instead of covering the target with it.
-    local ok = pcall(function()
+    pcall(function()
         model:ScaleTo(config.Scale)
     end)
-    if not ok then
-        -- Imported models that do not support ScaleTo still receive positional tuning.
-    end
 end
 
 stateRemote.OnClientEvent:Connect(function(kind, payload)
