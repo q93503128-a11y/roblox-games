@@ -21,6 +21,7 @@ local PRIORITY = {
 }
 
 local tracked = {}
+local watchedContainers = {}
 
 local function enemyTypeFromName(name)
     return string.match(name, "^([^_]+)")
@@ -126,7 +127,6 @@ local function apply(model)
 
     tracked[model] = {
         Type = enemyType,
-        Accent = accent,
         Highlight = highlight,
         Light = light,
         Badge = badge,
@@ -135,6 +135,11 @@ local function apply(model)
 end
 
 local function watchContainer(container)
+    if watchedContainers[container] then
+        return
+    end
+    watchedContainers[container] = true
+
     for _, child in ipairs(container:GetChildren()) do
         apply(child)
     end
@@ -143,29 +148,22 @@ local function watchContainer(container)
     end)
 end
 
-local function findEnemyContainer()
-    local world = Workspace:FindFirstChild("VaultfallWorld")
-    if not world then
-        return nil
-    end
-    return world:FindFirstChild("Enemies")
+local function isEnemyContainer(instance)
+    local parent = instance.Parent
+    return instance:IsA("Folder") and instance.Name == "Enemies" and parent and parent.Name == "VaultfallWorld"
 end
 
-local container = findEnemyContainer()
-if container then
-    watchContainer(container)
-else
-    task.spawn(function()
-        local world = Workspace:WaitForChild("VaultfallWorld", 30)
-        if not world then
-            return
-        end
-        local enemies = world:WaitForChild("Enemies", 30)
-        if enemies then
-            watchContainer(enemies)
-        end
-    end)
+for _, descendant in ipairs(Workspace:GetDescendants()) do
+    if isEnemyContainer(descendant) then
+        watchContainer(descendant)
+    end
 end
+
+Workspace.DescendantAdded:Connect(function(descendant)
+    if isEnemyContainer(descendant) then
+        watchContainer(descendant)
+    end
+end)
 
 local accumulator = 0
 RunService.Heartbeat:Connect(function(dt)
