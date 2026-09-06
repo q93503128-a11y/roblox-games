@@ -15,6 +15,7 @@ roblox-games/
 ├─ projects/
 │  ├─ monster-factory/    # Monster Factory Simulator
 │  ├─ vaultfall/          # Vaultfall
+│  ├─ junkyard-empire/    # Junkyard Empire
 │  └─ <future-game>/      # 이후 Roblox 프로젝트
 ├─ shared/
 │  ├─ modules/            # 실제로 여러 게임에서 재사용하기로 확정된 모듈
@@ -191,6 +192,24 @@ projects/vaultfall/
 - 8개 방 원정, 엘리트/보스, 임시 무기 드롭, Essence/Power Rank 성장
 - 첫 전체 Studio 플레이테스트 준비 단계
 
+### Junkyard Empire
+
+경로:
+
+```text
+projects/junkyard-empire/
+```
+
+현재 개발 방향:
+
+- Tycoon / Management + Simulator / Collection
+- 폐품 수집 → 개인 공장 처리 → Cash → 기계/구역 확장 → 장기적으로 Company Sale/Stars 진행
+- 모바일 우선, 짧은 FTUE, 눈에 보이는 공장 성장
+- Creator Store/외부 산업·폐품 에셋을 적극 활용하되 외부 게임 로직은 검수 없이 채택하지 않음
+- Studio MCP + Codex CLI 기반 **Studio-first** 신규 프로젝트
+- 기획·개발 규칙·경제/수익화·MCP 테스트·새 채팅 인수인계 정본 문서화 완료
+- 현재 P0 설계/프리프로덕션, 다음 단계는 P0.1 한 루프 greybox 구현 및 MCP 플레이테스트
+
 ## 새 프로젝트 추가 규칙
 
 새 Roblox 게임은 다음 최소 구조로 시작합니다.
@@ -214,7 +233,7 @@ projects/<project-name>/
 ## 현재 다음 단계
 
 1. `knowledge/` Godbase를 지속 확장
-2. Studio MCP + Codex CLI 실제 연결 검증
+2. Junkyard Empire P0.1에서 Studio MCP + Codex CLI 기반 실제 Studio-first 제작 루프 검증
 3. 장르별 실제 게임 reference 연구 추가
 4. Creator Store 에셋/키트 실제 검수 카탈로그 구축
 5. 기존 프로젝트는 현재 정본 workflow를 유지하면서 MCP 기반 Studio QA를 점진적으로 추가
