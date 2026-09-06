@@ -10,26 +10,37 @@ local currentArchetype = "Carbine"
 local correction = CFrame.identity
 local tunedModel
 
+-- The legacy viewmodel animator still supplies recoil/reload/bob. This layer is the
+-- final ergonomic pass and deliberately keeps the fallback weapon away from the
+-- center of the target, especially while aiming.
 local tuning = {
     Carbine = {
-        Scale = 0.84,
-        Hip = CFrame.new(0.06, -0.02, -0.14),
-        ADS = CFrame.new(-0.10, 0.05, -0.27),
+        Scale = 0.80,
+        Hip = CFrame.new(0.08, -0.05, -0.20),
+        ADS = CFrame.new(0.24, -0.13, -0.38),
+        HipFov = 72,
+        AdsFov = 64,
     },
     SMG = {
-        Scale = 0.86,
-        Hip = CFrame.new(0.08, -0.03, -0.12),
-        ADS = CFrame.new(-0.09, 0.05, -0.23),
+        Scale = 0.82,
+        Hip = CFrame.new(0.10, -0.06, -0.18),
+        ADS = CFrame.new(0.27, -0.14, -0.34),
+        HipFov = 73,
+        AdsFov = 66,
     },
     Shotgun = {
-        Scale = 0.80,
-        Hip = CFrame.new(0.11, -0.05, -0.24),
-        ADS = CFrame.new(-0.07, 0.03, -0.34),
+        Scale = 0.76,
+        Hip = CFrame.new(0.15, -0.09, -0.30),
+        ADS = CFrame.new(0.30, -0.17, -0.48),
+        HipFov = 72,
+        AdsFov = 67,
     },
     RailRifle = {
-        Scale = 0.76,
-        Hip = CFrame.new(0.14, -0.07, -0.30),
-        ADS = CFrame.new(-0.05, 0.01, -0.42),
+        Scale = 0.72,
+        Hip = CFrame.new(0.18, -0.11, -0.38),
+        ADS = CFrame.new(0.31, -0.18, -0.56),
+        HipFov = 71,
+        AdsFov = 61,
     },
 }
 
@@ -62,6 +73,17 @@ RunService:BindToRenderStep("BreachViewmodelTuning", Enum.RenderPriority.Last.Va
         return
     end
 
+    local config = tuning[currentArchetype] or tuning.Carbine
+    local aiming = player:GetAttribute("VaultfallADS") == true
+    local nearWall = tonumber(player:GetAttribute("VaultfallNearWall")) or 0
+    local modal = player:GetAttribute("VaultfallInputModal") == true
+
+    -- Client.client.lua still contains an old FOV lerp. Own the final camera value at
+    -- the end of the render pipeline so ADS cannot oscillate between two controllers.
+    local targetFov = aiming and config.AdsFov or config.HipFov
+    local fovAlpha = 1 - math.exp(-dt * (aiming and 18 or 13))
+    camera.FieldOfView += (targetFov - camera.FieldOfView) * fovAlpha
+
     local model = camera:FindFirstChild("BreachWeaponViewmodel")
     if not model or not model:IsA("Model") or not model.PrimaryPart then
         tunedModel = nil
@@ -69,26 +91,21 @@ RunService:BindToRenderStep("BreachViewmodelTuning", Enum.RenderPriority.Last.Va
     end
     retuneModel(model)
 
-    local config = tuning[currentArchetype] or tuning.Carbine
-    local aiming = player:GetAttribute("VaultfallADS") == true
-    local nearWall = tonumber(player:GetAttribute("VaultfallNearWall")) or 0
-    local modal = player:GetAttribute("VaultfallInputModal") == true
-
     local target = aiming and config.ADS or config.Hip
 
-    -- Near a wall the weapon drops and pulls inward instead of occupying the entire
-    -- screen or visibly passing through nearby geometry.
+    -- Near a wall the weapon drops aggressively and pulls inward. At full obstruction
+    -- it is almost entirely below the sightline instead of clipping through geometry.
     if nearWall > 0 then
-        target *= CFrame.new(0.08 * nearWall, -0.44 * nearWall, 0.32 * nearWall)
-            * CFrame.Angles(math.rad(18 * nearWall), math.rad(-5 * nearWall), math.rad(5 * nearWall))
+        target *= CFrame.new(0.12 * nearWall, -0.62 * nearWall, 0.40 * nearWall)
+            * CFrame.Angles(math.rad(24 * nearWall), math.rad(-6 * nearWall), math.rad(7 * nearWall))
     end
 
     -- Keep menus visually clear without deleting the weapon model or disturbing state.
     if modal then
-        target *= CFrame.new(0.12, -0.30, 0.12)
+        target *= CFrame.new(0.18, -0.44, 0.18)
     end
 
-    local alpha = 1 - math.exp(-dt * 15)
+    local alpha = 1 - math.exp(-dt * (aiming and 20 or 15))
     correction = correction:Lerp(target, alpha)
 
     -- Client.client.lua owns recoil/reload/bob. Apply only a final ergonomic correction
