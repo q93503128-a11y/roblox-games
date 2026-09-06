@@ -65,12 +65,21 @@ local function setGlow(name, transparency, scale)
     end
 end
 
-local function animateShotgun(age)
-    local travel = 0
-    if age >= 0.10 and age <= 0.62 then
-        local phase = math.clamp((age - 0.10) / 0.52, 0, 1)
-        travel = math.sin(phase * math.pi) * 0.48
+local function stagedPumpTravel(age)
+    if age < 0.085 or age > 0.49 then
+        return 0
     end
+    if age < 0.18 then
+        return 0.52 * math.clamp((age - 0.085) / 0.095, 0, 1)
+    end
+    if age < 0.245 then
+        return 0.52
+    end
+    return 0.52 * (1 - math.clamp((age - 0.245) / 0.245, 0, 1))
+end
+
+local function animateShotgun(age)
+    local travel = stagedPumpTravel(age)
     for index = 1, 3 do
         transform("PumpRib" .. index, CFrame.new(0, 0, travel))
     end
@@ -87,32 +96,43 @@ local function animateShotgun(age)
 end
 
 local function animateSmg(age)
-    local kick = age <= 0.10 and math.exp(-age * 24) or 0
-    transform("ChargingHandle", CFrame.new(0, 0, 0.20 * kick))
-    transform("PortedBrake", CFrame.new(0, 0, 0.035 * kick))
+    local cycle = age <= 0.095 and (1 - math.clamp(age / 0.095, 0, 1)) or 0
+    local settle = age <= 0.16 and math.exp(-age * 23) or 0
+    transform("ChargingHandle", CFrame.new(0, 0, 0.24 * cycle))
+    transform("PortedBrake", CFrame.new(0, 0, 0.045 * settle))
 end
 
 local function animateCarbine(age)
-    local kick = age <= 0.14 and math.exp(-age * 20) or 0
-    transform("MuzzleBrake", CFrame.new(0, 0, 0.045 * kick))
-    transform("GasBlock", CFrame.new(0, 0, 0.025 * kick))
+    local boltImpulse = age <= 0.13 and math.exp(-age * 22) or 0
+    local gasImpulse = age <= 0.18 and math.exp(-age * 18) or 0
+    transform("MuzzleBrake", CFrame.new(0, 0, 0.052 * boltImpulse))
+    transform("GasBlock", CFrame.new(0, 0, 0.030 * gasImpulse))
     local optic = entry("OpticLens")
     if optic and optic.Part.Parent then
-        optic.Part.Transparency = math.clamp(optic.Transparency - kick * 0.18, 0.05, 0.7)
+        optic.Part.Transparency = math.clamp(optic.Transparency - boltImpulse * 0.14, 0.05, 0.7)
     end
 end
 
-local function animateRail(age)
-    local pulse = age <= 0.62 and math.sin(math.clamp(age / 0.62, 0, 1) * math.pi) or 0
-    for index = 1, 4 do
-        local delayOffset = (index - 1) * 0.035
-        local localAge = math.max(0, age - delayOffset)
-        local localPulse = localAge <= 0.52 and math.sin(math.clamp(localAge / 0.52, 0, 1) * math.pi) or 0
-        setGlow("Coil" .. index, math.clamp(0.12 - localPulse * 0.10, 0, 0.45), 1 + localPulse * 0.14)
+local function railPulse(localAge)
+    if localAge < 0 or localAge > 0.46 then
+        return 0
     end
-    setGlow("ChargeCore", math.clamp(0.08 - pulse * 0.07, 0, 0.4), 1 + pulse * 0.18)
-    transform("MuzzleProng1", CFrame.new(-0.04 * pulse, 0, 0))
-    transform("MuzzleProng2", CFrame.new(0.04 * pulse, 0, 0))
+    if localAge < 0.075 then
+        return 1 - math.clamp(localAge / 0.075, 0, 1) * 0.18
+    end
+    return math.exp(-(localAge - 0.075) * 7.2) * 0.82
+end
+
+local function animateRail(age)
+    local corePulse = railPulse(age)
+    for index = 1, 4 do
+        local localAge = age - ((index - 1) * 0.032)
+        local coilPulse = railPulse(localAge)
+        setGlow("Coil" .. index, math.clamp(0.12 - coilPulse * 0.11, 0, 0.45), 1 + coilPulse * 0.15)
+    end
+    setGlow("ChargeCore", math.clamp(0.08 - corePulse * 0.075, 0, 0.4), 1 + corePulse * 0.22)
+    transform("MuzzleProng1", CFrame.new(-0.045 * corePulse, 0, 0))
+    transform("MuzzleProng2", CFrame.new(0.045 * corePulse, 0, 0))
 end
 
 local function restoreAll()
