@@ -51,7 +51,11 @@
     "Full game design canon created",
     "Development rules created",
     "Economy/monetization plan created",
-    "Roadmap/status structure created"
+    "Roadmap/status structure created",
+    "Project-specific MCP playtest contract created",
+    "New-session handoff protocol created",
+    "Asset provenance/sanitation log initialized",
+    "Root monorepo README registered Junkyard Empire"
   ],
   "notStarted": [
     "Studio project DataModel scaffold",
@@ -106,6 +110,7 @@
     "projects/junkyard-empire/README.md",
     "projects/junkyard-empire/docs/GAME_DESIGN_FULL.md",
     "projects/junkyard-empire/docs/DEVELOPMENT_RULES.md",
+    "projects/junkyard-empire/docs/MCP_PLAYTEST_CONTRACT.md",
     "projects/junkyard-empire/docs/MONETIZATION_AND_ECONOMY.md",
     "projects/junkyard-empire/docs/ROADMAP_AND_STATUS.md",
     "projects/junkyard-empire/docs/PROJECT_STATE.json",
