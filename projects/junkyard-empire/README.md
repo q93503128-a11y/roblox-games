@@ -72,11 +72,12 @@ Read these before doing implementation work:
 
 1. `docs/GAME_DESIGN_FULL.md` — complete design canon
 2. `docs/DEVELOPMENT_RULES.md` — non-negotiable implementation / asset / QA rules
-3. `docs/MONETIZATION_AND_ECONOMY.md` — economy, progression and monetization plan
-4. `docs/ROADMAP_AND_STATUS.md` — current production stage and acceptance gates
-5. `docs/PROJECT_STATE.json` — compact machine-readable state snapshot
-6. `docs/NEXT_CHAT_HANDOFF.md` — exact continuation protocol for a new ChatGPT/Codex session
-7. `ASSET_SOURCES.md` — imported asset provenance and sanitation log
+3. `docs/MCP_PLAYTEST_CONTRACT.md` — Studio target, P0 routes, negative tests and completion language
+4. `docs/MONETIZATION_AND_ECONOMY.md` — economy, progression and monetization plan
+5. `docs/ROADMAP_AND_STATUS.md` — current production stage and acceptance gates
+6. `docs/PROJECT_STATE.json` — compact machine-readable state snapshot
+7. `docs/NEXT_CHAT_HANDOFF.md` — exact continuation protocol for a new ChatGPT/Codex session
+8. `ASSET_SOURCES.md` — imported asset provenance and sanitation log
 
 When documents conflict, precedence is:
 
