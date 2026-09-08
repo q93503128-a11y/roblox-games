@@ -1,6 +1,6 @@
 # Roblox Godbase Quick Reference
 
-> 검증 기준일: 2026-09-04
+> 검증 기준일: 2026-09-08
 
 이 문서는 새 작업을 시작할 때 2~3분 안에 의사결정을 내리기 위한 Godbase 요약표다. 세부 근거는 각 전문 문서에서 확인한다.
 
@@ -13,6 +13,7 @@
 5. 외부 에셋·코드는 출처/라이선스/스크립트부터 검사한다.
 6. 게임 전체가 아니라 **5~10분 Vertical Slice** 하나를 먼저 완성한다.
 7. Studio MCP가 가능하면 AI가 user보다 먼저 실제 Playtest한다.
+8. 맵/배치 작업이면 `level-design/LEVEL_DESIGN_WORLD_TRAVERSAL.md`와 Failure `013~022`를 먼저 확인한다.
 
 ## 개발 방식 선택
 
@@ -28,6 +29,31 @@
 | 외부 편집기 타입/자동완성 | Luau LSP |
 
 기존 프로젝트는 관성적으로 workflow migration하지 않는다.
+
+## 맵 / 배치 한 줄 원칙
+
+**좌표부터 찍지 말고, 공간을 먼저 읽는다.**
+
+필수 순서:
+```text
+inspect current map
+→ floor/spawn/avatar/camera/zone bounds
+→ named anchors
+→ macro layout
+→ placement table if 5+ objects
+→ major placement
+→ scale/pivot/ground/clearance
+→ gameplay-camera sweep
+→ P0 route walk
+→ detail pass
+```
+
+금지:
+- 맵 bounds를 안 보고 world coordinate 추측
+- 5개 이상의 player-facing object 즉흥 대량 배치
+- freecam만 보고 승인
+- avatar 기준 없이 건물/문/상호작용 물체 scale 판단
+- 기능은 존재하지만 실제 동선/접근성이 깨진 배치
 
 ## 신규 게임 장르 route
 
@@ -83,7 +109,7 @@ inspect
 - explicit Studio target
 - clean boot
 - P0 route
-- zero unexpected runtime errors
+- zero project-attributable unexpected runtime errors
 - key visual states
 - required device profiles
 - 필요한 multiplayer scenarios
@@ -198,11 +224,13 @@ search
 ## 사용자 테스트 전 최소 gate
 
 - clean boot
-- unexpected Output error 0
+- project-attributable unexpected Output error 0
 - spawn 정상
 - P0 primary route 완주
 - viewport screenshot 검토
 - detached parts / z-fighting 없음
+- major map object overlap/floating/burial 없음
+- avatar/world scale 자연스러움
 - desktop + mobile 핵심 UI
 - 필요한 multiplayer route
 - valuable state server authority
