@@ -71,6 +71,7 @@ equipButton.Size = UDim2.fromOffset(170, 38)
 equipButton.Position = UDim2.new(0, 16, 1, -56)
 equipButton.Text = "Equip Weapon B"
 equipButton.TextSize = 15
+
 equipButton.Font = Enum.Font.GothamMedium
 equipButton.Visible = false
 equipButton.Parent = screenGui
@@ -91,6 +92,8 @@ feedbackLabel.Text = ""
 feedbackLabel.Parent = screenGui
 
 local feedbackToken = 0
+local hasState = false
+
 local function showFeedback(text: string)
 	feedbackToken += 1
 	local token = feedbackToken
@@ -106,6 +109,7 @@ local function refresh(state: any)
 	if type(state) ~= "table" then
 		return
 	end
+	hasState = true
 
 	local progression = state.progression or {}
 	local inventory = state.inventory or {}
@@ -210,11 +214,26 @@ ContextActionService:BindAction(
 ContextActionService:SetTitle(ACTION_REBIRTH, "Rebirth")
 ContextActionService:SetPosition(ACTION_REBIRTH, UDim2.new(1, -335, 1, -155))
 
-local ok, initialState = pcall(function()
-	return GetState:InvokeServer()
+-- StateUpdated can be emitted by the server before this LocalScript connects.
+-- Retry the authoritative snapshot a few times instead of leaving the HUD permanently blank.
+task.spawn(function()
+	for _attempt = 1, 5 do
+		if hasState then
+			return
+		end
+
+		local ok, initialState = pcall(function()
+			return GetState:InvokeServer()
+		end)
+		if ok and type(initialState) == "table" then
+			refresh(initialState)
+			return
+		end
+
+		task.wait(0.30)
+	end
+
+	if not hasState then
+		warn("[RebirthRPG] Failed to obtain initial authoritative state after retries")
+	end
 end)
-if ok then
-	refresh(initialState)
-else
-	warn("[RebirthRPG] Failed to request initial state")
-end
