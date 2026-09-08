@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 13,
-  "verifiedDate": "2026-09-04",
+  "schemaVersion": 14,
+  "verifiedDate": "2026-09-08",
   "name": "Roblox Godbase",
   "status": "ACTIVE_CANONICAL_NOT_COMPLETE",
   "purpose": "Canonical research and operating knowledge for every Roblox project in this monorepo.",
@@ -22,6 +22,8 @@
     "vertical-slice-before-breadth",
     "playtest-before-handoff",
     "failure-to-regression-knowledge",
+    "hierarchical-relative-placement-before-raw-coordinates",
+    "reusable-components-and-tests-before-rebuilding",
     "knowledge-is-versioned-and-time-sensitive"
   ],
   "mandatoryReads": {
@@ -31,10 +33,12 @@
       "knowledge/checklists/PROJECT_START_CHECKLIST.md",
       "knowledge/regressions/FAILURE_LIBRARY.md",
       "knowledge/catalogs/DEPRECATED_LEGACY_WATCHLIST.md",
-      "knowledge/workflow/STUDIO_MCP_AUTONOMOUS_BUILD_HARNESS.md",
       "knowledge/checklists/VERTICAL_SLICE_DONE_DEFINITION.md",
       "knowledge/genres/README.md",
       "knowledge/genres/STARTER_RECIPE_MATRIX.json"
+    ],
+    "projectAIInstructions": [
+      "knowledge/PROJECT_AI_INSTRUCTIONS.md"
     ],
     "genreRecipes": [
       "knowledge/genres/README.md",
@@ -47,7 +51,14 @@
     "testing": [
       "knowledge/testing/LUAU_TESTING_FRAMEWORKS_AND_CI.md",
       "knowledge/testing/AUTOMATED_ACCEPTANCE_GATES.md",
-      "knowledge/testing/MCP_PLAYTEST_CONTRACT_SCHEMA.json"
+      "knowledge/testing/MCP_PLAYTEST_CONTRACT_SCHEMA.json",
+      "knowledge/production/REUSABLE_PACKAGE_AND_QA_SYSTEM.md"
+    ],
+    "studioAssistantAgent": [
+      "knowledge/workflow/ROBLOX_ASSISTANT_AGENT_WORKFLOW.md",
+      "knowledge/level-design/AI_MAP_BUILDING_PLAYBOOK.md",
+      "knowledge/testing/AUTOMATED_ACCEPTANCE_GATES.md",
+      "knowledge/regressions/FAILURE_LIBRARY.md"
     ],
     "studioMcpAutomation": [
       "knowledge/workflow/STUDIO_MCP_AUTONOMOUS_BUILD_HARNESS.md",
@@ -88,7 +99,9 @@
       "knowledge/assets/CREATOR_STORE_QUARANTINE_AUDIT_SCHEMA.json",
       "knowledge/assets/CREATOR_STORE_AUTOMATION_AND_SCORING.md"
     ],
-    "interactionHeavy": ["knowledge/gameplay/INTERACTION_SYSTEMS.md"],
+    "interactionHeavy": [
+      "knowledge/gameplay/INTERACTION_SYSTEMS.md"
+    ],
     "inventoryLootRpg": [
       "knowledge/gameplay/INVENTORY_EQUIPMENT_ARCHITECTURE.md",
       "knowledge/gameplay/LOOT_DROP_CRAFTING.md",
@@ -98,15 +111,29 @@
       "knowledge/gameplay/TRADING_GIFTING_SECURITY_UX.md",
       "knowledge/data/SAVE_SCHEMA_MIGRATION_RECOVERY.md"
     ],
-    "roundGames": ["knowledge/gameplay/ROUND_GAME_STATE_ARCHITECTURE.md"],
-    "proceduralGames": ["knowledge/gameplay/PROCEDURAL_GENERATION_DETERMINISM.md"],
-    "socialGames": ["knowledge/social/SOCIAL_PARTY_INVITES.md"],
-    "adminLiveOps": ["knowledge/operations/ADMIN_MODERATION_COMMANDS.md"],
+    "roundGames": [
+      "knowledge/gameplay/ROUND_GAME_STATE_ARCHITECTURE.md"
+    ],
+    "proceduralGames": [
+      "knowledge/gameplay/PROCEDURAL_GENERATION_DETERMINISM.md"
+    ],
+    "socialGames": [
+      "knowledge/social/SOCIAL_PARTY_INVITES.md"
+    ],
+    "adminLiveOps": [
+      "knowledge/operations/ADMIN_MODERATION_COMMANDS.md"
+    ],
     "worldDesign": [
+      "knowledge/level-design/AI_MAP_BUILDING_PLAYBOOK.md",
       "knowledge/level-design/LEVEL_DESIGN_WORLD_TRAVERSAL.md",
       "knowledge/graphics/TERRAIN_ENVIRONMENT_PIPELINE.md",
       "knowledge/graphics/VISUAL_QUALITY_PIPELINE.md",
       "knowledge/assets/ASSET_SELECTION_BY_GENRE.md"
+    ],
+    "reusableProduction": [
+      "knowledge/production/REUSABLE_PACKAGE_AND_QA_SYSTEM.md",
+      "knowledge/testing/AUTOMATED_ACCEPTANCE_GATES.md",
+      "knowledge/checklists/VERTICAL_SLICE_DONE_DEFINITION.md"
     ],
     "networkedGames": [
       "knowledge/architecture/ENGINE_AND_NETWORKING.md",
@@ -122,10 +149,18 @@
       "knowledge/audio/AUDIO_SYSTEMS_AND_MIXING.md",
       "knowledge/assets/ASSET_SELECTION_BY_GENRE.md"
     ],
-    "npcGames": ["knowledge/ai/NPC_AI_AND_PATHFINDING.md"],
-    "physicsVehicles": ["knowledge/physics/VEHICLES_CONSTRAINTS_NETWORK_OWNERSHIP.md"],
-    "multiPlaceOrInstanced": ["knowledge/multiplayer/TELEPORT_MATCHMAKING_RESERVED_SERVERS.md"],
-    "avatarGames": ["knowledge/avatar/AVATAR_CHARACTER_ACCESSORIES.md"],
+    "npcGames": [
+      "knowledge/ai/NPC_AI_AND_PATHFINDING.md"
+    ],
+    "physicsVehicles": [
+      "knowledge/physics/VEHICLES_CONSTRAINTS_NETWORK_OWNERSHIP.md"
+    ],
+    "multiPlaceOrInstanced": [
+      "knowledge/multiplayer/TELEPORT_MATCHMAKING_RESERVED_SERVERS.md"
+    ],
+    "avatarGames": [
+      "knowledge/avatar/AVATAR_CHARACTER_ACCESSORIES.md"
+    ],
     "persistentGames": [
       "knowledge/data/CLOUD_SERVICES_DECISION_MATRIX.md",
       "knowledge/data/SAVE_SCHEMA_MIGRATION_RECOVERY.md",
@@ -138,7 +173,12 @@
       "knowledge/workflow/OPEN_CLOUD_CI_RELEASE_AUTOMATION.md",
       "knowledge/publishing/POLICY_MARKETPLACE_LOCALIZATION.md"
     ],
-    "debugging": ["knowledge/debugging/STUDIO_DEBUGGING_VISUALIZATION.md"]
+    "debugging": [
+      "knowledge/debugging/STUDIO_DEBUGGING_VISUALIZATION.md"
+    ],
+    "aiRobloxResearch": [
+      "knowledge/research/AI_ROBLOX_SOURCES_2026-09-08.md"
+    ]
   },
   "genreRouting": {
     "actionRpgOpenWorld": "knowledge/genres/ACTION_RPG_OPEN_WORLD.md",
@@ -157,14 +197,29 @@
     "creatorDocsFull": "https://create.roblox.com/docs/llms-full.txt",
     "engineApi": "https://create.roblox.com/docs/reference/engine/llms.txt",
     "openCloud": "https://create.roblox.com/docs/cloud/llms.txt",
+    "assistant": "https://create.roblox.com/docs/assistant/guide",
+    "studioMcp": "https://create.roblox.com/docs/studio/mcp",
+    "studioTestingModes": "https://create.roblox.com/docs/studio/testing-modes",
+    "packages": "https://create.roblox.com/docs/projects/assets/packages",
+    "proceduralModels": "https://create.roblox.com/docs/parts/procedural-models",
+    "sceneAnalysis": "https://create.roblox.com/docs/performance-optimization/scene-analysis",
+    "analyticsEventTypes": "https://create.roblox.com/docs/production/analytics/event-types",
+    "agenticStudioDirection": "https://about.roblox.com/newsroom/2026/04/roblox-studio-going-agentic",
     "creatorStoreCloud": "https://create.roblox.com/docs/cloud/reference/features/creator-store",
     "creatorStoreScopes": "https://create.roblox.com/docs/cloud/reference/scopes",
-    "studioMcp": "https://create.roblox.com/docs/studio/mcp",
     "discovery": "https://create.roblox.com/docs/discovery",
-    "creatorDocsRepo": "https://github.com/Roblox/creator-docs"
+    "creatorDocsRepo": "https://github.com/Roblox/creator-docs",
+    "localAiRobloxResearch": "knowledge/research/AI_ROBLOX_SOURCES_2026-09-08.md"
   },
   "currentPreferredWorkflowCandidates": {
-    "studioFirst": [
+    "studioAgentFirst": [
+      "Roblox Studio",
+      "Roblox Assistant / Agent",
+      "Script Sync when useful",
+      "Git",
+      "Godbase"
+    ],
+    "studioFirstExternalAgent": [
       "Roblox Studio",
       "Studio MCP",
       "Script Sync",
@@ -208,5 +263,7 @@
   "validation": "tools/godbase/validate.py",
   "continuousResearch": "knowledge/research/CONTINUOUS_RESEARCH_ROADMAP.md",
   "failureLibrary": "knowledge/regressions/FAILURE_LIBRARY.md",
+  "projectAIInstructions": "knowledge/PROJECT_AI_INSTRUCTIONS.md",
+  "aiRobloxSourceIndex": "knowledge/research/AI_ROBLOX_SOURCES_2026-09-08.md",
   "note": "Initial foundation is complete, but Godbase is intentionally never declared permanently complete because Roblox engine, policies, assets, successful game patterns and ecosystem change."
 }
