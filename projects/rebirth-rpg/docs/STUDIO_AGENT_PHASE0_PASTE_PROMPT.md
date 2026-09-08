@@ -5,6 +5,8 @@
 
 Paste the block below into **Roblox Studio Assistant** while the intended Rebirth RPG place is open.
 
+Before running, keep `STUDIO_PHASE0_RESULT_TEMPLATE.md` available. The Assistant must use that template as the evidence contract for the final result. A PASS based only on code inspection or memory is invalid.
+
 ```text
 GOAL
 Run Rebirth RPG Phase 0 only: inspect the currently open place, connect/verify the existing Script Sync code, create one explicit smoke anchor based on the real floor, run the core Play route, report evidence, then STOP.
@@ -28,6 +30,7 @@ DO NOT CHANGE
 - Do not guess world coordinates.
 - Do not overwrite unrelated verified project content.
 - Do not claim Studio tested without actual Play evidence.
+- Do not mark an unobserved item PASS; use NOT OBSERVED / HOLD.
 
 STEP 1 — INSPECT BEFORE EDITING
 Report:
@@ -126,7 +129,16 @@ For every failure:
 evidence -> root cause -> smallest coherent fix -> exact failed-route replay -> quick regression of earlier passed route.
 If the same subsystem structurally fails twice, STOP and report the architecture/workflow issue instead of stacking patches.
 
-FINAL REPORT
+EVIDENCE CONTRACT
+Use docs/STUDIO_PHASE0_RESULT_TEMPLATE.md for the final result.
+- Record observed values, not only PASS/FAIL.
+- Use NOT OBSERVED when direct evidence is missing.
+- Record the first project-attributable Output error/warning when relevant.
+- Record actual player level during Weapon B comparison because progression can change damage.
+- Keep each failed route as a separate evidence -> root cause -> fix -> replay block.
+- Capture when available: spawn+HUD, Enemy A combat, Weapon B equipped, Boss/clear state, and Output.
+
+FINAL REPORT MINIMUM
 STUDIO PLACE
 - identity:
 - existing/clean:
@@ -140,22 +152,22 @@ SCRIPT SYNC
 - duplicate project scripts: 0 / <count>
 
 RUNTIME
-- BOOT: PASS / FAIL
-- HUD INITIAL STATE: PASS / FAIL
-- SMOKE RIG GROUNDING: PASS / FAIL
-- ATTACK: PASS / FAIL
-- SKILL: PASS / FAIL
-- ENEMY WINDUP / LOS: PASS / FAIL
-- ENEMY A REWARD: PASS / FAIL
-- ENEMY A RESPAWN: PASS / FAIL
-- WEAPON B GRANT: PASS / FAIL
-- WEAPON B EQUIP: PASS / FAIL
-- UNIQUE DROP DEDUPE: PASS / FAIL
-- BOSS CLEAR: PASS / FAIL
-- PLAYER RESPAWN: PASS / FAIL
-- REBIRTH TRANSITION: PASS / FAIL
-- R1 ACCELERATION: PASS / FAIL
-- PROJECT-ATTRIBUTABLE UNEXPECTED ERRORS: <count>
+- BOOT: PASS / FAIL / NOT OBSERVED
+- HUD INITIAL STATE: PASS / FAIL / NOT OBSERVED
+- SMOKE RIG GROUNDING: PASS / FAIL / NOT OBSERVED
+- ATTACK: PASS / FAIL / NOT OBSERVED
+- SKILL: PASS / FAIL / NOT OBSERVED
+- ENEMY WINDUP / LOS: PASS / FAIL / NOT OBSERVED
+- ENEMY A REWARD: PASS / FAIL / NOT OBSERVED
+- ENEMY A RESPAWN: PASS / FAIL / NOT OBSERVED
+- WEAPON B GRANT: PASS / FAIL / NOT OBSERVED
+- WEAPON B EQUIP: PASS / FAIL / NOT OBSERVED
+- UNIQUE DROP DEDUPE: PASS / FAIL / NOT OBSERVED
+- BOSS CLEAR: PASS / FAIL / NOT OBSERVED
+- PLAYER RESPAWN: PASS / FAIL / NOT OBSERVED
+- REBIRTH TRANSITION: PASS / FAIL / NOT OBSERVED
+- R1 ACCELERATION: PASS / FAIL / NOT OBSERVED
+- PROJECT-ATTRIBUTABLE UNEXPECTED ERRORS: <count / NOT OBSERVED>
 
 FAILED & FIXED
 - route:
@@ -170,5 +182,6 @@ KNOWN LIMITATIONS
 DECISION
 - PHASE 0 PASS / PHASE 0 HOLD
 
+PASS is allowed only when every P0 structural route was directly observed and project-attributable unexpected runtime errors = 0.
 STOP after this report. Do not begin asset intake or production map work.
 ```
