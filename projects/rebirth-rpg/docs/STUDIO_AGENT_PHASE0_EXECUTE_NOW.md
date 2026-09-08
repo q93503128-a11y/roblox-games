@@ -151,6 +151,34 @@ Verify:
 
 If boot fails, identify the **first real project failure**, apply the smallest coherent fix, and replay boot before continuing.
 
+## STATIC EXPECTED NUMERIC BASELINES
+
+These are **precomputed expectations from the current repository config**, not substitutes for Studio evidence. Use them to detect silent config/runtime drift during Phase 0.
+
+At **Level 1 / Rebirth 0**:
+
+```text
+Enemy A max health = 38
+Weapon A first basic hit = 10
+Weapon A skill hit = 19
+Weapon B first basic hit = 21
+Weapon B skill hit = 44
+Enemy A base reward = 16 XP / 6 Gold
+```
+
+At **Level 1 / Rebirth 1**, after a successful Rebirth reset:
+
+```text
+Weapon A first basic hit = 11
+Weapon A skill hit = 20
+Enemy A reward = 22 XP / 8 Gold
+```
+
+Important:
+- actual Weapon A → Weapon B TTK comparison should be measured from the real route, because XP gained before equipping Weapon B may increase player level and therefore damage
+- do not force the runtime to match these numbers by bypassing normal input/state transitions
+- if observed values differ, inspect current synced `GameConfig`, player level/rebirth state, equipped weapon, and server damage/reward path before changing tuning
+
 ## STEP 5 — CORE ROUTE
 
 Use normal player input and execute in this order.
