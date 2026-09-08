@@ -25,11 +25,12 @@ Do not judge final art from this test.
 ## PRECONDITIONS
 
 1. Use a clean Rebirth RPG test place, not another verified project's place.
-2. Complete `STUDIO_SCRIPT_SYNC_LAYOUT_001.md`.
+2. Complete `SCRIPT_SYNC_RUNTIME_LAYOUT_001.md`.
 3. Confirm these exist:
 
 ```text
 ReplicatedStorage/RebirthRPG/Shared/Protocol
+ServerScriptService/RebirthRPG/ConfigValidator
 ServerScriptService/RebirthRPG/ServerBootstrap
 StarterPlayer/StarterPlayerScripts/RebirthRPG/ClientBootstrap
 ```
@@ -51,6 +52,7 @@ Place it only after inspecting the actual test place.
 Do not use a guessed world coordinate copied from this document.
 
 The runtime smoke enemies are placed using local offsets from this anchor.
+Each debug rig then raycasts to the actual floor at its intended X/Z and uses its bounding box to correct vertical ground contact. If no floor exists below a target position, the harness warns and that route is not visually trustworthy until the test area is fixed.
 
 ## ENABLE
 
@@ -77,14 +79,22 @@ Workspace
 These are temporary R15 debug rigs created only to exercise the normalized enemy contract.
 They are not production enemy art.
 
-Expected Output includes:
+Expected Output sequence includes:
 
 ```text
+[RebirthRPG] boot: shared protocol ready
+[RebirthRPG] boot: config/protocol validation passed
+[RebirthRPG] boot: remote contract ready
+[RebirthRPG] boot: profile/reward/combat/rebirth services ready
 [RebirthRPG] Studio smoke harness spawned relative to RebirthRPG_SmokeOrigin
-[RebirthRPG] Server bootstrap ready: profile/combat/reward/enemy/rebirth core loaded
+[RebirthRPG] boot: Studio smoke harness ready
+[RebirthRPG] boot: enemy service ready
+[RebirthRPG] boot: server bootstrap ready
 ```
 
-Any project-attributable error before these messages is a failed gate.
+If the optional smoke harness fails, core boot may continue with a warning. That is still a smoke-test failure because the debug route is unavailable, but it should not be confused with a total server bootstrap failure.
+
+Any project-attributable unexpected error is a failed gate.
 
 ## TEST 01 — BOOT / STATE
 
@@ -95,6 +105,7 @@ Pass:
 - internal HUD appears
 - Level 1 / Gold 0 / Rebirth 0 visible
 - mainhand starts as `weapon_start_a`
+- initial HUD state appears even if the first server state event happened before the LocalScript connected
 - no unexpected Rebirth RPG Output errors
 
 If HUD hangs waiting for a Remote or Protocol folder, stop and fix sync hierarchy before testing combat.
@@ -108,6 +119,7 @@ Controls:
 Fight Smoke Enemy A.
 
 Pass:
+- debug rig is standing on the authored floor rather than visibly buried/floating
 - attack is rate-limited rather than infinitely accepted
 - damage is applied by the server
 - skill does visibly larger damage than a normal first hit
@@ -206,6 +218,8 @@ Return:
 
 ```text
 BOOT: PASS / FAIL
+HUD INITIAL STATE: PASS / FAIL
+SMOKE RIG GROUND CONTACT: PASS / FAIL
 ATTACK: PASS / FAIL
 SKILL: PASS / FAIL
 ENEMY DAMAGE/WINDUP: PASS / FAIL
@@ -231,6 +245,7 @@ KNOWN LIMITATIONS:
 
 Do not proceed to production map building when any of these fail:
 - clean boot
+- initial authoritative HUD state
 - attack → death → reward
 - Weapon B grant/equip
 - boss clear
