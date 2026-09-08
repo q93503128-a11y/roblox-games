@@ -59,11 +59,13 @@ local RewardService = require(script.Parent.RewardService)
 local CombatService = require(script.Parent.CombatService)
 local EnemyService = require(script.Parent.EnemyService)
 local RebirthService = require(script.Parent.RebirthService)
+local StudioSmokeHarness = require(script.Parent.StudioSmokeHarness)
 
 ProfileService.Init(StateUpdated)
 RewardService.Init(ProfileService)
 CombatService.Init(ProfileService, RewardService, AttackIntent, SkillIntent, CombatFeedback)
 RebirthService.Init(ProfileService, RequestRebirth, CombatFeedback)
+StudioSmokeHarness.Start()
 EnemyService.Start()
 
 local lastEquipAt: { [Player]: number } = {}
