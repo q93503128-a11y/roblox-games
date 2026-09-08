@@ -16,6 +16,7 @@ local Tags = table.freeze({
 local Attributes = table.freeze({
 	EnemyId = "EnemyId",
 	RewardClaimed = "RewardClaimed",
+	AttackState = "AttackState",
 })
 
 return table.freeze({
