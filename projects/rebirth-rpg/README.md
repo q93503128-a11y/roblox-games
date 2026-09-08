@@ -1,6 +1,6 @@
 # Rebirth RPG — Working Title
 
-> status: PREPRODUCTION / ASSET-FIRST / READY_FOR_STUDIO_ASSET_TASK_01
+> status: PREPRODUCTION / ASSET-FIRST / WAITING_FOR_STUDIO_TASK_01_EXECUTION
 > established: 2026-09-08
 > canonical repo: `q93503128-a11y/roblox-games`
 
@@ -73,6 +73,9 @@ Mandatory:
 - Creator Store 웹 사전검수 002 완료.
 - Studio Agent Asset Intake Pass 001 작성.
 - Studio 작업을 환경 → 무기 → 적 → 방어구/VFX의 4개 짧은 현장 task로 분해.
+- TASK 01 환경 검수만 수행하는 standalone Agent prompt 작성.
+- TASK 01 결과 템플릿 작성.
+- 실제 Studio evidence 없이는 첫 production zone을 설계하지 못하게 `ASSET_APPROVAL_GATE_001.md` 추가.
 - 환생 progression과 server-authoritative system boundary 정본화.
 
 ### WEB-PREFERRED ENVIRONMENT
@@ -113,20 +116,30 @@ Mandatory:
 - `docs/ASSET_WEB_PREFILTER_002.md`
 - `docs/STUDIO_AGENT_ASSET_PASS_001.md`
 - `docs/STUDIO_AGENT_RUN_SEQUENCE_001.md`
+- `docs/STUDIO_AGENT_TASK_01_ENVIRONMENT.md`
+- `docs/STUDIO_AGENT_TASK_01_RESULT_TEMPLATE.md`
+- `docs/ASSET_APPROVAL_GATE_001.md`
 
-## Next safe step
+## Immediate execution gate
 
-Run **TASK 01 — Studio Inspect + Environment Quarantine** from:
+Run only:
 
-`docs/STUDIO_AGENT_RUN_SEQUENCE_001.md`
+`docs/STUDIO_AGENT_TASK_01_ENVIRONMENT.md`
 
-TASK 01 must stop after actual Studio evidence for:
+TASK 01 must produce actual Studio evidence for:
+- current place/DataModel safety
 - Synty Nature Pack
 - Synty Dungeon Pack
-- current place/DataModel safety
-- curated environment subset
+- curated environment subsets
 - R15-relative scale
 - pivot/collision/material health
+- field/dungeon visual compatibility
+
+Record the evidence using:
+
+`docs/STUDIO_AGENT_TASK_01_RESULT_TEMPLATE.md`
+
+Then STOP.
 
 Do **not** proceed to final map construction yet.
 
@@ -140,3 +153,5 @@ TASK 02 weapon visual intake
 → first-zone spatial plan
 → one-section Studio build
 ```
+
+The first production-zone build remains blocked by `docs/ASSET_APPROVAL_GATE_001.md` until the required Studio evidence exists.
