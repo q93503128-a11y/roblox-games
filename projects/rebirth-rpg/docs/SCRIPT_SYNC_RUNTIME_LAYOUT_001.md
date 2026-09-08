@@ -41,6 +41,7 @@ ReplicatedStorage/RebirthRPG/Shared
 
 ServerScriptService/RebirthRPG
 ├─ GameConfig
+├─ ConfigValidator
 ├─ ProfileService
 ├─ RewardService
 ├─ CombatService
@@ -84,6 +85,17 @@ Never blindly choose `Keep Disk` against an unknown place.
 - Do not hand-create duplicate project Remotes beside the runtime contract unless architecture changes intentionally.
 - Studio remains source of truth for map/assets and user-facing `.rbxlx` output.
 
+## Boot validation
+
+`ConfigValidator` runs before server services start and rejects obvious contract mistakes such as:
+- duplicate Remote names
+- missing item/weapon/loot references
+- invalid first-slice combat numbers
+- missing Rebirth-required clear flag source
+- malformed loot chances
+
+This is Gate 0 only. Passing it does not prove Studio gameplay quality.
+
 ## Enemy runtime contract
 
 An enemy becomes gameplay-active only when its Studio-owned Model satisfies:
@@ -102,7 +114,7 @@ Model contains:
   ZERO Script / LocalScript / ModuleScript descendants
 ```
 
-`EnemyService` now refuses unsanitized tagged models containing executable descendants.
+`EnemyService` refuses unsanitized tagged models containing executable descendants.
 
 Project code owns:
 - health
@@ -167,6 +179,8 @@ RebirthRPG_SmokeOrigin
 The code does not guess a world coordinate if the anchor is missing.
 
 The harness is optional. Bootstrap isolates it with `pcall`; failure of the debug harness must not stop the core server boot.
+
+The three smoke encounters are spaced relative to the anchor so only the first encounter should be inside aggro range at test start. Use an empty floor area with enough clearance for the temporary test lane.
 
 ## Not yet claimed
 
