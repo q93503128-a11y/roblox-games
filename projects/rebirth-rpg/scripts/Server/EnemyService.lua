@@ -21,6 +21,15 @@ local function setServerNetworkOwnership(model: Model)
 	end
 end
 
+local function findExecutableDescendant(model: Model): Instance?
+	for _, descendant in ipairs(model:GetDescendants()) do
+		if descendant:IsA("Script") or descendant:IsA("LocalScript") or descendant:IsA("ModuleScript") then
+			return descendant
+		end
+	end
+	return nil
+end
+
 local function getNearestTarget(origin: Vector3, maxDistance: number): (Player?, BasePart?, Humanoid?)
 	local bestPlayer: Player? = nil
 	local bestRoot: BasePart? = nil
@@ -113,6 +122,16 @@ local function bindEnemy(instance: Instance)
 		return
 	end
 
+	local executable = findExecutableDescendant(instance)
+	if executable ~= nil then
+		warn(string.format(
+			"[RebirthRPG] Refusing unsanitized enemy %s because it contains executable descendant %s",
+			instance:GetFullName(),
+			executable:GetFullName()
+		))
+		return
+	end
+
 	local humanoid = instance:FindFirstChildOfClass("Humanoid")
 	if humanoid == nil then
 		warn(string.format("[RebirthRPG] Enemy %s has no Humanoid", instance:GetFullName()))
@@ -129,7 +148,10 @@ local function bindEnemy(instance: Instance)
 
 	local spawnCFrame = instance:GetPivot()
 	local spawnParent = instance.Parent
+	local originalArchivable = instance.Archivable
+	instance.Archivable = true
 	local respawnTemplate = instance:Clone()
+	instance.Archivable = originalArchivable
 
 	humanoid.Died:Connect(function()
 		bound[instance] = nil
