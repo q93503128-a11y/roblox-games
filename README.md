@@ -16,6 +16,7 @@ roblox-games/
 │  ├─ monster-factory/    # Monster Factory Simulator
 │  ├─ vaultfall/          # Vaultfall
 │  ├─ junkyard-empire/    # Junkyard Empire
+│  ├─ rebirth-rpg/        # Rebirth RPG (working title)
 │  └─ <future-game>/      # 이후 Roblox 프로젝트
 ├─ shared/
 │  ├─ modules/            # 실제로 여러 게임에서 재사용하기로 확정된 모듈
@@ -210,6 +211,24 @@ projects/junkyard-empire/
 - 기획·개발 규칙·경제/수익화·MCP 테스트·새 채팅 인수인계 정본 문서화 완료
 - 현재 P0 설계/프리프로덕션, 다음 단계는 P0.1 한 루프 greybox 구현 및 MCP 플레이테스트
 
+### Rebirth RPG (working title)
+
+경로:
+
+```text
+projects/rebirth-rpg/
+```
+
+현재 개발 방향:
+
+- 정석 Roblox 판타지 액션 RPG + Rebirth/Prestige
+- 뇌 빼고 반복하기 좋은 `사냥 → loot → 장비 → 지역 → 보스 → 환생` 루프
+- 환생은 초반 성장 가속, 이전 구간 압축, 신규 콘텐츠 해금에 집중
+- 보스는 복잡한 환생별 패턴 변화보다 읽기 쉬운 단순 전투와 보상감 우선
+- 환경/적/장비 디자인은 AI가 먼저 발명하지 않고 실제 확보·검증된 asset vocabulary에 맞춰 결정
+- 현재 PREPRODUCTION / ASSET-FIRST 단계
+- 다음 단계는 Studio Agent Asset Pass 001로 실제 환경/무기/적/방어구/VFX 후보 검증
+
 ## 새 프로젝트 추가 규칙
 
 새 Roblox 게임은 다음 최소 구조로 시작합니다.
@@ -233,8 +252,9 @@ projects/<project-name>/
 ## 현재 다음 단계
 
 1. `knowledge/` Godbase를 지속 확장
-2. Junkyard Empire P0.1에서 Studio MCP + Codex CLI 기반 실제 Studio-first 제작 루프 검증
-3. 장르별 실제 게임 reference 연구 추가
-4. Creator Store 에셋/키트 실제 검수 카탈로그 구축
-5. 기존 프로젝트는 현재 정본 workflow를 유지하면서 MCP 기반 Studio QA를 점진적으로 추가
-6. 실제 플레이 테스트 결과를 Godbase의 regression/failure knowledge로 환류
+2. Rebirth RPG에서 Studio Agent Asset Pass 001로 asset-first visual vocabulary 확정
+3. Junkyard Empire P0.1에서 Studio-first 제작 루프 검증
+4. 장르별 실제 게임 reference 연구 추가
+5. Creator Store 에셋/키트 실제 검수 카탈로그 구축
+6. 기존 프로젝트는 현재 정본 workflow를 유지하면서 Studio QA를 점진적으로 추가
+7. 실제 플레이 테스트 결과를 Godbase의 regression/failure knowledge로 환류
