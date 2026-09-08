@@ -24,6 +24,12 @@ inspect place
 → STOP
 ```
 
+If the operator is using Roblox Studio Assistant and needs a **single block to paste into Assistant**, use:
+
+`STUDIO_AGENT_PHASE0_PASTE_PROMPT.md`
+
+The paste prompt is only an operator bridge. `STUDIO_AGENT_PHASE0_EXECUTE_NOW.md` remains canonical if the two ever differ.
+
 Do not skip directly to production assets or map building.
 
 ## Current state
@@ -48,6 +54,7 @@ Do not rewrite the gameplay core unless an actual Studio failure provides eviden
 
 Read first:
 - `STUDIO_AGENT_PHASE0_EXECUTE_NOW.md`
+- `STUDIO_AGENT_PHASE0_PASTE_PROMPT.md` when operating through Roblox Studio Assistant
 - `DEVELOPMENT_SLICE_001_STATUS.md`
 - `SCRIPT_SYNC_RUNTIME_LAYOUT_001.md`
 - `STUDIO_CORE_SMOKE_TEST_001.md`
