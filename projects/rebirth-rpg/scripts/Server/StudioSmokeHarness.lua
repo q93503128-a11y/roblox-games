@@ -69,9 +69,10 @@ function StudioSmokeHarness.Start(): boolean
 
 	-- Studio-only validation lane, never production world art.
 	-- All placement is relative to the explicit SmokeOrigin anchor.
-	makeDebugEnemy(folder, "enemy_field_a_01", "Smoke Enemy A", origin.CFrame * CFrame.new(0, 0, -14), 1.0)
-	makeDebugEnemy(folder, "enemy_field_b_01", "Smoke Enemy B", origin.CFrame * CFrame.new(12, 0, -28), 1.05)
-	makeDebugEnemy(folder, "boss_region_01", "Smoke Boss", origin.CFrame * CFrame.new(0, 0, -50), 1.45)
+	-- Distances deliberately keep later encounters outside their aggro ranges at test start.
+	makeDebugEnemy(folder, "enemy_field_a_01", "Smoke Enemy A", origin.CFrame * CFrame.new(0, 0, -16), 1.0)
+	makeDebugEnemy(folder, "enemy_field_b_01", "Smoke Enemy B", origin.CFrame * CFrame.new(65, 0, -16), 1.05)
+	makeDebugEnemy(folder, "boss_region_01", "Smoke Boss", origin.CFrame * CFrame.new(65, 0, -110), 1.45)
 
 	print("[RebirthRPG] Studio smoke harness spawned relative to RebirthRPG_SmokeOrigin")
 	return true
