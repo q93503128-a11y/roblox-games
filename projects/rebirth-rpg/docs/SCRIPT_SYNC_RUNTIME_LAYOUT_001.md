@@ -57,13 +57,26 @@ StarterPlayer/StarterPlayerScripts/RebirthRPG
 
 `ServerBootstrap` creates `ReplicatedStorage/RebirthRPG/Remotes` at runtime. It does **not** generate the production world.
 
-## Current disk extension
+## Canonical disk naming
 
-The repository currently uses `.lua` files.
+The repository now follows the current Script Sync naming rules directly:
 
-Roblox Script Sync exposes a file-extension setting and supports Lua/Luau choices. Keep the repository on the current Lua extension for this first integration rather than creating duplicate `.luau` copies or renaming the codebase only for aesthetics.
+```text
+Shared/Protocol.luau                    → ModuleScript
+Server/GameConfig.luau                 → ModuleScript
+Server/ConfigValidator.luau            → ModuleScript
+Server/ProfileService.luau             → ModuleScript
+Server/RewardService.luau              → ModuleScript
+Server/CombatService.luau              → ModuleScript
+Server/EnemyService.luau               → ModuleScript
+Server/RebirthService.luau             → ModuleScript
+Server/StudioTestHooks.luau             → ModuleScript
+Server/StudioSmokeHarness.luau          → ModuleScript
+Server/ServerBootstrap.server.luau      → Script, Server RunContext
+Client/ClientBootstrap.client.luau      → Script, Client RunContext
+```
 
-Use one extension consistently across all synced roots.
+Roblox's current Script Sync documentation describes `.luau`, `.server.luau`, and `.client.luau` as the on-disk conventions used to determine Studio script type. Do not create parallel `.lua` copies; they were removed during the 2026-09-08 integration hardening pass.
 
 ## First sync conflict rule
 
