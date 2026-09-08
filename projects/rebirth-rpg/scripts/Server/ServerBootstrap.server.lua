@@ -3,6 +3,10 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local function bootLog(stage: string)
+	print(string.format("[RebirthRPG] boot: %s", stage))
+end
+
 local projectRoot = ReplicatedStorage:FindFirstChild("RebirthRPG")
 if projectRoot == nil then
 	projectRoot = Instance.new("Folder")
@@ -12,6 +16,7 @@ end
 
 local shared = projectRoot:WaitForChild("Shared")
 local Protocol = require(shared:WaitForChild("Protocol"))
+bootLog("shared protocol ready")
 
 local remotesFolder = projectRoot:FindFirstChild("Remotes")
 if remotesFolder == nil then
@@ -53,6 +58,7 @@ local RequestRebirth = ensureRemoteEvent(Protocol.Remotes.RequestRebirth)
 local StateUpdated = ensureRemoteEvent(Protocol.Remotes.StateUpdated)
 local CombatFeedback = ensureRemoteEvent(Protocol.Remotes.CombatFeedback)
 local GetState = ensureRemoteFunction(Protocol.Remotes.GetState)
+bootLog("remote contract ready")
 
 local ProfileService = require(script.Parent.ProfileService)
 local RewardService = require(script.Parent.RewardService)
@@ -65,8 +71,17 @@ ProfileService.Init(StateUpdated)
 RewardService.Init(ProfileService)
 CombatService.Init(ProfileService, RewardService, AttackIntent, SkillIntent, CombatFeedback)
 RebirthService.Init(ProfileService, RequestRebirth, CombatFeedback)
-StudioSmokeHarness.Start()
+bootLog("profile/reward/combat/rebirth services ready")
+
+local smokeOk, smokeResult = pcall(StudioSmokeHarness.Start)
+if not smokeOk then
+	warn(string.format("[RebirthRPG] optional Studio smoke harness failed: %s", tostring(smokeResult)))
+elseif smokeResult then
+	bootLog("Studio smoke harness ready")
+end
+
 EnemyService.Start()
+bootLog("enemy service ready")
 
 local lastEquipAt: { [Player]: number } = {}
 local lastStateRequestAt: { [Player]: number } = {}
@@ -119,4 +134,4 @@ EquipItem.OnServerEvent:Connect(function(player: Player, itemId: any)
 	ProfileService.EquipItem(player, itemId)
 end)
 
-print("[RebirthRPG] Server bootstrap ready: profile/combat/reward/enemy/rebirth core loaded")
+bootLog("server bootstrap ready")
