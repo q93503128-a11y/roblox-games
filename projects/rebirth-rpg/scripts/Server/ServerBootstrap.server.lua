@@ -47,6 +47,7 @@ local function ensureRemoteFunction(name: string): RemoteFunction
 end
 
 local AttackIntent = ensureRemoteEvent(Protocol.Remotes.AttackIntent)
+local SkillIntent = ensureRemoteEvent(Protocol.Remotes.SkillIntent)
 local EquipItem = ensureRemoteEvent(Protocol.Remotes.EquipItem)
 local RequestRebirth = ensureRemoteEvent(Protocol.Remotes.RequestRebirth)
 local StateUpdated = ensureRemoteEvent(Protocol.Remotes.StateUpdated)
@@ -61,7 +62,7 @@ local RebirthService = require(script.Parent.RebirthService)
 
 ProfileService.Init(StateUpdated)
 RewardService.Init(ProfileService)
-CombatService.Init(ProfileService, RewardService, AttackIntent, CombatFeedback)
+CombatService.Init(ProfileService, RewardService, AttackIntent, SkillIntent, CombatFeedback)
 RebirthService.Init(ProfileService, RequestRebirth, CombatFeedback)
 EnemyService.Start()
 
