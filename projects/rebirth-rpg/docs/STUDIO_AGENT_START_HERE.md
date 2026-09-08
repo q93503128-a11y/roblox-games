@@ -51,9 +51,21 @@ UNRELATED VERIFIED PROJECT CONTENT: YES / NO
 
 If unrelated verified project content exists, STOP.
 
-## 0B — SCRIPT SYNC
+## 0B — DISK PREFLIGHT + SCRIPT SYNC
 
-Follow exactly:
+Before linking folders, confirm the repository side uses the canonical current Script Sync names:
+
+```text
+scripts/Shared/Protocol.luau
+scripts/Server/ServerBootstrap.server.luau
+scripts/Client/ClientBootstrap.client.luau
+```
+
+Server service modules should use plain `.luau` names such as `GameConfig.luau`, `CombatService.luau`, and `EnemyService.luau`.
+
+If parallel legacy `.lua` copies appear in these folders, STOP and report rather than syncing duplicates.
+
+Then follow exactly:
 
 `SCRIPT_SYNC_RUNTIME_LAYOUT_001.md`
 
@@ -66,6 +78,13 @@ scripts/Client → StarterPlayer/StarterPlayerScripts/RebirthRPG
 ```
 
 Resolve initial sync conflicts deliberately. Do not overwrite unknown Studio code blindly.
+
+After sync, verify in Studio that:
+- `Protocol` is a ModuleScript
+- `ServerBootstrap` is a Script with Server RunContext
+- `ClientBootstrap` is a Script with Client RunContext
+- service files are ModuleScripts
+- duplicate RebirthRPG scripts do not exist elsewhere
 
 ## 0C — CREATE SMOKE ANCHOR
 
@@ -115,6 +134,7 @@ The smoke rigs are temporary sanitized R15 debug rigs. They are **not production
 Return:
 
 ```text
+SCRIPT SYNC TYPES: PASS / FAIL
 BOOT: PASS / FAIL
 ATTACK: PASS / FAIL
 SKILL: PASS / FAIL
