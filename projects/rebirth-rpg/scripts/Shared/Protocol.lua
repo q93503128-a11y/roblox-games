@@ -2,6 +2,7 @@
 
 local Remotes = table.freeze({
 	AttackIntent = "AttackIntent",
+	SkillIntent = "SkillIntent",
 	EquipItem = "EquipItem",
 	RequestRebirth = "RequestRebirth",
 	StateUpdated = "StateUpdated",
