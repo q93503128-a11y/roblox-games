@@ -50,6 +50,16 @@ local function getNearestTarget(origin: Vector3, maxDistance: number): (Player?,
 	return bestPlayer, bestRoot, bestHumanoid
 end
 
+local function canStillHit(model: Model, humanoid: Humanoid, targetRoot: BasePart, targetHumanoid: Humanoid, attackRange: number): boolean
+	if model.Parent == nil or humanoid.Health <= 0 then
+		return false
+	end
+	if targetRoot.Parent == nil or targetHumanoid.Health <= 0 then
+		return false
+	end
+	return (targetRoot.Position - model:GetPivot().Position).Magnitude <= attackRange + 1.5
+end
+
 local function runBrain(model: Model, humanoid: Humanoid, config: any)
 	local lastAttackAt = -math.huge
 
@@ -64,8 +74,16 @@ local function runBrain(model: Model, humanoid: Humanoid, config: any)
 				local now = os.clock()
 				if now - lastAttackAt >= config.attackCooldown then
 					lastAttackAt = now
-					-- Slice 001 uses one readable normal attack. Animation/VFX hooks are added after rig approval.
-					targetHumanoid:TakeDamage(config.damage)
+					model:SetAttribute(Protocol.Attributes.AttackState, "Windup")
+					task.wait(config.attackWindup)
+
+					if canStillHit(model, humanoid, targetRoot, targetHumanoid, config.attackRange) then
+						targetHumanoid:TakeDamage(config.damage)
+					end
+
+					if model.Parent ~= nil and humanoid.Health > 0 then
+						model:SetAttribute(Protocol.Attributes.AttackState, "Idle")
+					end
 				end
 			else
 				humanoid:MoveTo(targetRoot.Position)
@@ -103,13 +121,39 @@ local function bindEnemy(instance: Instance)
 
 	bound[instance] = true
 	instance:SetAttribute(Protocol.Attributes.RewardClaimed, false)
+	instance:SetAttribute(Protocol.Attributes.AttackState, "Idle")
 	humanoid.MaxHealth = config.maxHealth
 	humanoid.Health = config.maxHealth
 	humanoid.WalkSpeed = config.moveSpeed
 	setServerNetworkOwnership(instance)
 
+	local spawnCFrame = instance:GetPivot()
+	local spawnParent = instance.Parent
+	local respawnTemplate = instance:Clone()
+
 	humanoid.Died:Connect(function()
 		bound[instance] = nil
+		instance:SetAttribute(Protocol.Attributes.AttackState, "Dead")
+
+		task.delay(math.min(config.respawnTime, 2), function()
+			if instance.Parent ~= nil then
+				instance:Destroy()
+			end
+		end)
+
+		task.delay(config.respawnTime, function()
+			if spawnParent == nil or spawnParent.Parent == nil then
+				return
+			end
+
+			local replacement = respawnTemplate:Clone()
+			replacement:SetAttribute(Protocol.Attributes.EnemyId, enemyId)
+			replacement:SetAttribute(Protocol.Attributes.RewardClaimed, false)
+			replacement:SetAttribute(Protocol.Attributes.AttackState, "Idle")
+			replacement:PivotTo(spawnCFrame)
+			replacement.Parent = spawnParent
+			CollectionService:AddTag(replacement, Protocol.Tags.Enemy)
+		end)
 	end)
 
 	task.spawn(runBrain, instance, humanoid, config)
