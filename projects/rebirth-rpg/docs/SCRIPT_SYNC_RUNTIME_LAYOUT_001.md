@@ -2,54 +2,91 @@
 
 > status: IMPLEMENTATION CONTRACT
 > verified against current Roblox Script Sync docs: 2026-09-08
+> workflow: Studio-first + Script Sync + Git
 
-The project remains **Studio-first**. Studio owns map, terrain, models, approved assets, authored UI, and the final `.rbxlx`. Git owns the gameplay scripts under `projects/rebirth-rpg/scripts/`.
+The project remains **Studio-first**. Studio owns map, terrain, models, approved assets, authored production UI, Lighting, and the final `.rbxlx`. Git owns gameplay code under `projects/rebirth-rpg/scripts/`.
 
-Roblox Script Sync is the intended bridge for this project because it synchronizes Studio script/folder instances to disk while leaving non-script world instances Studio-owned.
+Do not migrate to Rojo unless a concrete later need appears.
 
-## Disk → DataModel mapping
+## Exact DataModel mapping
 
-Create these three Studio folders and sync them to the matching repository folders:
+Create these three Studio folders in a clean Rebirth RPG test place:
 
 ```text
 ReplicatedStorage
 └─ RebirthRPG
    └─ Shared
-      ↔ projects/rebirth-rpg/scripts/Shared/
 
 ServerScriptService
 └─ RebirthRPG
-   ↔ projects/rebirth-rpg/scripts/Server/
 
 StarterPlayer
 └─ StarterPlayerScripts
    └─ RebirthRPG
-      ↔ projects/rebirth-rpg/scripts/Client/
 ```
 
-Expected runtime scripts after sync:
+Sync them to:
+
+| Studio instance | Disk directory |
+|---|---|
+| `ReplicatedStorage/RebirthRPG/Shared` | `projects/rebirth-rpg/scripts/Shared` |
+| `ServerScriptService/RebirthRPG` | `projects/rebirth-rpg/scripts/Server` |
+| `StarterPlayer/StarterPlayerScripts/RebirthRPG` | `projects/rebirth-rpg/scripts/Client` |
+
+Expected synced code:
 
 ```text
-ReplicatedStorage/RebirthRPG/Shared/Protocol
-ServerScriptService/RebirthRPG/GameConfig
-ServerScriptService/RebirthRPG/ProfileService
-ServerScriptService/RebirthRPG/RewardService
-ServerScriptService/RebirthRPG/CombatService
-ServerScriptService/RebirthRPG/EnemyService
-ServerScriptService/RebirthRPG/RebirthService
-ServerScriptService/RebirthRPG/ServerBootstrap
-StarterPlayer/StarterPlayerScripts/RebirthRPG/ClientBootstrap
+ReplicatedStorage/RebirthRPG/Shared
+└─ Protocol
+
+ServerScriptService/RebirthRPG
+├─ GameConfig
+├─ ProfileService
+├─ RewardService
+├─ CombatService
+├─ EnemyService
+├─ RebirthService
+├─ StudioTestHooks
+├─ StudioSmokeHarness
+└─ ServerBootstrap
+
+StarterPlayer/StarterPlayerScripts/RebirthRPG
+└─ ClientBootstrap
 ```
 
-`ServerBootstrap` creates only the small project-owned `ReplicatedStorage/RebirthRPG/Remotes` runtime folder and RemoteEvent/RemoteFunction objects. It does not generate the map.
+`ServerBootstrap` creates `ReplicatedStorage/RebirthRPG/Remotes` at runtime. It does **not** generate the production world.
 
 ## Current disk extension
 
-The repository currently uses `.lua` files. Studio Script Sync exposes a configurable disk file-extension setting; keep the chosen extension consistent for all three synced roots. Do not rename the whole project merely for aesthetics while the first slice is being integrated.
+The repository currently uses `.lua` files.
+
+Roblox Script Sync exposes a file-extension setting and supports Lua/Luau choices. Keep the repository on the current Lua extension for this first integration rather than creating duplicate `.luau` copies or renaming the codebase only for aesthetics.
+
+Use one extension consistently across all synced roots.
+
+## First sync conflict rule
+
+Before choosing conflict resolution:
+1. inspect the exact Studio place
+2. inspect the three target code folders
+3. confirm they contain no unrelated verified scripts
+4. if they are new/empty, sync repository code into them
+5. if Studio already contains meaningful Rebirth RPG code, STOP and compare before overwriting
+
+Never blindly choose `Keep Disk` against an unknown place.
+
+## Script Sync boundaries
+
+- Sync code folders only, not Workspace/map content.
+- Do not depend on attributes/tags attached to synced script instances as canonical metadata.
+- Enemy tags/attributes belong on Studio/runtime enemy **models**.
+- Do not place Creator Store gameplay scripts into project sync roots.
+- Do not hand-create duplicate project Remotes beside the runtime contract unless architecture changes intentionally.
+- Studio remains source of truth for map/assets and user-facing `.rbxlx` output.
 
 ## Enemy runtime contract
 
-An approved sanitized enemy visual becomes gameplay-active only when the Studio-owned Model satisfies all of these:
+An enemy becomes gameplay-active only when its Studio-owned Model satisfies:
 
 ```text
 CollectionService tag: RebirthRPG_Enemy
@@ -60,62 +97,92 @@ Attribute: EnemyId = one of
 
 Model contains:
   Humanoid
-  coherent root/pivot suitable for Model:GetPivot()
-  unbroken rig/attachments
+  coherent root/pivot usable by Model:GetPivot()
+  intact rig/attachments
+  ZERO Script / LocalScript / ModuleScript descendants
 ```
 
-Project code, not imported scripts, owns:
+`EnemyService` now refuses unsanitized tagged models containing executable descendants.
+
+Project code owns:
 - health
 - movement speed
 - aggro
-- attacks
+- windup/attack timing
 - damage
-- death reward
+- death/respawn
 - XP/Gold/loot
 - boss clear flag
 
-Do not leave third-party NPC AI running beside `EnemyService`.
+Do not leave third-party NPC AI running beside project `EnemyService`.
 
 ## Weapon runtime contract
 
-The authoritative equipped state stores only stable IDs:
+Authoritative equipped state stores stable IDs only:
 
 ```text
 weapon_start_a
 weapon_start_b
 ```
 
-Approved weapon visuals will later map to the same `visualKey`. Replacing a prototype mesh must not change combat/reward/save IDs.
+Approved visual assets later map to these visual keys. Replacing a prototype mesh must not rewrite combat/reward/profile IDs.
 
-Current first-slice combat values are tuning placeholders and must be fitted after real Studio TTK measurements.
+Current numbers are tuning placeholders until real Studio TTK measurements exist.
 
-## First integration smoke test
+## First code validation — BEFORE production asset binding
 
-After Script Sync and TASK 01–03 provide approved visuals:
+After Script Sync, run:
 
-1. Confirm all expected synced scripts exist in the intended DataModel locations.
-2. Confirm no duplicate old version of the same project scripts exists elsewhere.
-3. Add one sanitized enemy model to a disposable combat pocket.
-4. Tag it `RebirthRPG_Enemy` and set `EnemyId = enemy_field_a_01`.
-5. Play.
-6. Confirm Output contains the RebirthRPG bootstrap-ready line and no project-attributable red error.
-7. Attack the enemy from valid range.
-8. Confirm server-owned health decreases.
-9. Kill it once.
-10. Confirm XP/Gold HUD state changes exactly once.
-11. Spam attack Remote through normal input and confirm cooldown prevents extra server hits.
-12. Die/reset player and confirm in-memory profile/equipment state reconstructs for the same server session.
+`docs/STUDIO_CORE_SMOKE_TEST_001.md`
+
+The Studio-only smoke harness uses temporary sanitized R15 rigs and an explicit named anchor. This proves the structural gameplay route without pretending the debug rigs are production art.
+
+Required route:
+
+```text
+clean boot
+→ player state
+→ Enemy A attack/death/reward
+→ Enemy B guaranteed Weapon B
+→ equip
+→ boss clear
+→ death/respawn
+→ rebirth state transition
+```
+
+Only after this route is structurally sound should asset intake and approved visual binding continue.
+
+## Studio smoke harness contract
+
+The harness runs only when both are true:
+- `RunService:IsStudio()`
+- Workspace attribute `RebirthRPG_EnableSmokeHarness = true`
+
+It also requires one explicit BasePart anchor:
+
+```text
+RebirthRPG_SmokeOrigin
+```
+
+The code does not guess a world coordinate if the anchor is missing.
+
+The harness is optional. Bootstrap isolates it with `pcall`; failure of the debug harness must not stop the core server boot.
 
 ## Not yet claimed
 
-The source currently represents **CODE WRITTEN** only.
+Current source is still:
 
-Until the above route is run in Studio, do not mark:
+```text
+CODE WRITTEN
+NOT STUDIO TESTED
+```
+
+Until the smoke route actually runs in Studio, do not mark:
 - FEATURE IMPLEMENTED
 - STUDIO TESTED
 - RBXLX EXPORTED
 
-## Official current source
+## Official current references
 
 - Roblox Script Sync: https://create.roblox.com/docs/scripting/sync
-- Roblox server authority/security guidance: https://create.roblox.com/docs/scripting/security/security-tactics
+- Roblox security/server boundary: https://create.roblox.com/docs/scripting/security/security-tactics
