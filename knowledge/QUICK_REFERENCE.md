@@ -12,15 +12,20 @@
 4. Roblox 공식 Template / Feature Package / Developer Module에 해결책이 있는지 찾는다.
 5. 외부 에셋·코드는 출처/라이선스/스크립트부터 검사한다.
 6. 게임 전체가 아니라 **5~10분 Vertical Slice** 하나를 먼저 완성한다.
-7. Studio MCP가 가능하면 AI가 user보다 먼저 실제 Playtest한다.
-8. 맵/배치 작업이면 `level-design/LEVEL_DESIGN_WORLD_TRAVERSAL.md`와 Failure `013~022`를 먼저 확인한다.
+7. Studio Assistant/Agent가 가능하면 현장 inspect/build/visual QA/playtest에 활용한다.
+8. Studio MCP가 필요한 경우에만 추가 toolchain으로 사용한다.
+9. 맵/배치 작업이면 `level-design/AI_MAP_BUILDING_PLAYBOOK.md`, `level-design/LEVEL_DESIGN_WORLD_TRAVERSAL.md`, Failure `013~022`를 먼저 확인한다.
+10. 반복 기능은 처음부터 다시 만들기 전에 `production/REUSABLE_PACKAGE_AND_QA_SYSTEM.md`의 공용 package 후보인지 판단한다.
+
+프로젝트 상시 AI 지침 압축본: `PROJECT_AI_INSTRUCTIONS.md`.
 
 ## 개발 방식 선택
 
 | 상황 | 기본 선택 |
 |---|---|
+| Studio 안에서 AI가 current scene을 보고 직접 제작/수정 | Roblox Studio Assistant / Agent |
 | Studio가 맵/모델/UI의 정본이고 코드만 Git 관리 | Studio + Script Sync |
-| AI가 Studio 안을 읽고 수정하고 플레이테스트 | Studio MCP |
+| 외부 AI가 Studio를 직접 inspect/edit/playtest해야 함 | Studio MCP |
 | 전체 DataModel을 파일시스템 정본으로 관리 | Rojo |
 | CLI 버전을 재현 가능하게 관리 | Rokit |
 | Luau 패키지 설치 | Wally |
@@ -28,11 +33,32 @@
 | 정적 린트 | selene |
 | 외부 편집기 타입/자동완성 | Luau LSP |
 
-기존 프로젝트는 관성적으로 workflow migration하지 않는다.
+기존 프로젝트는 관성적으로 workflow migration하지 않는다. Studio Agent로 충분한 작업에 MCP/Codex/local model을 무조건 추가하지 않는다.
+
+## Roblox Agent 한 줄 원칙
+
+**총감독은 방향과 기준을 만들고, Roblox Agent는 Studio 현장에서 한 구역씩 만들고 직접 확인한다.**
+
+```text
+inspect
+→ plan
+→ review
+→ one coherent section
+→ visual/runtime test
+→ repair
+→ next section
+```
+
+금지:
+- `게임 전체 완성해` one-shot
+- 이미 검증된 영역까지 불필요하게 재작성
+- plan/acceptance/test route 없이 대규모 변경
+
+정본: `workflow/ROBLOX_ASSISTANT_AGENT_WORKFLOW.md`.
 
 ## 맵 / 배치 한 줄 원칙
 
-**좌표부터 찍지 말고, 공간을 먼저 읽는다.**
+**좌표부터 찍지 말고, 공간을 먼저 읽는다. Part가 아니라 Map → Zone → Structure → Module 순으로 생각한다.**
 
 필수 순서:
 ```text
@@ -41,11 +67,12 @@ inspect current map
 → named anchors
 → macro layout
 → placement table if 5+ objects
-→ major placement
+→ one section placement
 → scale/pivot/ground/clearance
 → gameplay-camera sweep
 → P0 route walk
-→ detail pass
+→ detail/art pass
+→ same route replay
 ```
 
 금지:
@@ -54,6 +81,9 @@ inspect current map
 - freecam만 보고 승인
 - avatar 기준 없이 건물/문/상호작용 물체 scale 판단
 - 기능은 존재하지만 실제 동선/접근성이 깨진 배치
+- production asset을 primitive Parts로 매번 처음부터 조각
+
+정본: `level-design/AI_MAP_BUILDING_PLAYBOOK.md`.
 
 ## 신규 게임 장르 route
 
@@ -86,9 +116,23 @@ Core / Bundles / Missions / Season Passes / Engagement Rewards 등은 백엔드�
 
 Friends Locator, Spawn With Friends, Emote Bar, Profile Card, Scavenger Hunt, Event Sequencer 등 목적이 맞는 공식 모듈을 먼저 검토한다.
 
+### Roblox Packages / Procedural Models
+
+검증된 반복 구조는 Package로 공용화하고, 조정 가능한 반복 구조는 ProceduralModel 후보를 검토한다. 같은 portal/shop/UI/world module을 매 프로젝트 새로 만들지 않는다.
+
+공용 승격:
+```text
+EXPERIMENTAL
+→ PROJECT_PROVEN
+→ CROSS_PROJECT_PROVEN
+→ GODBASE_PACKAGE
+```
+
+정본: `production/REUSABLE_PACKAGE_AND_QA_SYSTEM.md`.
+
 ## Studio MCP 한 줄 원칙
 
-**AI가 만들었으면 AI가 먼저 Studio에서 실제 사용자 경로로 깨본다.**
+**외부 AI가 Studio를 직접 다뤄야 할 때도 AI가 만들었으면 AI가 먼저 실제 사용자 경로로 깨본다.**
 
 표준:
 
@@ -146,15 +190,40 @@ Remote 입력은 타입, 값 범위, 문자열/테이블 크기, 인스턴스 �
 
 ProfileStore는 player profile/session locking 후보이지 global state/leaderboard 만능 도구가 아니다.
 
+## 테스트 자동화 원칙
+
+반복 가치가 높은 P0 route는 Studio scripted QA 후보로 본다.
+
+공식 Studio-only 도구 후보:
+- `StudioTestService`
+- `StudioDeviceSimulatorService`
+- `VirtualInput`
+
+자동화 후보:
+```text
+clean boot
+spawn
+respawn
+join/leave
+UI open/close
+button spam
+mobile orientation
+multiplayer interaction
+primary route
+```
+
+완전 자동화를 목표로 하기보다 **사용자가 반복해서 발견하는 구조 버그부터 자동화**한다.
+
 ## 성능 원칙
 
 - 먼저 측정하고 최적화.
+- Vertical Slice부터 baseline 기록.
 - 큰 월드는 Instance Streaming 우선 검토.
 - 매 프레임 RunService 최소화.
 - `PreloadAsync`는 시작에 정말 필요한 자산만.
 - Parallel Luau는 독립적이고 계산량 큰 작업에만.
 - 저사양 모바일을 target matrix에 포함.
-- MicroProfiler/Scene Analysis/Performance Summary로 원인 확인.
+- Performance Summary → Scene Analysis → 필요 시 MicroProfiler.
 
 ## UI / 입력 원칙
 
@@ -227,7 +296,7 @@ search
 - project-attributable unexpected Output error 0
 - spawn 정상
 - P0 primary route 완주
-- viewport screenshot 검토
+- viewport/gameplay-camera visual 검토
 - detached parts / z-fighting 없음
 - major map object overlap/floating/burial 없음
 - avatar/world scale 자연스러움
@@ -237,6 +306,14 @@ search
 - known limitations 기록
 
 통과 전에는 `INTERNAL_PROTOTYPE`.
+
+## 출시 후 개선
+
+느낌만으로 수정하지 않는다. 가능한 경우 AnalyticsService의:
+- Funnel
+- Economy
+- Custom events
+를 이용해 onboarding, core loop, progression, shop, ability usage 같은 실제 행동을 측정한다.
 
 ## 출시 전 우선순위
 
@@ -251,11 +328,18 @@ search
 ## 공식 출발점
 
 - https://create.roblox.com/docs/llms.txt
+- https://create.roblox.com/docs/assistant/guide
 - https://create.roblox.com/docs/studio/mcp
+- https://create.roblox.com/docs/studio/testing-modes
+- https://create.roblox.com/docs/projects/assets/packages
+- https://create.roblox.com/docs/parts/procedural-models
+- https://create.roblox.com/docs/performance-optimization/scene-analysis
+- https://create.roblox.com/docs/production/analytics/event-types
 - https://create.roblox.com/docs/scripting/sync
 - https://create.roblox.com/docs/resources/templates
 - https://create.roblox.com/docs/resources/feature-packages
 - https://create.roblox.com/docs/resources/modules
 - https://create.roblox.com/docs/scripting/security/security-tactics
-- https://create.roblox.com/docs/performance-optimization
 - https://create.roblox.com/docs/discovery
+
+AI 개발 근거 인덱스: `research/AI_ROBLOX_SOURCES_2026-09-08.md`.
