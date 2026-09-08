@@ -73,9 +73,11 @@ Mandatory:
 - Creator Store 웹 사전검수 002 완료.
 - Studio Agent Asset Intake Pass 001 작성.
 - Studio 작업을 환경 → 무기 → 적 → 방어구/VFX의 4개 짧은 현장 task로 분해.
-- TASK 01 환경 검수만 수행하는 standalone Agent prompt 작성.
+- TASK 01~04 각각 standalone Agent prompt로 분리.
 - TASK 01 결과 템플릿 작성.
 - 실제 Studio evidence 없이는 첫 production zone을 설계하지 못하게 `ASSET_APPROVAL_GATE_001.md` 추가.
+- 에셋 승인 뒤 first-zone spatial plan으로 바로 변환하는 `SUPERVISOR_POST_ASSET_INPUT_001.md` 추가.
+- Studio 실행 진입점 `STUDIO_AGENT_START_HERE.md` 추가.
 - 환생 progression과 server-authoritative system boundary 정본화.
 
 ### WEB-PREFERRED ENVIRONMENT
@@ -116,11 +118,20 @@ Mandatory:
 - `docs/ASSET_WEB_PREFILTER_002.md`
 - `docs/STUDIO_AGENT_ASSET_PASS_001.md`
 - `docs/STUDIO_AGENT_RUN_SEQUENCE_001.md`
+- `docs/STUDIO_AGENT_START_HERE.md`
 - `docs/STUDIO_AGENT_TASK_01_ENVIRONMENT.md`
 - `docs/STUDIO_AGENT_TASK_01_RESULT_TEMPLATE.md`
+- `docs/STUDIO_AGENT_TASK_02_WEAPONS.md`
+- `docs/STUDIO_AGENT_TASK_03_ENEMIES.md`
+- `docs/STUDIO_AGENT_TASK_04_ARMOR_VFX.md`
 - `docs/ASSET_APPROVAL_GATE_001.md`
+- `docs/SUPERVISOR_POST_ASSET_INPUT_001.md`
 
 ## Immediate execution gate
+
+Open:
+
+`docs/STUDIO_AGENT_START_HERE.md`
 
 Run only:
 
@@ -143,13 +154,18 @@ Then STOP.
 
 Do **not** proceed to final map construction yet.
 
-After TASK 01 evidence is reviewed:
+After each task the supervisor reviews evidence before continuing:
 
 ```text
-TASK 02 weapon visual intake
-→ TASK 03 coherent enemy family discovery
+TASK 01 environment
+→ review
+→ TASK 02 weapon visuals
+→ review
+→ TASK 03 enemy family
+→ review
 → TASK 04 armor + minimal VFX
 → ASSET_APPROVAL_001
+→ SUPERVISOR_POST_ASSET_INPUT_001
 → first-zone spatial plan
 → one-section Studio build
 ```
