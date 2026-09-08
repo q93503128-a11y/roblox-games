@@ -1,6 +1,6 @@
 # Agent Protocol — How AI Must Use Roblox Godbase
 
-> 검증 기준일: 2026-09-04
+> 검증 기준일: 2026-09-08
 
 이 문서는 다른 채팅/AI/Codex 세션에서도 Godbase가 실제 행동을 바꾸도록 만드는 실행 규칙이다.
 
@@ -60,6 +60,33 @@ Custom이 항상 나쁜 것은 아니지만 **기존 검증 solution을 모른 �
 - target device UI constraints
 
 Part-only placeholder는 blockout에서만 사용. production look으로 확장하지 않는다.
+
+## Before map / world placement work — mandatory
+
+맵, 허브, 건물, 포탈, 상점, NPC, 업그레이드 기계 등 player-facing world object를 배치하기 전에는 `knowledge/level-design/LEVEL_DESIGN_WORLD_TRAVERSAL.md`와 `RBLX-FAIL-013 ~ 022`를 확인한다.
+
+AI는 다음을 금지한다.
+- 현재 맵 bounds/floor/spawn/scale을 읽지 않고 world coordinate 추측
+- 여러 major object를 즉흥적으로 하나씩 배치한 뒤 전체 동선을 나중에 맞추기
+- Editor freecam만 보고 공간 승인
+- avatar/camera clearance를 무시한 asset scale 판단
+
+필수 순서:
+```text
+inspect map
+→ record floor/spawn/avatar/camera/zone bounds
+→ define named anchors
+→ macro layout
+→ placement table if 5+ player-facing objects
+→ place major objects
+→ avatar/ground/pivot/clearance check
+→ gameplay-camera sweep
+→ walk P0 route
+→ art/detail pass
+→ replay route
+```
+
+배치 완료는 `Instance가 존재한다`는 뜻이 아니라 **플레이어가 실제 동선에서 자연스럽게 보고 접근하고 사용할 수 있다**는 뜻이다.
 
 ## During implementation
 
@@ -124,6 +151,8 @@ Allowed status labels:
 - rollback/replacement 고려
 
 새로운 generalizable lesson은 `knowledge/regressions/FAILURE_LIBRARY.md`로 환류한다.
+
+맵/배치 문제가 사용자에게 반복적으로 발견되면 단순 좌표 수정으로 끝내지 않고 `anchor / scale / route / clearance / camera / placement workflow` 중 어떤 구조가 실패했는지 분류한다.
 
 ## Creator Store / external source
 
