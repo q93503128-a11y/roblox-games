@@ -1,6 +1,6 @@
 # Roblox Project Start Checklist
 
-> 검증 기준일: 2026-09-04
+> 검증 기준일: 2026-09-08
 
 새 Roblox 프로젝트에서 **코딩을 시작하기 전에** 이 체크리스트를 사용한다. 목표는 개발자를 귀찮게 하는 서류가 아니라 이미 알려진 실패를 초기에 제거하는 것이다.
 
@@ -83,6 +83,58 @@ Studio MCP + Rojo + Git + toolchain
 
 ## D. 맵 / 아트
 
+### D0. 배치 전 공간 측정 — mandatory
+
+맵/허브/방/건물/포탈/상점/NPC 등 player-facing world object를 배치하기 전에:
+
+- [ ] playable floor Y 또는 terrain contact 방식 확인
+- [ ] spawn transform 확인
+- [ ] avatar reference rig 또는 기준 크기 확보
+- [ ] camera distance/FOV 확인
+- [ ] 주요 zone/room bounds 확인
+- [ ] main route centerline 확인
+- [ ] 기존 landmark/door/portal pivot 확인
+- [ ] world/reference origin 또는 의미 있는 anchor 정의
+
+**현재 맵을 읽지 않고 숫자 좌표부터 추측하지 않는다.**
+
+### D1. Macro layout
+
+- [ ] spawn → first objective 관계 정의
+- [ ] main route / side route 구분
+- [ ] major zones/rooms 위치 정의
+- [ ] landmark hierarchy 정의
+- [ ] encounter / reward / progression node 위치 정의
+- [ ] hub service placement이 core loop 동선과 연결됨
+
+배치 순서는 `macro → meso → micro`.
+
+### D2. Bulk placement table
+
+player-facing object를 5개 이상 한 번에 추가하면:
+
+- [ ] `object | role | anchor/zone | footprint | facing | clearance | required neighbor | forbidden overlap` 표 작성
+- [ ] raw coordinate가 아니라 named anchor + local offset 우선
+- [ ] major object가 서로 같은 route/clearance를 침범하지 않는지 확인
+
+### D3. Scale / clearance
+
+- [ ] doorway와 corridor가 avatar 기준 자연스러움
+- [ ] building interior가 camera/player count에 맞음
+- [ ] interactable 앞 approach/standing/camera space 확보
+- [ ] hub는 crowding을 고려
+- [ ] combat arena가 이동속도/카메라/적 수에 맞음
+- [ ] external asset bounding box/pivot 확인
+
+### D4. Ground / pivot
+
+- [ ] floating major asset 없음
+- [ ] buried major asset 없음
+- [ ] slope에 부자연스럽게 붙은 건물/기계 없음
+- [ ] terrain 배치는 raycast/socket/bottom-offset 중 적절한 방식 사용
+
+### D5. Graybox / art
+
 - [ ] greybox에서 movement/camera 검증
 - [ ] 첫 landmark
 - [ ] art direction / shape language / palette
@@ -93,7 +145,21 @@ Studio MCP + Rojo + Git + toolchain
 - [ ] edit-time/runtime duplicate geometry 없음
 - [ ] z-fighting 없음
 
+### D6. Gameplay-camera and route validation
+
+- [ ] entry camera
+- [ ] center camera
+- [ ] interaction camera
+- [ ] wall-near/corner camera
+- [ ] combat camera if applicable
+- [ ] spawn → first objective → core activity → reward/progression 실제 walk-through
+- [ ] art pass 후 main route 재완주
+
+Editor freecam에서 예쁘다는 이유로 승인하지 않는다.
+
 관련:
+- `../level-design/LEVEL_DESIGN_WORLD_TRAVERSAL.md`
+- `../regressions/FAILURE_LIBRARY.md` RBLX-FAIL-013 ~ RBLX-FAIL-022
 - `../assets/ASSETS_KITS_AND_PLUGINS.md`
 - `../assets/ASSET_SELECTION_BY_GENRE.md`
 - `../graphics/VISUAL_QUALITY_PIPELINE.md`
@@ -158,7 +224,6 @@ Studio MCP + Rojo + Git + toolchain
 첫 slice에 저장이 필요 없으면 나중으로 미뤄도 됨.
 
 필요하면:
-
 - [ ] profile schema
 - [ ] schema version
 - [ ] migration
@@ -190,7 +255,6 @@ Studio MCP + Rojo + Git + toolchain
 ## J. Dependency / Asset
 
 라이브러리 하나마다:
-
 - [ ] 정말 필요한가
 - [ ] license
 - [ ] maintenance
@@ -199,7 +263,6 @@ Studio MCP + Rojo + Git + toolchain
 - [ ] project size에 과한가
 
 에셋 하나마다:
-
 - [ ] creator/source
 - [ ] reuse/attribution terms
 - [ ] scripts/module scripts
@@ -234,7 +297,7 @@ Validator:
 ## L. 첫 Playtest 전
 
 - [ ] Studio edit mode에서 핵심 map/instances 존재
-- [ ] Output red error 없음
+- [ ] project-attributable Output red error 없음
 - [ ] Play해서 spawn 성공
 - [ ] 캐릭터 void/fall 없음
 - [ ] core input 직접 수행
@@ -243,6 +306,8 @@ Validator:
 - [ ] UI open/close
 - [ ] asset permissions/dependencies
 - [ ] screenshot state 정의
+- [ ] major object overlap/floating/burial 없음
+- [ ] gameplay-camera에서 first objective와 주요 interactable 확인 가능
 
 ## M. 첫 Human Test 전
 
@@ -256,6 +321,8 @@ Validator:
 - [ ] basic combat/core mechanic broken
 - [ ] spawn 실패
 - [ ] desktop/mobile 핵심 UI blocker
+- [ ] 맵 scale/placement가 명백히 어색함
+- [ ] 핵심 동선이 막히거나 불필요하게 길지 않음
 - [ ] known limitations 기록
 
 **사용자는 구조 QA 대신 재미/감각/방향성 피드백에 집중하게 한다.**
@@ -263,13 +330,13 @@ Validator:
 ## N. Human Test 질문
 
 "재밌어?" 대신:
-
 - [ ] 어디로 가야 하는지 바로 알았는가
 - [ ] 첫 재미까지 얼마나 걸렸는가
 - [ ] 전투/행동 중 가장 구린 부분은 무엇인가
 - [ ] 보상을 알아차렸는가
 - [ ] 다음 목표를 스스로 알았는가
 - [ ] UI에서 찾기 어려운 것이 있었나
+- [ ] 맵에서 답답하거나 너무 비어 보이는 곳이 있었나
 - [ ] 다시 할 이유가 있는가
 
 ## O. Slice 통과 기준
@@ -280,6 +347,7 @@ Validator:
 stable
 + understandable
 + primary action feels good
++ spatial layout understandable
 + visual direction acceptable
 + UI acceptable
 + P0 route passes
