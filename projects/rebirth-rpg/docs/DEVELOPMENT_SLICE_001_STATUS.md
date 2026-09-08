@@ -1,7 +1,7 @@
 # Rebirth RPG — Development Slice 001 Status
 
 > updated: 2026-09-08
-> status: CODE WRITTEN / WAITING FOR STUDIO SCRIPT SYNC + CORE SMOKE TEST
+> status: CODE WRITTEN / STATIC PHASE 0 PREFLIGHT COMPLETE / WAITING FOR STUDIO SCRIPT SYNC + CORE SMOKE TEST
 
 This file records actual implementation progress. File count is not treated as gameplay completion.
 
@@ -103,6 +103,7 @@ This file records actual implementation progress. File count is not treated as g
 - old parallel `.lua` copies removed from Shared/Server/Client sync roots
 - Studio Agent preflight now verifies Module/Server/Client RunContext types after sync
 - Studio smoke route defined in `STUDIO_CORE_SMOKE_TEST_001.md`
+- Phase 0 execution prompt now includes deterministic numeric expectations derived from the current `GameConfig`, so R0/R1 damage/reward drift can be detected without replacing actual Studio evidence
 - stale Script Sync document references removed
 - smoke-test expected Output updated to current staged boot logs
 - user handoff remains `.rbxlx` after actual Studio validation
@@ -161,6 +162,8 @@ Completed outside Studio:
 - latest GitHub source/docs inspected
 - project source pack re-read against current implementation
 - current project source manually reviewed against Godbase server-authority, hitbox, inventory, failure-library, Script Sync and rebirth contracts
+- Phase 0 static preflight re-audited `ServerBootstrap`, `StudioSmokeHarness`, `EnemyService`, `ClientBootstrap`, `ProfileService`, `RewardService`, `CombatService`, `RebirthService`, `StudioTestHooks`, `Protocol`, `GameConfig`, and `ConfigValidator`; no source-level defect requiring a code change was found in that pass
+- deterministic current-config expectations recorded for Level 1 / R0 and Level 1 / R1 damage and Enemy A reward checks
 - current Roblox Script Sync documentation rechecked on 2026-09-08
 - repository sync files normalized to `.luau / .server.luau / .client.luau` naming and old `.lua` duplicates removed
 - current Roblox Players API rechecked; smoke rig creation uses `CreateHumanoidModelFromDescriptionAsync`
@@ -195,6 +198,7 @@ inspect clean Rebirth RPG Studio place
 → boss clear
 → death/respawn
 → rebirth test
+→ compare observed values against deterministic Phase 0 baselines
 → report / smallest coherent fixes
 → exact failed-route replay
 → only then asset TASK 01–04
