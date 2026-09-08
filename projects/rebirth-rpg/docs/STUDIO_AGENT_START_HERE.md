@@ -4,85 +4,170 @@ Use this file as the Studio execution entrypoint.
 
 ## Current state
 
-The project is now in **active development**.
+The project is in **active development**.
 
-Project-owned gameplay core code already exists under:
+Project-owned gameplay core code exists under:
 
 ```text
 projects/rebirth-rpg/scripts/
 ```
 
-Current code covers the first server-owned profile/combat/reward/enemy/rebirth shell, but it is **NOT STUDIO TESTED**.
-
-Do not build the final map yet.
-Do not rewrite the gameplay core during the visual asset audit unless an actual integration failure proves a change is required.
-
-Read implementation status:
-- `DEVELOPMENT_SLICE_001_STATUS.md`
-- `SCRIPT_SYNC_RUNTIME_LAYOUT_001.md`
-
-## Asset run order
-
-Run exactly one asset task at a time:
-
-1. `STUDIO_AGENT_TASK_01_ENVIRONMENT.md`
-2. supervisor reviews evidence
-3. `STUDIO_AGENT_TASK_02_WEAPONS.md`
-4. supervisor reviews evidence
-5. `STUDIO_AGENT_TASK_03_ENEMIES.md`
-6. supervisor reviews evidence
-7. `STUDIO_AGENT_TASK_04_ARMOR_VFX.md`
-8. supervisor creates `ASSET_APPROVAL_001.md`
-9. supervisor fills `SUPERVISOR_POST_ASSET_INPUT_001.md`
-10. first-zone spatial plan
-11. one coherent Studio build section
-
-## Run now
-
-**Only TASK 01 — environment audit.**
-
-Open/copy:
-`projects/rebirth-rpg/docs/STUDIO_AGENT_TASK_01_ENVIRONMENT.md`
-
-Expected result:
-- current place safety inspection
-- Synty Nature `6933438443` actual Studio inspection
-- Synty Dungeon `6934021345` actual Studio inspection
-- R15-relative scale evidence
-- pivot/collision/material/dependency evidence
-- curated environment subset
-- APPROVE / HOLD / REJECT
-
-Use:
-`STUDIO_AGENT_TASK_01_RESULT_TEMPLATE.md`
-
-## What NOT to do during TASK 01
-
-- do not make the production map
-- do not bulk-place environment props
-- do not invent monster or equipment art
-- do not replace current profile/combat/rebirth architecture
-- do not import a third-party combat/NPC system
-- do not claim the existing repository code works in Studio without Play evidence
-
-## After asset approval
-
-Only after TASK 01–04 evidence is approved:
+It includes the current profile/progression/combat/reward/enemy/rebirth shell, but it is still:
 
 ```text
-set up Script Sync per SCRIPT_SYNC_RUNTIME_LAYOUT_001.md
-→ sync current project scripts into the inspected place
-→ bind ONE sanitized Enemy A rig using RebirthRPG_Enemy + EnemyId
-→ clean Play boot
-→ attack → kill → XP/Gold → loot/equip smoke test
-→ Studio-only Rebirth eligible profile test
-→ fix only evidenced failures
-→ first-zone spatial plan
+CODE WRITTEN
+NOT STUDIO TESTED
 ```
 
-## Hard stop
+Do not build the final map yet.
+Do not rewrite the gameplay core unless an actual Studio failure provides evidence.
 
-After TASK 01 report, STOP.
-Do not automatically continue to TASK 02 or alter the current code just because the audit found a visually different asset family.
+Read first:
+- `DEVELOPMENT_SLICE_001_STATUS.md`
+- `SCRIPT_SYNC_RUNTIME_LAYOUT_001.md`
+- `STUDIO_CORE_SMOKE_TEST_001.md`
 
-The next step is selected only after the supervisor reviews the Studio evidence.
+---
+
+# RUN NOW — PHASE 0: CODE INTEGRATION + CORE SMOKE TEST
+
+## GOAL
+
+Connect the existing code to a clean Rebirth RPG Studio test place and prove one structural gameplay route before production asset work.
+
+This phase does **not** choose final enemy/weapon/environment art.
+
+## 0A — INSPECT PLACE
+
+Before syncing or creating anything, report:
+
+```text
+PLACE IDENTITY
+WORKSPACE TOP-LEVEL
+SPAWN / FLOOR STATE
+EXISTING RebirthRPG CODE FOLDERS
+UNRELATED VERIFIED PROJECT CONTENT: YES / NO
+```
+
+If unrelated verified project content exists, STOP.
+
+## 0B — SCRIPT SYNC
+
+Follow exactly:
+
+`SCRIPT_SYNC_RUNTIME_LAYOUT_001.md`
+
+Expected mapping:
+
+```text
+scripts/Shared → ReplicatedStorage/RebirthRPG/Shared
+scripts/Server → ServerScriptService/RebirthRPG
+scripts/Client → StarterPlayer/StarterPlayerScripts/RebirthRPG
+```
+
+Resolve initial sync conflicts deliberately. Do not overwrite unknown Studio code blindly.
+
+## 0C — CREATE SMOKE ANCHOR
+
+Inspect actual floor/spawn/camera first.
+
+Then create one explicit test BasePart in a safe empty test area:
+
+```text
+Name = RebirthRPG_SmokeOrigin
+Anchored = true
+CanCollide = false
+Transparency = 1
+```
+
+Do not copy a guessed world coordinate from documentation.
+
+Set Workspace attribute:
+
+```text
+RebirthRPG_EnableSmokeHarness = true
+```
+
+## 0D — PLAY / TEST
+
+Run the complete route from:
+
+`STUDIO_CORE_SMOKE_TEST_001.md`
+
+Minimum required:
+
+```text
+clean boot
+→ Attack/Skill damage
+→ Enemy A death → XP/Gold
+→ Enemy B death → Weapon B guaranteed
+→ equip Weapon B
+→ practical TTK improvement
+→ Boss death → clear flag
+→ player death/respawn
+→ Studio-only rebirth state transition
+```
+
+The smoke rigs are temporary sanitized R15 debug rigs. They are **not production enemy art**.
+
+## 0E — REPORT AND STOP
+
+Return:
+
+```text
+BOOT: PASS / FAIL
+ATTACK: PASS / FAIL
+SKILL: PASS / FAIL
+ENEMY A REWARD: PASS / FAIL
+WEAPON B GRANT/EQUIP: PASS / FAIL
+BOSS CLEAR: PASS / FAIL
+PLAYER RESPAWN: PASS / FAIL
+REBIRTH: PASS / FAIL
+UNEXPECTED PROJECT ERRORS: <count>
+
+FAILED ROUTE:
+ROOT CAUSE:
+FIX APPLIED:
+EXACT ROUTE REPLAYED:
+KNOWN LIMITATIONS:
+```
+
+STOP after the report.
+
+Do not proceed to asset intake if a core structural route failed.
+Use:
+`evidence → root cause → smallest coherent fix → exact failed route replay → regression`.
+
+---
+
+# AFTER PHASE 0 PASSES — ASSET RUN ORDER
+
+Disable the smoke harness for production-oriented playtests:
+
+```text
+RebirthRPG_EnableSmokeHarness = false
+```
+
+Then run one asset task at a time:
+
+1. `STUDIO_AGENT_TASK_01_ENVIRONMENT.md`
+2. supervisor review
+3. `STUDIO_AGENT_TASK_02_WEAPONS.md`
+4. supervisor review
+5. `STUDIO_AGENT_TASK_03_ENEMIES.md`
+6. supervisor review
+7. `STUDIO_AGENT_TASK_04_ARMOR_VFX.md`
+8. `ASSET_APPROVAL_001.md`
+9. `SUPERVISOR_POST_ASSET_INPUT_001.md`
+10. first-zone spatial plan
+11. build one coherent production section
+12. gameplay-camera / P0 regression
+
+## Hard rules
+
+- debug smoke rigs never become production enemies
+- no third-party enemy gameplay scripts
+- approved enemy models must contain zero Script/LocalScript/ModuleScript descendants before binding
+- do not create the full map one-shot
+- do not replace stable gameplay IDs just because visual assets have different names
+- do not call a code-written route implemented until actual Studio Play passes
