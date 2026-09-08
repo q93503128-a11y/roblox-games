@@ -2,6 +2,30 @@
 
 Use this file as the Studio execution entrypoint.
 
+## RUN NOW
+
+For the current Phase 0, use the executable field task:
+
+`STUDIO_AGENT_PHASE0_EXECUTE_NOW.md`
+
+That file is the authoritative Studio action prompt for:
+
+```text
+inspect place
+→ Script Sync/type verification
+→ explicit smoke anchor
+→ Play
+→ Enemy A
+→ Enemy B / Weapon B
+→ Boss
+→ player respawn
+→ Rebirth
+→ evidence / root-cause fix / exact route replay
+→ STOP
+```
+
+Do not skip directly to production assets or map building.
+
 ## Current state
 
 The project is in **active development**.
@@ -23,13 +47,14 @@ Do not build the final map yet.
 Do not rewrite the gameplay core unless an actual Studio failure provides evidence.
 
 Read first:
+- `STUDIO_AGENT_PHASE0_EXECUTE_NOW.md`
 - `DEVELOPMENT_SLICE_001_STATUS.md`
 - `SCRIPT_SYNC_RUNTIME_LAYOUT_001.md`
 - `STUDIO_CORE_SMOKE_TEST_001.md`
 
 ---
 
-# RUN NOW — PHASE 0: CODE INTEGRATION + CORE SMOKE TEST
+# PHASE 0 SUMMARY — CODE INTEGRATION + CORE SMOKE TEST
 
 ## GOAL
 
@@ -131,32 +156,10 @@ The smoke rigs are temporary sanitized R15 debug rigs. They are **not production
 
 ## 0E — REPORT AND STOP
 
-Return:
-
-```text
-SCRIPT SYNC TYPES: PASS / FAIL
-BOOT: PASS / FAIL
-ATTACK: PASS / FAIL
-SKILL: PASS / FAIL
-ENEMY A REWARD: PASS / FAIL
-WEAPON B GRANT/EQUIP: PASS / FAIL
-BOSS CLEAR: PASS / FAIL
-PLAYER RESPAWN: PASS / FAIL
-REBIRTH: PASS / FAIL
-UNEXPECTED PROJECT ERRORS: <count>
-
-FAILED ROUTE:
-ROOT CAUSE:
-FIX APPLIED:
-EXACT ROUTE REPLAYED:
-KNOWN LIMITATIONS:
-```
-
-STOP after the report.
-
 Do not proceed to asset intake if a core structural route failed.
 Use:
-`evidence → root cause → smallest coherent fix → exact failed route replay → regression`.
+
+`evidence → root cause → smallest coherent fix → exact failed route replay → regression`
 
 ---
 
