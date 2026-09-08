@@ -1,6 +1,6 @@
 # Rebirth RPG — Working Title
 
-> status: PREPRODUCTION / ASSET-FIRST
+> status: PREPRODUCTION / ASSET-FIRST / READY_FOR_STUDIO_ASSET_TASK_01
 > established: 2026-09-08
 > canonical repo: `q93503128-a11y/roblox-games`
 
@@ -70,11 +70,28 @@ Mandatory:
 - 프로젝트 방향 고정.
 - Reference set 고정.
 - asset-first art policy 고정.
-- 첫 Creator Store 후보군 조사 시작.
-- Studio Agent용 Asset Intake Pass 001 작성.
+- Creator Store 웹 사전검수 002 완료.
+- Studio Agent Asset Intake Pass 001 작성.
+- Studio 작업을 환경 → 무기 → 적 → 방어구/VFX의 4개 짧은 현장 task로 분해.
+- 환생 progression과 server-authoritative system boundary 정본화.
+
+### WEB-PREFERRED ENVIRONMENT
+- Synty Nature Pack `6933438443`
+- Synty Dungeon Pack `6934021345`
+
+둘 다 Creator Store에서 Roblox 배포 및 동일 Synty art family 설명을 재확인했지만, 아직 Studio production approval은 아니다.
+
+### WEB PROTOTYPE WEAPON
+- Sword Pack `10226464132` — 작은 무료 시각 후보. Studio scale/grip/style 검증 전.
+
+### WEB REJECT / DEFER EXAMPLES
+- DemonSword 10Set `82026628729754` — 111 scripts의 bundled combat surface 때문에 현재 architecture에는 부적합.
+- legacy goblin `462605` — legacy + 높은 executable/audio audit cost.
+- giant random weapon libraries — 첫 두 combat style이 검증되기 전 defer.
 
 ### TESTED
-- GitHub/웹 source 수준의 provenance 및 Creator Store metadata만 확인.
+- GitHub current source/docs 확인.
+- Creator Store/web metadata 수준의 provenance, creator, asset size/script-surface 사전검수.
 
 ### NOT YET TESTED
 - 실제 Studio 삽입
@@ -87,15 +104,39 @@ Mandatory:
 
 따라서 현재는 **게임 구현 완료/Studio 검증 완료 상태가 아니다.**
 
+## Canonical preproduction docs
+
+- `docs/DESIGN_BASELINE_001.md`
+- `docs/PROGRESSION_REBIRTH_001.md`
+- `docs/SYSTEM_ARCHITECTURE_001.md`
+- `docs/VERTICAL_SLICE_001.md`
+- `docs/ASSET_WEB_PREFILTER_002.md`
+- `docs/STUDIO_AGENT_ASSET_PASS_001.md`
+- `docs/STUDIO_AGENT_RUN_SEQUENCE_001.md`
+
 ## Next safe step
 
-`docs/STUDIO_AGENT_ASSET_PASS_001.md`를 Roblox Studio Assistant/Agent에 실행한다.
+Run **TASK 01 — Studio Inspect + Environment Quarantine** from:
 
-결과로 실제 사용 가능한:
-- environment modules
-- enemy rigs
-- weapon silhouettes
-- armor/character visuals
-- VFX source
+`docs/STUDIO_AGENT_RUN_SEQUENCE_001.md`
 
-를 확보한 뒤 `docs/VERTICAL_SLICE_001.md`의 구체적인 첫 지역을 확정한다.
+TASK 01 must stop after actual Studio evidence for:
+- Synty Nature Pack
+- Synty Dungeon Pack
+- current place/DataModel safety
+- curated environment subset
+- R15-relative scale
+- pivot/collision/material health
+
+Do **not** proceed to final map construction yet.
+
+After TASK 01 evidence is reviewed:
+
+```text
+TASK 02 weapon visual intake
+→ TASK 03 coherent enemy family discovery
+→ TASK 04 armor + minimal VFX
+→ ASSET_APPROVAL_001
+→ first-zone spatial plan
+→ one-section Studio build
+```
