@@ -48,6 +48,7 @@ GameConfig.Items = table.freeze({
 		equipSlot = "mainhand",
 		visualKey = "weapon_start_a",
 		prototypeLabel = "Weapon A",
+		unique = true,
 	}),
 	weapon_start_b = table.freeze({
 		id = "weapon_start_b",
@@ -55,6 +56,7 @@ GameConfig.Items = table.freeze({
 		equipSlot = "mainhand",
 		visualKey = "weapon_start_b",
 		prototypeLabel = "Weapon B",
+		unique = true,
 	}),
 })
 
@@ -78,8 +80,8 @@ GameConfig.Weapons = table.freeze({
 		}),
 	}),
 	weapon_start_b = table.freeze({
-		baseDamage = 17,
-		cooldown = 0.82,
+		baseDamage = 21,
+		cooldown = 0.78,
 		windup = 0.13,
 		comboReset = 1.35,
 		comboMultipliers = table.freeze({ 1.00, 1.08, 1.38 }),
@@ -143,7 +145,7 @@ GameConfig.Enemies = table.freeze({
 GameConfig.LootTables = table.freeze({
 	field_a = table.freeze({}),
 	field_b = table.freeze({
-		table.freeze({ itemId = "weapon_start_b", chance = 0.10 }),
+		table.freeze({ itemId = "weapon_start_b", chance = 1.00 }),
 	}),
 	boss_region_01 = table.freeze({
 		table.freeze({ itemId = "weapon_start_b", chance = 1.00 }),
