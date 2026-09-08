@@ -12,8 +12,13 @@ local CombatService = {}
 local ProfileService: any = nil
 local RewardService: any = nil
 local attackRemote: RemoteEvent? = nil
+local skillRemote: RemoteEvent? = nil
 local feedbackRemote: RemoteEvent? = nil
+
 local lastAttackAt: { [Player]: number } = {}
+local lastSkillAt: { [Player]: number } = {}
+local busyUntil: { [Player]: number } = {}
+local comboState: { [Player]: { index: number, lastAt: number } } = {}
 
 local function findEnemyModel(part: BasePart): Model?
 	local current: Instance? = part
@@ -39,7 +44,32 @@ local function hasLineOfSight(character: Model, targetModel: Model, origin: Vect
 	return result.Instance:IsDescendantOf(targetModel)
 end
 
-local function executeAttack(player: Player, weaponId: string)
+local function getEquippedWeapon(player: Player): (string?, any?)
+	if ProfileService == nil then
+		return nil, nil
+	end
+	local profile = ProfileService.Get(player)
+	if profile == nil then
+		return nil, nil
+	end
+
+	local weaponId = profile.inventory.equipped.mainhand
+	if type(weaponId) ~= "string" then
+		return nil, nil
+	end
+	return weaponId, GameConfig.Weapons[weaponId]
+end
+
+local function executeVolumeAttack(
+	player: Player,
+	weaponId: string,
+	hitboxSize: Vector3,
+	forwardOffset: number,
+	maxTargets: number,
+	damageScale: number,
+	actionKind: string,
+	comboIndex: number?
+)
 	local character = player.Character
 	if character == nil then
 		return
@@ -51,26 +81,21 @@ local function executeAttack(player: Player, weaponId: string)
 		return
 	end
 
-	local profile = ProfileService.Get(player)
-	if profile == nil or profile.inventory.equipped.mainhand ~= weaponId then
+	local currentWeaponId, weapon = getEquippedWeapon(player)
+	if currentWeaponId ~= weaponId or weapon == nil then
 		return
 	end
 
-	local weapon = GameConfig.Weapons[weaponId]
-	if weapon == nil then
-		return
-	end
-
-	local attackCFrame = root.CFrame * CFrame.new(0, 0, -weapon.forwardOffset)
+	local attackCFrame = root.CFrame * CFrame.new(0, 0, -forwardOffset)
 	local overlap = OverlapParams.new()
 	overlap.FilterType = Enum.RaycastFilterType.Exclude
 	overlap.FilterDescendantsInstances = { character }
-	local parts = workspace:GetPartBoundsInBox(attackCFrame, weapon.hitboxSize, overlap)
+	local parts = workspace:GetPartBoundsInBox(attackCFrame, hitboxSize, overlap)
 
 	local alreadyHit: { [Model]: boolean } = {}
 	local targetsHit = 0
 	for _, part in ipairs(parts) do
-		if targetsHit >= weapon.maxTargets then
+		if targetsHit >= maxTargets then
 			break
 		end
 		if not part:IsA("BasePart") then
@@ -94,7 +119,10 @@ local function executeAttack(player: Player, weaponId: string)
 			continue
 		end
 
-		local damage = math.max(1, math.floor(weapon.baseDamage * ProfileService.GetDamageMultiplier(player) + 0.5))
+		local damage = math.max(
+			1,
+			math.floor(weapon.baseDamage * damageScale * ProfileService.GetDamageMultiplier(player) + 0.5)
+		)
 		local beforeHealth = enemyHumanoid.Health
 		enemyHumanoid:TakeDamage(damage)
 		targetsHit += 1
@@ -109,6 +137,8 @@ local function executeAttack(player: Player, weaponId: string)
 		if feedbackRemote ~= nil then
 			feedbackRemote:FireClient(player, {
 				type = "hit",
+				action = actionKind,
+				comboIndex = comboIndex,
 				enemyId = enemyId,
 				damage = damage,
 				killed = killed,
@@ -119,48 +149,102 @@ local function executeAttack(player: Player, weaponId: string)
 end
 
 local function onAttackIntent(player: Player)
-	if ProfileService == nil then
-		return
-	end
-
-	local profile = ProfileService.Get(player)
-	if profile == nil then
-		return
-	end
-
-	local weaponId = profile.inventory.equipped.mainhand
-	if type(weaponId) ~= "string" then
-		return
-	end
-
-	local weapon = GameConfig.Weapons[weaponId]
-	if weapon == nil then
+	local weaponId, weapon = getEquippedWeapon(player)
+	if weaponId == nil or weapon == nil then
 		return
 	end
 
 	local now = os.clock()
+	if now < (busyUntil[player] or -math.huge) then
+		return
+	end
 	local previous = lastAttackAt[player] or -math.huge
 	if now - previous < weapon.cooldown then
 		return
 	end
 	lastAttackAt[player] = now
+	busyUntil[player] = now + weapon.windup + 0.08
 
+	local state = comboState[player]
+	if state == nil or now - state.lastAt > weapon.comboReset then
+		state = { index = 1, lastAt = now }
+		comboState[player] = state
+	else
+		state.index = (state.index % #weapon.comboMultipliers) + 1
+		state.lastAt = now
+	end
+
+	local comboIndex = state.index
+	local damageScale = weapon.comboMultipliers[comboIndex]
 	task.delay(weapon.windup, function()
 		if player.Parent == Players then
-			executeAttack(player, weaponId)
+			executeVolumeAttack(
+				player,
+				weaponId,
+				weapon.hitboxSize,
+				weapon.forwardOffset,
+				weapon.maxTargets,
+				damageScale,
+				"basic",
+				comboIndex
+			)
 		end
 	end)
 end
 
-function CombatService.Init(profileService: any, rewardService: any, attackIntent: RemoteEvent, combatFeedback: RemoteEvent)
+local function onSkillIntent(player: Player)
+	local weaponId, weapon = getEquippedWeapon(player)
+	if weaponId == nil or weapon == nil or weapon.skill == nil then
+		return
+	end
+
+	local now = os.clock()
+	if now < (busyUntil[player] or -math.huge) then
+		return
+	end
+	local previous = lastSkillAt[player] or -math.huge
+	if now - previous < weapon.skill.cooldown then
+		return
+	end
+	lastSkillAt[player] = now
+	busyUntil[player] = now + weapon.skill.windup + 0.12
+
+	task.delay(weapon.skill.windup, function()
+		if player.Parent == Players then
+			executeVolumeAttack(
+				player,
+				weaponId,
+				weapon.skill.hitboxSize,
+				weapon.skill.forwardOffset,
+				weapon.skill.maxTargets,
+				weapon.skill.damageMultiplier,
+				"skill",
+				nil
+			)
+		end
+	end)
+end
+
+function CombatService.Init(
+	profileService: any,
+	rewardService: any,
+	attackIntent: RemoteEvent,
+	skillIntent: RemoteEvent,
+	combatFeedback: RemoteEvent
+)
 	ProfileService = profileService
 	RewardService = rewardService
 	attackRemote = attackIntent
+	skillRemote = skillIntent
 	feedbackRemote = combatFeedback
 	attackRemote.OnServerEvent:Connect(onAttackIntent)
+	skillRemote.OnServerEvent:Connect(onSkillIntent)
 
 	Players.PlayerRemoving:Connect(function(player)
 		lastAttackAt[player] = nil
+		lastSkillAt[player] = nil
+		busyUntil[player] = nil
+		comboState[player] = nil
 	end)
 end
 
