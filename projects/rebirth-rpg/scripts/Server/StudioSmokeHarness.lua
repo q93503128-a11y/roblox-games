@@ -1,0 +1,70 @@
+--!strict
+
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local CollectionService = game:GetService("CollectionService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Protocol = require(ReplicatedStorage:WaitForChild("RebirthRPG"):WaitForChild("Shared"):WaitForChild("Protocol"))
+
+local StudioSmokeHarness = {}
+
+local ENABLE_ATTRIBUTE = "RebirthRPG_EnableSmokeHarness"
+local ORIGIN_NAME = "RebirthRPG_SmokeOrigin"
+local FOLDER_NAME = "_RebirthRPG_SmokeHarness"
+
+local function makeDebugEnemy(parent: Instance, enemyId: string, displayName: string, cframe: CFrame, scale: number): Model
+	local description = Instance.new("HumanoidDescription")
+	local model = Players:CreateHumanoidModelFromDescription(description, Enum.HumanoidRigType.R15)
+	description:Destroy()
+
+	model.Name = displayName
+	model:SetAttribute(Protocol.Attributes.EnemyId, enemyId)
+	model:SetAttribute("SmokeHarness", true)
+	model:ScaleTo(scale)
+	model:PivotTo(cframe)
+	model.Parent = parent
+
+	local humanoid = model:FindFirstChildOfClass("Humanoid")
+	if humanoid ~= nil then
+		humanoid.DisplayName = displayName
+	end
+
+	CollectionService:AddTag(model, Protocol.Tags.Enemy)
+	return model
+end
+
+function StudioSmokeHarness.Start(): boolean
+	if not RunService:IsStudio() then
+		return false
+	end
+	if workspace:GetAttribute(ENABLE_ATTRIBUTE) ~= true then
+		return false
+	end
+
+	local origin = workspace:FindFirstChild(ORIGIN_NAME, true)
+	if origin == nil or not origin:IsA("BasePart") then
+		warn(string.format("[RebirthRPG] Smoke harness enabled but %s BasePart is missing", ORIGIN_NAME))
+		return false
+	end
+
+	local existing = workspace:FindFirstChild(FOLDER_NAME)
+	if existing ~= nil then
+		existing:Destroy()
+	end
+
+	local folder = Instance.new("Folder")
+	folder.Name = FOLDER_NAME
+	folder.Parent = workspace
+
+	-- This is a Studio-only validation lane, never production world art.
+	-- All placement is relative to the explicit SmokeOrigin anchor.
+	makeDebugEnemy(folder, "enemy_field_a_01", "Smoke Enemy A", origin.CFrame * CFrame.new(0, 0, -14), 1.0)
+	makeDebugEnemy(folder, "enemy_field_b_01", "Smoke Enemy B", origin.CFrame * CFrame.new(12, 0, -28), 1.05)
+	makeDebugEnemy(folder, "boss_region_01", "Smoke Boss", origin.CFrame * CFrame.new(0, 0, -50), 1.45)
+
+	print("[RebirthRPG] Studio smoke harness spawned relative to RebirthRPG_SmokeOrigin")
+	return true
+end
+
+return StudioSmokeHarness
