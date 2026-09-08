@@ -51,7 +51,7 @@ This file records actual implementation progress. File count is not treated as g
 - server `GetPartBoundsInBox` melee query
 - target dedup per attack
 - player attack line-of-sight validation
-- enemy windup hit now rechecks both distance **and line of sight**, preventing simple melee damage through walls
+- enemy windup hit rechecks both distance **and line of sight**, preventing simple melee damage through walls
 - Level/Rebirth damage multiplier
 - kill-claim guard against duplicate reward
 
@@ -96,6 +96,12 @@ This file records actual implementation progress. File count is not treated as g
 
 ### Integration
 - Script Sync DataModel layout defined in `SCRIPT_SYNC_RUNTIME_LAYOUT_001.md`
+- repository script filenames now follow the current Script Sync disk conventions:
+  - ModuleScripts: `name.luau`
+  - server bootstrap: `ServerBootstrap.server.luau`
+  - client bootstrap: `ClientBootstrap.client.luau`
+- old parallel `.lua` copies removed from Shared/Server/Client sync roots
+- Studio Agent preflight now verifies Module/Server/Client RunContext types after sync
 - Studio smoke route defined in `STUDIO_CORE_SMOKE_TEST_001.md`
 - stale Script Sync document references removed
 - smoke-test expected Output updated to current staged boot logs
@@ -122,6 +128,7 @@ The current source cannot yet be called an implemented playable feature because 
 
 Missing/blocked:
 - successful Script Sync into exact target place
+- verified Script Sync instance types in Studio
 - clean Studio boot / Output evidence
 - smoke harness runtime evidence
 - approved environment assets
@@ -154,12 +161,14 @@ Completed outside Studio:
 - latest GitHub source/docs inspected
 - project source pack re-read against current implementation
 - current project source manually reviewed against Godbase server-authority, hitbox, inventory, failure-library, Script Sync and rebirth contracts
-- current Roblox Script Sync documentation rechecked
-- current Roblox Players API rechecked; smoke rig creation moved to `CreateHumanoidModelFromDescriptionAsync`
+- current Roblox Script Sync documentation rechecked on 2026-09-08
+- repository sync files normalized to `.luau / .server.luau / .client.luau` naming and old `.lua` duplicates removed
+- current Roblox Players API rechecked; smoke rig creation uses `CreateHumanoidModelFromDescriptionAsync`
 - obvious architectural/runtime risks fixed: optional smoke harness boot isolation, unsanitized enemy executable rejection, config/protocol Gate 0 validation, initial HUD state race, debug-rig ground contact assumption, enemy melee wall penetration
 
 Not yet tested:
 - Roblox Studio Script Analysis
+- Studio Script Sync instance type resolution
 - Studio Play clean boot
 - Output error count
 - actual hitbox volume/timing
@@ -176,7 +185,8 @@ Do not add another region or large system layer now.
 
 ```text
 inspect clean Rebirth RPG Studio place
-→ Script Sync current code
+→ Script Sync current `.luau` code
+→ verify Module/Server/Client instance types
 → enable Studio-only smoke harness from explicit anchor
 → clean boot
 → verify HUD initial state
