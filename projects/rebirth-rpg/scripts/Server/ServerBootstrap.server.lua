@@ -18,6 +18,10 @@ local shared = projectRoot:WaitForChild("Shared")
 local Protocol = require(shared:WaitForChild("Protocol"))
 bootLog("shared protocol ready")
 
+local ConfigValidator = require(script.Parent.ConfigValidator)
+ConfigValidator.Validate(Protocol)
+bootLog("config/protocol validation passed")
+
 local remotesFolder = projectRoot:FindFirstChild("Remotes")
 if remotesFolder == nil then
 	remotesFolder = Instance.new("Folder")
