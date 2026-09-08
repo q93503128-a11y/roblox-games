@@ -59,6 +59,30 @@ local function getNearestTarget(origin: Vector3, maxDistance: number): (Player?,
 	return bestPlayer, bestRoot, bestHumanoid
 end
 
+local function hasLineOfSightToTarget(model: Model, targetRoot: BasePart): boolean
+	local targetCharacter = targetRoot.Parent
+	if targetCharacter == nil then
+		return false
+	end
+
+	local origin = model:GetPivot().Position
+	local direction = targetRoot.Position - origin
+	if direction.Magnitude <= 0.001 then
+		return true
+	end
+
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	params.FilterDescendantsInstances = { model }
+	params.IgnoreWater = true
+
+	local result = workspace:Raycast(origin, direction, params)
+	if result == nil then
+		return true
+	end
+	return result.Instance:IsDescendantOf(targetCharacter)
+end
+
 local function canStillHit(model: Model, humanoid: Humanoid, targetRoot: BasePart, targetHumanoid: Humanoid, attackRange: number): boolean
 	if model.Parent == nil or humanoid.Health <= 0 then
 		return false
@@ -66,7 +90,10 @@ local function canStillHit(model: Model, humanoid: Humanoid, targetRoot: BasePar
 	if targetRoot.Parent == nil or targetHumanoid.Health <= 0 then
 		return false
 	end
-	return (targetRoot.Position - model:GetPivot().Position).Magnitude <= attackRange + 1.5
+	if (targetRoot.Position - model:GetPivot().Position).Magnitude > attackRange + 1.5 then
+		return false
+	end
+	return hasLineOfSightToTarget(model, targetRoot)
 end
 
 local function runBrain(model: Model, humanoid: Humanoid, config: any)
@@ -152,6 +179,10 @@ local function bindEnemy(instance: Instance)
 	instance.Archivable = true
 	local respawnTemplate = instance:Clone()
 	instance.Archivable = originalArchivable
+
+	instance.Destroying:Connect(function()
+		bound[instance] = nil
+	end)
 
 	humanoid.Died:Connect(function()
 		bound[instance] = nil
