@@ -3,6 +3,7 @@
 > status: PREPRODUCTION / ASSET-FIRST / WAITING_FOR_STUDIO_TASK_01_EXECUTION
 > established: 2026-09-08
 > canonical repo: `q93503128-a11y/roblox-games`
+> user handoff format: `.rbxlx`
 
 정석 Roblox 액션 RPG + Rebirth/Prestige 장기 성장 게임.
 
@@ -32,6 +33,8 @@
 - primitive Part placeholder를 production art라고 부르지 않는다.
 - 한 visual family를 우선하며 무관한 고품질 에셋을 섞어 asset soup를 만들지 않는다.
 - 첫 5~10분 Vertical Slice가 재미있고 보기 좋기 전에는 두 번째 지역으로 확장하지 않는다.
+- 사용자에게 넘기는 플레이 가능한 빌드는 `.rbxlx`로 제공한다.
+- Studio에서 열고 검증하지 않은 임의 생성 `.rbxlx`를 검증 빌드라고 부르지 않는다.
 
 ## Reference axis
 
@@ -79,6 +82,7 @@ Mandatory:
 - 에셋 승인 뒤 first-zone spatial plan으로 바로 변환하는 `SUPERVISOR_POST_ASSET_INPUT_001.md` 추가.
 - Studio 실행 진입점 `STUDIO_AGENT_START_HERE.md` 추가.
 - 환생 progression과 server-authoritative system boundary 정본화.
+- 최종 사용자 빌드 전달 형식을 `.rbxlx`로 고정하고 `RBXLX_DELIVERY_CONTRACT.md` 추가.
 
 ### WEB-PREFERRED ENVIRONMENT
 - Synty Nature Pack `6933438443`
@@ -106,6 +110,7 @@ Mandatory:
 - gameplay camera visual fit
 - mobile performance
 - P0 combat
+- 실제 `.rbxlx` export/re-open validation
 
 따라서 현재는 **게임 구현 완료/Studio 검증 완료 상태가 아니다.**
 
@@ -126,6 +131,17 @@ Mandatory:
 - `docs/STUDIO_AGENT_TASK_04_ARMOR_VFX.md`
 - `docs/ASSET_APPROVAL_GATE_001.md`
 - `docs/SUPERVISOR_POST_ASSET_INPUT_001.md`
+- `docs/RBXLX_DELIVERY_CONTRACT.md`
+
+## User-facing build format
+
+When a coherent playable build is ready for human testing, hand it off as:
+
+```text
+REBIRTH_RPG_BUILD_<NNN>_YYYY-MM-DD.rbxlx
+```
+
+The repository remains the development source of truth; `.rbxlx` is the Studio handoff artifact. See `docs/RBXLX_DELIVERY_CONTRACT.md`.
 
 ## Immediate execution gate
 
