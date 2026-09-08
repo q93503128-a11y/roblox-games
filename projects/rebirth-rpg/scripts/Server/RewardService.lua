@@ -34,10 +34,15 @@ function RewardService.AwardEnemyDefeat(player: Player, enemyId: string)
 	if lootTable ~= nil then
 		local luckBonus = ProfileService.GetLuckBonus(player)
 		for _, entry in ipairs(lootTable) do
+			local itemDefinition = GameConfig.Items[entry.itemId]
+			if itemDefinition ~= nil and itemDefinition.unique == true and ProfileService.OwnsItem(player, entry.itemId) then
+				continue
+			end
+
 			local effectiveChance = math.clamp(entry.chance + luckBonus, 0, 1)
 			if rng:NextNumber() <= effectiveChance then
 				if ProfileService.AddItem(player, entry.itemId, 1) then
-				table.insert(lootAwarded, entry.itemId)
+					table.insert(lootAwarded, entry.itemId)
 				end
 			end
 		end
