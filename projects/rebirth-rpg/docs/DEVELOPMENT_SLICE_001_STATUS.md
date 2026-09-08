@@ -16,9 +16,12 @@ This file records actual implementation progress. File count is not treated as g
 ### Boot / validation
 - staged server boot logs so first failing subsystem is easier to identify
 - runtime `ConfigValidator` checks core catalog/protocol consistency before services start
-- duplicate Remote names rejected
+- duplicate Remote/Tag/Attribute names rejected
 - missing loot/item/enemy references rejected
 - malformed first-slice combat/rebirth config rejected early
+- impossible Rebirth requirement above Slice level cap rejected
+- invalid/non-integer target counts rejected
+- non-positive hitbox dimensions rejected
 - optional Studio smoke harness is isolated with `pcall` so debug-harness failure cannot become a production boot single point of failure
 
 ### Server profile / progression
@@ -47,7 +50,8 @@ This file records actual implementation progress. File count is not treated as g
 - one simple weapon skill per current abstract weapon style
 - server `GetPartBoundsInBox` melee query
 - target dedup per attack
-- line-of-sight validation
+- player attack line-of-sight validation
+- enemy windup hit now rechecks both distance **and line of sight**, preventing simple melee damage through walls
 - Level/Rebirth damage multiplier
 - kill-claim guard against duplicate reward
 
@@ -57,9 +61,10 @@ This file records actual implementation progress. File count is not treated as g
 - bundled third-party AI is not used
 - **tagged enemy models containing Script/LocalScript/ModuleScript are refused by EnemyService**
 - simple chase/attack loop
-- target distance rechecked after windup
+- target distance and obstruction rechecked after windup
 - server network ownership attempted for unanchored enemy parts
 - respawn uses an Archivable-safe sanitized rig clone
+- destroyed/externally removed enemy entries are cleared from the bound registry
 
 ### Rewards / equipment
 - XP and Gold awarded only by server
@@ -76,18 +81,24 @@ This file records actual implementation progress. File count is not treated as g
 - desktop/gamepad/touch skill
 - Rebirth test input
 - server-driven hit/reward feedback text shell
+- authoritative initial state request retries so an early missed `StateUpdated` event does not leave the HUD permanently blank
 
 ### Studio-only smoke harness
 - guarded by `RunService:IsStudio()`
 - opt-in Workspace attribute `RebirthRPG_EnableSmokeHarness`
 - requires explicit named anchor `RebirthRPG_SmokeOrigin`
 - creates sanitized temporary R15 debug rigs for Enemy A / Enemy B / Boss
-- uses anchor-relative placement, not guessed world coordinates
+- uses current `CreateHumanoidModelFromDescriptionAsync` API rather than the deprecated synchronous creation method
+- uses anchor-relative X/Z placement, not guessed world coordinates
+- each debug rig raycasts to the actual authored floor and corrects vertical placement from its real bounding box
+- later encounters are spaced outside their aggro ranges at test start
 - never production art
 
 ### Integration
 - Script Sync DataModel layout defined in `SCRIPT_SYNC_RUNTIME_LAYOUT_001.md`
 - Studio smoke route defined in `STUDIO_CORE_SMOKE_TEST_001.md`
+- stale Script Sync document references removed
+- smoke-test expected Output updated to current staged boot logs
 - user handoff remains `.rbxlx` after actual Studio validation
 
 ## CURRENT FIRST-SLICE ABSTRACT CONTENT
@@ -112,6 +123,7 @@ The current source cannot yet be called an implemented playable feature because 
 Missing/blocked:
 - successful Script Sync into exact target place
 - clean Studio boot / Output evidence
+- smoke harness runtime evidence
 - approved environment assets
 - approved weapon visuals/grips
 - approved enemy rigs/animations
@@ -140,9 +152,11 @@ Missing/blocked:
 
 Completed outside Studio:
 - latest GitHub source/docs inspected
+- project source pack re-read against current implementation
 - current project source manually reviewed against Godbase server-authority, hitbox, inventory, failure-library, Script Sync and rebirth contracts
 - current Roblox Script Sync documentation rechecked
-- obvious architectural risks fixed: optional smoke harness boot isolation, unsanitized enemy executable rejection, config/protocol Gate 0 validation
+- current Roblox Players API rechecked; smoke rig creation moved to `CreateHumanoidModelFromDescriptionAsync`
+- obvious architectural/runtime risks fixed: optional smoke harness boot isolation, unsanitized enemy executable rejection, config/protocol Gate 0 validation, initial HUD state race, debug-rig ground contact assumption, enemy melee wall penetration
 
 Not yet tested:
 - Roblox Studio Script Analysis
@@ -150,6 +164,7 @@ Not yet tested:
 - Output error count
 - actual hitbox volume/timing
 - debug rig movement/attack behavior
+- debug rig ground contact in the target place
 - death/respawn runtime route
 - rebirth runtime route
 - mobile device simulation
@@ -164,6 +179,7 @@ inspect clean Rebirth RPG Studio place
 → Script Sync current code
 → enable Studio-only smoke harness from explicit anchor
 → clean boot
+→ verify HUD initial state
 → attack → death → reward
 → Enemy B → Weapon B → equip
 → boss clear
