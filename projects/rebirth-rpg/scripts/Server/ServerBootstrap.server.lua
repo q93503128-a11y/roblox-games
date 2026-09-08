@@ -65,6 +65,9 @@ CombatService.Init(ProfileService, RewardService, AttackIntent, CombatFeedback)
 RebirthService.Init(ProfileService, RequestRebirth, CombatFeedback)
 EnemyService.Start()
 
+local lastEquipAt: { [Player]: number } = {}
+local lastStateRequestAt: { [Player]: number } = {}
+
 local function bindPlayer(player: Player)
 	ProfileService.Create(player)
 
@@ -80,6 +83,8 @@ end
 Players.PlayerAdded:Connect(bindPlayer)
 Players.PlayerRemoving:Connect(function(player)
 	ProfileService.Remove(player)
+	lastEquipAt[player] = nil
+	lastStateRequestAt[player] = nil
 end)
 
 for _, player in ipairs(Players:GetPlayers()) do
@@ -87,6 +92,12 @@ for _, player in ipairs(Players:GetPlayers()) do
 end
 
 GetState.OnServerInvoke = function(player: Player)
+	local now = os.clock()
+	local previous = lastStateRequestAt[player] or -math.huge
+	if now - previous < 0.20 then
+		return nil
+	end
+	lastStateRequestAt[player] = now
 	return ProfileService.GetSnapshot(player)
 end
 
@@ -94,6 +105,14 @@ EquipItem.OnServerEvent:Connect(function(player: Player, itemId: any)
 	if typeof(itemId) ~= "string" or #itemId > 64 then
 		return
 	end
+
+	local now = os.clock()
+	local previous = lastEquipAt[player] or -math.huge
+	if now - previous < 0.10 then
+		return
+	end
+	lastEquipAt[player] = now
+
 	ProfileService.EquipItem(player, itemId)
 end)
 
