@@ -13,11 +13,21 @@ local ENABLE_ATTRIBUTE = "RebirthRPG_EnableSmokeHarness"
 local ORIGIN_NAME = "RebirthRPG_SmokeOrigin"
 local FOLDER_NAME = "_RebirthRPG_SmokeHarness"
 
+local function stripExecutableDescendants(model: Model)
+	for _, descendant in ipairs(model:GetDescendants()) do
+		if descendant:IsA("Script") or descendant:IsA("LocalScript") or descendant:IsA("ModuleScript") then
+			descendant:Destroy()
+		end
+	end
+end
+
 local function makeDebugEnemy(parent: Instance, enemyId: string, displayName: string, cframe: CFrame, scale: number): Model
 	local description = Instance.new("HumanoidDescription")
 	local model = Players:CreateHumanoidModelFromDescription(description, Enum.HumanoidRigType.R15)
 	description:Destroy()
 
+	stripExecutableDescendants(model)
+	model.Archivable = true
 	model.Name = displayName
 	model:SetAttribute(Protocol.Attributes.EnemyId, enemyId)
 	model:SetAttribute("SmokeHarness", true)
@@ -57,7 +67,7 @@ function StudioSmokeHarness.Start(): boolean
 	folder.Name = FOLDER_NAME
 	folder.Parent = workspace
 
-	-- This is a Studio-only validation lane, never production world art.
+	-- Studio-only validation lane, never production world art.
 	-- All placement is relative to the explicit SmokeOrigin anchor.
 	makeDebugEnemy(folder, "enemy_field_a_01", "Smoke Enemy A", origin.CFrame * CFrame.new(0, 0, -14), 1.0)
 	makeDebugEnemy(folder, "enemy_field_b_01", "Smoke Enemy B", origin.CFrame * CFrame.new(12, 0, -28), 1.05)
