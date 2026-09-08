@@ -10,13 +10,12 @@ local Protocol = require(projectRoot:WaitForChild("Shared"):WaitForChild("Protoc
 local remotes = projectRoot:WaitForChild("Remotes")
 
 local AttackIntent = remotes:WaitForChild(Protocol.Remotes.AttackIntent) :: RemoteEvent
+local SkillIntent = remotes:WaitForChild(Protocol.Remotes.SkillIntent) :: RemoteEvent
 local EquipItem = remotes:WaitForChild(Protocol.Remotes.EquipItem) :: RemoteEvent
 local RequestRebirth = remotes:WaitForChild(Protocol.Remotes.RequestRebirth) :: RemoteEvent
 local StateUpdated = remotes:WaitForChild(Protocol.Remotes.StateUpdated) :: RemoteEvent
 local CombatFeedback = remotes:WaitForChild(Protocol.Remotes.CombatFeedback) :: RemoteEvent
 local GetState = remotes:WaitForChild(Protocol.Remotes.GetState) :: RemoteFunction
-
-local currentState: any = nil
 
 -- INTERNAL SLICE UI ONLY. Final visual language waits for the approved asset/reference pass.
 local screenGui = Instance.new("ScreenGui")
@@ -107,7 +106,6 @@ local function refresh(state: any)
 	if type(state) ~= "table" then
 		return
 	end
-	currentState = state
 
 	local progression = state.progression or {}
 	local inventory = state.inventory or {}
@@ -142,6 +140,8 @@ CombatFeedback.OnClientEvent:Connect(function(payload: any)
 		if payload.killed == true and type(payload.rewards) == "table" then
 			local rewards = payload.rewards
 			showFeedback(string.format("KO  +%d XP  +%d Gold", rewards.xp or 0, rewards.gold or 0))
+		elseif payload.action == "skill" then
+			showFeedback(string.format("SKILL %d", payload.damage or 0))
 		else
 			showFeedback(string.format("%d", payload.damage or 0))
 		end
@@ -155,12 +155,20 @@ CombatFeedback.OnClientEvent:Connect(function(payload: any)
 end)
 
 local ACTION_ATTACK = "RebirthRPG_Attack"
+local ACTION_SKILL = "RebirthRPG_Skill"
 local ACTION_REBIRTH = "RebirthRPG_Rebirth"
 
 local function attackAction(_actionName: string, inputState: Enum.UserInputState)
 	if inputState == Enum.UserInputState.Begin then
-		-- Immediate local response hook. Approved animation/VFX will be attached after Studio asset intake.
+		-- Immediate local presentation hook; animation/VFX are attached after asset approval.
 		AttackIntent:FireServer()
+	end
+	return Enum.ContextActionResult.Sink
+end
+
+local function skillAction(_actionName: string, inputState: Enum.UserInputState)
+	if inputState == Enum.UserInputState.Begin then
+		SkillIntent:FireServer()
 	end
 	return Enum.ContextActionResult.Sink
 end
@@ -183,6 +191,16 @@ ContextActionService:SetTitle(ACTION_ATTACK, "Attack")
 ContextActionService:SetPosition(ACTION_ATTACK, UDim2.new(1, -135, 1, -155))
 
 ContextActionService:BindAction(
+	ACTION_SKILL,
+	skillAction,
+	true,
+	Enum.KeyCode.E,
+	Enum.KeyCode.ButtonX
+)
+ContextActionService:SetTitle(ACTION_SKILL, "Skill")
+ContextActionService:SetPosition(ACTION_SKILL, UDim2.new(1, -235, 1, -155))
+
+ContextActionService:BindAction(
 	ACTION_REBIRTH,
 	rebirthAction,
 	true,
@@ -190,7 +208,7 @@ ContextActionService:BindAction(
 	Enum.KeyCode.ButtonY
 )
 ContextActionService:SetTitle(ACTION_REBIRTH, "Rebirth")
-ContextActionService:SetPosition(ACTION_REBIRTH, UDim2.new(1, -235, 1, -155))
+ContextActionService:SetPosition(ACTION_REBIRTH, UDim2.new(1, -335, 1, -155))
 
 local ok, initialState = pcall(function()
 	return GetState:InvokeServer()
