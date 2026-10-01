@@ -59,6 +59,8 @@ Acceptance:
 
 ## 0:10–0:30 — First reward
 
+첫 Weight는 portable training이 가능해야 한다. 플레이어는 Weight를 든 채 짧게 이동하고 주변 플레이어를 보면서 rep를 이어갈 수 있다.
+
 첫 rep에서:
 
 - 운동 animation
@@ -144,14 +146,17 @@ Brawl이 실제 시작되지 않더라도 UI/arena/카운트다운 구조는 이
 
 “처음의 약골”과 현재 캐릭터가 외형/훈련 대상/전투에서 명백히 달라야 한다.
 
-## 15:00–25:00 — First Rebirth target
+## 10:00–15:00 — First Rebirth target
 
-첫 Rebirth 권장 목표 시간:
-**15–25분**
+첫 Rebirth 권장 실제 플레이 목표:
+**10–15분**
+
+최적 훈련 위주 baseline:
+**약 8–11분**
 
 실제 테스트에서:
-- 12분 미만이면 지나치게 가벼운지 검토
-- 30분 초과면 첫 prestige가 늦은지 검토
+- 7분 미만이면 지나치게 가벼운지 검토
+- 18분 초과면 첫 prestige가 늦은지 검토
 
 첫 Rebirth 직전에는:
 
@@ -315,7 +320,23 @@ Codex는 최신 reference와 asset/animation availability 조사 후 final set�
 - 첫 30분 pacing 유지
 - 5개 모두 서로 다른 animation silhouette 제공
 
+## Portable training
+
+Starter Dumbbell / handheld Weight family는 이동 중 훈련 가능해야 한다.
+
+```text
+equip weight
+→ rep input/auto state
+→ animation + weight motion
+→ gain
+→ movement/social/PvP context 유지
+```
+
+portable training은 Muscle Legends식 자유로운 서버 생태계를 살리는 기본 훈련이다.
+
 ## Training station interaction
+
+Bench/Squat/Deadlift 등 고정 기구는 더 높은 효율 또는 특화 stat을 제공한다.
 
 ```text
 approach
@@ -342,6 +363,25 @@ Too Heavy는 아무 반응 없는 disabled 버튼이 아니라:
 - requirement feedback
 - 다음 목표
 를 준다.
+
+---
+
+# 5.1. Power Challenge contract
+
+Strength를 월드에서 직접 사용하는 짧은 challenge를 최소 1개 vertical slice에 넣는다.
+
+예:
+- tire flip
+- boulder lift
+- vehicle push
+- breakable strength gate
+
+목표:
+- 숫자 외 progression validation
+- screenshot-worthy power feedback
+- 소량 Gems/bonus
+
+별도 복잡한 미니게임 시스템으로 확장하지 않는다.
 
 ---
 
@@ -426,8 +466,10 @@ Training acceleration을 통해 간접적으로만 성장에 기여.
 ## Safe
 
 - Spawn protection core
-- training station interaction footprint
 - first-time onboarding pocket
+- 정말 필요한 Starter interaction 일부만 제한적 보호
+
+일반/고급 training station은 원칙적으로 자동 Safe Zone이 아니다.
 
 ## PvP enabled
 
@@ -557,7 +599,10 @@ Rewards rough target:
 # 10. Rebirth specification
 
 First Rebirth:
-**15–25분 target**
+**10–15분 실제 플레이 target**
+
+Optimal-training baseline:
+**8–11분**
 
 Rebirth preview는 threshold 이전부터 보임.
 
@@ -593,6 +638,13 @@ Rebirth가 단순 `x2 숫자`만 주지 않게:
 ---
 
 # 11. World spatial plan
+
+## Server population target
+
+- target: **16 players/server**
+- performance/readability가 충분하면 20명까지 검토
+- StarterTraining / PvPPlaza / main route에서 타 플레이어가 지나치게 희박해지지 않게 설계
+
 
 절대 좌표는 Studio inspection 전 금지.
 
