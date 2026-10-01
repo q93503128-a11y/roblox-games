@@ -50,7 +50,7 @@ Examples:
 - Lift 25 Strength
 - Try the Bench Press
 - Claim your first Pet
-- Reach 20,000 Strength to Rebirth
+- Reach 10,000 Strength to Rebirth
 
 Never show a permanent quest log during the first session.
 
@@ -120,17 +120,41 @@ Introduce:
 
 # 5. Training flow
 
-World:
-approach machine/weight.
+Training has two UX modes.
 
-Prompt:
-binding-aware interaction.
+## Portable Weight training
+
+Starter/handheld Weight is equipped directly in the world.
+
+Flow:
+
+```text
+equip Weight
+→ rep input / Auto Train
+→ animation + weight motion
+→ Strength gain
+→ keep walking / observing / social context
+```
+
+Portable training must not force the player into a locked machine state. It is the default social training mode and should preserve the possibility of nearby PvP encounters.
+
+Portable Training HUD:
+
+- current Weight
+- gain per rep
+- next Weight requirement
+- Auto Train state if available
+
+## Fixed station training
+
+Bench / Squat / Deadlift and similar stations use contextual interaction.
 
 On enter:
 
 - character aligns
-- normal movement/combat controls suspend appropriately
+- movement suspends as needed
 - Training Context UI appears
+- station gives higher efficiency or specialized growth
 
 Training Context UI:
 
