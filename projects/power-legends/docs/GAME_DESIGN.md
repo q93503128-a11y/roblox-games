@@ -240,9 +240,10 @@ Godbase simulator 기준을 따른다.
 - Brawl 접근 가능
 - 다음 Gym의 조건 이해
 
-### 15–25 min target
+### 10–15 min target
 
 - 첫 Rebirth 후보
+- 최적 훈련만 할 경우 약 8–11분 baseline을 목표
 
 실제 시간은 Studio test/analytics로 튜닝한다.
 
@@ -322,7 +323,17 @@ Godbase simulator 기준을 따른다.
 
 Codex는 실제 Training Simulator와 Creator Store/animation 공급을 조사해 final 5종을 선정할 수 있다.
 
-### Station interaction
+### Portable + Station training
+
+기본 Weight 계열은 **들고 이동하며 어디서든 훈련 가능한 portable training**을 우선한다. 이 상태에서도 다른 플레이어와 마주치고, 도망가고, 싸움이 발생할 수 있어야 한다.
+
+Bench / Squat / Deadlift 같은 고정 기구는:
+- 더 높은 효율
+- 특정 stat 성장
+- 더 강한 presentation
+중 하나 이상의 이유로 선택하게 한다.
+
+고정 기구 flow:
 
 Approach
 → interact
@@ -383,15 +394,29 @@ Approach
 
 새 weight tier가 단순 reskin이 아니라 **“이제 저걸 든다”**라는 screenshot-worthy progression이 되게 한다.
 
+### Power Challenges
+
+Strength가 실제 월드 규칙을 바꾼다는 것을 짧게 증명하는 활동을 넣는다.
+
+후보:
+- 타이어 뒤집기
+- 바위 들기
+- 자동차 밀기
+- 벽/문 파괴
+- 짧은 strongman checkpoint
+
+이들은 별도 메인 장르가 아니라 **성장 확인 + Gems/보너스 + 시각적 만족**을 위한 짧은 side challenge다.
+
 ---
 
 ## 10. Free PvP
 
 ### Rules
 
-- Spawn: Safe
-- 핵심 indoor machine interaction footprint: Safe
-- 주요 outdoor route/PvP plaza: PvP enabled
+- Spawn 및 첫 onboarding pocket: Safe
+- 초기 Starter interaction의 일부만 보호 가능
+- 일반/고급 training 공간, outdoor route, PvP plaza: 기본적으로 PvP enabled
+- 기구를 사용 중이라는 이유만으로 장시간 완전 무적 상태가 되지 않게 함
 - Brawl: 별도 ruleset
 
 ### Why
@@ -490,7 +515,7 @@ Rewards:
 
 ## 13. Rebirth
 
-첫 Rebirth 목표: 약 15–25분 테스트 범위.
+첫 Rebirth 목표: 약 **10–15분 실제 플레이** 테스트 범위. 최적 훈련만 할 경우 약 **8–11분** baseline을 목표로 한다.
 
 Reset 후보:
 
@@ -711,6 +736,13 @@ https://create.roblox.com/docs/production/monetization
 ---
 
 ## 17. World structure
+
+### Server population target
+
+- 초기 목표: **16 players/server**
+- Body/Pet/network/UI 가독성과 성능이 충분하면 20명 검토
+- 목표는 Starter Gym/PvP route에서 항상 다른 플레이어의 존재를 느끼는 밀도
+
 
 First slice macro structure:
 
