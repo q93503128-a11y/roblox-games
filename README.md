@@ -17,6 +17,7 @@ roblox-games/
 │  ├─ vaultfall/          # Vaultfall
 │  ├─ junkyard-empire/    # Junkyard Empire
 │  ├─ rebirth-rpg/        # Rebirth RPG (working title)
+│  ├─ power-legends/      # Power Legends (working title)
 │  └─ <future-game>/      # 이후 Roblox 프로젝트
 ├─ shared/
 │  ├─ modules/            # 실제로 여러 게임에서 재사용하기로 확정된 모듈
@@ -228,6 +229,25 @@ projects/rebirth-rpg/
 - 환경/적/장비 디자인은 AI가 먼저 발명하지 않고 실제 확보·검증된 asset vocabulary에 맞춰 결정
 - 현재 PREPRODUCTION / ASSET-FIRST 단계
 - 다음 단계는 Studio Agent Asset Pass 001로 실제 환경/무기/적/방어구/VFX 후보 검증
+
+### Power Legends (working title)
+
+경로:
+
+```text
+projects/power-legends/
+```
+
+현재 개발 방향:
+
+- Training / Incremental Simulator + Open-world PvP
+- Muscle Legends 계보의 자유 PvP·신체 성장·Rebirth를 현대적인 Training presentation/UX로 재구성
+- Pets는 Training progression을 증폭하는 collection/social-flex layer로 포함
+- 첫 Pet 3~5분, 첫 Rebirth 15~25분 목표의 first-session progression
+- 외부/Creator Store asset을 asset-first로 검수하고 coherent art vocabulary를 선택
+- Codex가 최신 레퍼런스/에셋 조사 → Studio MCP inspection → 구현 → Playtest → screenshot review → repair까지 수행
+- PREPRODUCTION COMPLETE / READY FOR CODEX P0
+- 다음 단계는 `docs/CODEX_MASTER_IMPLEMENTATION_BRIEF.md`에 따라 P0 reference/asset/Studio 조사부터 시작
 
 ## 새 프로젝트 추가 규칙
 
