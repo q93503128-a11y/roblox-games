@@ -64,10 +64,10 @@ Role:
 - first visibly muscular stage: ~3 min
 - first Pet: ~3–5 min
 - meaningful heavy-object tier: ~8–12 min
-- Rebirth-ready: ~15–25 min real play
+- Rebirth-ready: ~10–15 min real play
 
-실제 training만 연속으로 한 최적 플레이어는 Rebirth target에 약 12–16분 정도 도달하는 것을 초기 baseline으로 한다.
-이동/Pet/PvP/Brawl/menu/social 행동을 포함한 실제 세션은 15–25분을 목표.
+실제 training만 연속으로 한 최적 플레이어는 Rebirth target에 약 8–11분 정도 도달하는 것을 초기 baseline으로 한다.
+이동/Pet/PvP/Brawl/menu/social 행동을 포함한 실제 세션은 10–15분을 목표.
 
 ---
 
@@ -85,7 +85,7 @@ Role:
 | W5 | 6,000 | 75 | 1.95s | absurd/heavy-object transition |
 
 First Rebirth requirement baseline:
-**20,000 Strength**
+**10,000 Strength**
 
 이 표는 station 하나의 linear progression을 의미하지 않는다.
 각 threshold는 다른 weight/station family로 표현 가능하다.
@@ -99,7 +99,7 @@ No-purchase / first-Pet baseline:
 - 400: ~2.8–3.2 min
 - 1,500: ~5–6 min
 - 6,000: ~9–10 min
-- 20,000: ~13–16 min continuous training
+- 10,000: ~10–12 min continuous training before Pet/route optimization
 
 실제 플레이에서는 side content 때문에 더 길어진다.
 
@@ -116,7 +116,7 @@ Initial rough thresholds:
 | B2 Muscular | 400 | clear transformation |
 | B3 Huge | 1,500 | server-visible status |
 | B4 Titan | 6,000 | first-run late stage |
-| Rebirth-ready visual | ~20,000 | peak first-run impression |
+| Rebirth-ready visual | ~10,000 | peak first-run impression |
 
 Threshold는 training tier와 일부 겹쳐서
 **새 중량 + 새 몸**이 동시에 너무 자주 겹치지 않게 presentation spacing을 Studio에서 조정한다.
@@ -151,7 +151,7 @@ Rules:
 ## First Rebirth
 
 Requirement:
-- 20,000 Strength baseline
+- 10,000 Strength baseline
 
 Reward:
 - persistent Gems
