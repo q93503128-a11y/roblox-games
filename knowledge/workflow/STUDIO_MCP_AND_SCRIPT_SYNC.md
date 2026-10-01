@@ -1,6 +1,6 @@
 # Studio MCP + Script Sync Workflow
 
-> 검증 기준일: 2026-09-03
+> 검증 기준일: 2026-10-01
 
 2026년 Roblox Studio의 공식 MCP 서버는 이 monorepo의 개발 방식에 가장 큰 변화를 주는 기능이다. 과거처럼 AI가 `.rbxlx`를 외부에서 추측 생성하고 사용자가 대신 플레이테스트하는 구조보다, **AI 클라이언트가 열린 Studio 세션을 직접 읽고 수정하고 테스트**하는 루프가 훨씬 신뢰성이 높다.
 
@@ -48,7 +48,13 @@
 - Visual Studio Code
 - Antigravity
 
-이 저장소의 AI-assisted Roblox 개발에서는 **Codex CLI + Studio MCP**를 우선 후보로 본다.
+이 저장소의 AI-assisted Roblox 개발에서는 **Codex local client + Studio MCP**를 우선 후보로 본다.
+
+### Codex/ChatGPT 데스크톱 앱
+
+OpenAI의 현재 MCP 문서상 **ChatGPT 데스크톱 앱, Codex CLI, Codex IDE 확장 프로그램은 로컬 MCP 서버를 지원하고 동일한 Codex host의 MCP 구성을 공유**한다.
+
+Roblox Studio의 Quick Connect 목록에는 현재 Codex CLI가 명시되어 있지만 데스크톱 앱 항목이 없을 수 있다. 이 경우 데스크톱 앱에서 STDIO 서버를 직접 추가하거나 Codex shared `config.toml`에 Roblox Studio MCP를 등록한다.
 
 ## Windows 설정
 
@@ -83,6 +89,73 @@ cmd.exe /c %LOCALAPPDATA%\Roblox\mcp.bat
 ```
 
 신뢰할 수 없는 MCP 클라이언트를 Studio에 연결하지 않는다. 연결된 클라이언트는 열린 place를 읽고 변경할 수 있다.
+
+## Windows — Codex/ChatGPT 데스크톱 앱 직접 연결
+
+Roblox Studio:
+
+1. 최신 Studio 실행
+2. `Assistant` 열기
+3. `…` → `Manage MCP Servers`
+4. `Enable Studio as MCP server` 켜기
+5. Studio place를 열어 둠
+
+데스크톱 앱:
+
+1. `Settings` → `MCP servers`
+2. `Add server`
+3. 유형: `STDIO`
+4. 이름: `Roblox_Studio`
+5. command: `cmd.exe`
+6. args: `/c`, `%LOCALAPPDATA%\\Roblox\\mcp.bat`
+7. 저장 후 앱의 `Restart` 또는 앱 재시작
+
+같은 설정을 Windows 사용자 Codex config에 직접 넣을 수도 있다.
+
+경로:
+
+```text
+%USERPROFILE%\.codex\config.toml
+```
+
+TOML:
+
+```toml
+[mcp_servers.Roblox_Studio]
+command = "cmd.exe"
+args = ["/c", "%LOCALAPPDATA%\\Roblox\\mcp.bat"]
+```
+
+Codex CLI로 등록하는 경우:
+
+```powershell
+codex mcp add Roblox_Studio -- cmd.exe /c "%LOCALAPPDATA%\Roblox\mcp.bat"
+codex mcp list
+```
+
+OpenAI 문서상 데스크톱 앱 / CLI / IDE 확장은 같은 MCP 구성을 공유하므로, 같은 Windows Codex host에서 한 번 등록하면 다른 로컬 Codex surface에서도 재사용할 수 있다.
+
+### 연결 확인
+
+1. Studio `Assistant → … → Manage MCP Servers`에서 연결된 client 녹색 indicator 확인
+2. 데스크톱 앱 composer에서 `/mcp`로 `Roblox_Studio` 확인
+3. Codex에게 다음처럼 요청:
+
+```text
+Roblox Studio MCP 연결 상태를 확인하고 list_roblox_studios를 호출해.
+열린 Studio 인스턴스의 studio_id, 이름, placeId를 알려줘.
+아직 아무 것도 수정하지 마.
+```
+
+4. 이후 정확한 `studio_id`를 사용해 DataModel inspection부터 진행
+
+문제 해결:
+
+- Studio와 데스크톱 앱 둘 다 재시작
+- `%LOCALAPPDATA%\Roblox\mcp.bat` 존재 확인
+- Studio에서 MCP server toggle이 켜져 있는지 확인
+- 여러 Studio 창이 있으면 `list_roblox_studios`로 정확한 대상 확인
+- Windows sandbox/회사 관리 정책이 로컬 process/MCP 실행을 막는지 확인
 
 ## 권장 AI 개발 루프
 
