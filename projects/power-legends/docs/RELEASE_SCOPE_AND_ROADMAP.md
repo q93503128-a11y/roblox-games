@@ -28,18 +28,20 @@ Content target:
 
 - Starter Gym / world district 1
 - Next Gym unlock/tease 1
-- training actions 5
+- training actions 5 (portable Weight + fixed station mix)
 - weight progression enough for first Rebirth
 - Body Stages B0–B4
 - Basic Punch + 2 Moves
-- free PvP
+- free PvP with Safe limited mainly to Spawn/onboarding
 - Brawl 1 mode
 - Pets 8–12
 - Pet Egg 1 normal + first guaranteed hatch path
-- Rebirth 1 complete route
+- Rebirth 1 complete route (~10–15 min target)
 - Gems
 - save/load
 - HUD/Pets/Rebirth/Moves/Shop skeleton
+- one visible Strength Power Challenge
+- 16-player server target validation
 - core monetization test hooks, not aggressive sales
 - mobile + desktop QA
 
@@ -118,6 +120,8 @@ Requirements:
 ## Training
 
 **7–9 polished training families**
+
+At least one major portable Weight line remains viable throughout progression so training does not become only machine-station interaction.
 
 Examples may include:
 - dumbbell
