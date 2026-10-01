@@ -18,6 +18,7 @@
 - Muscle Legends: 자유 PvP, 거대한 신체 성장, Rebirth, Gym 해금, Brawl
 - Gym League: 현대적인 훈련 presentation, 기구별 contextual UI, 운동 애니메이션 품질
 - Strongman Simulator: 점점 더 황당하게 무거운 물체를 다루는 시각적 성장
+- Muscle Legends식 portable training: 기본 Weight는 들고 이동하며 훈련 가능, 고정 기구는 더 높은 효율/특화 성장
 - 현대 incremental simulator: 빠른 첫 보상, 명확한 다음 목표, collection aspiration
 - Pet/companion system: 수집, 장기 목표, social flex, 장착 슬롯 기반 성장
 
@@ -54,15 +55,17 @@ Train
 
 - Starter Gym 1개
 - 다음 Gym tease/unlock 1개
-- 핵심 운동 5종
+- 핵심 운동 5종(휴대형 Weight 훈련 + 고정 기구 훈련 혼합)
 - Body progression 몇 단계
-- 자유 PvP
+- 자유 PvP(완전 Safe는 Spawn/초기 onboarding 중심, 일반 훈련 공간은 가능한 한 같은 서버 생태계에 포함)
 - 기본 Punch + Move 2개
-- Rebirth 1회
+- Rebirth 1회(첫 실제 플레이 약 10~15분 목표)
 - Brawl 1종
 - Pet collection/equip의 최소 완성 루프
 - Shop/HUD/Save
 - PC + mobile primary route
+- 기본 서버 목표 16명, 성능/가독성 통과 시 20명 검토
+- Strength를 월드에서 직접 보여주는 짧은 Power Challenge
 
 세부 기획 정본:
 
