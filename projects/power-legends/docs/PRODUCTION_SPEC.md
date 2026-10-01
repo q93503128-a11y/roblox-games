@@ -136,7 +136,7 @@ milestone reward
 
 Brawl이 실제 시작되지 않더라도 UI/arena/카운트다운 구조는 이해 가능해야 한다.
 
-## 10:00–15:00 — Power fantasy escalation
+## 7:00–10:00 — Power fantasy escalation
 
 - 여러 training station 경험
 - heavier object tier 접근
@@ -167,7 +167,7 @@ Brawl이 실제 시작되지 않더라도 UI/arena/카운트다운 구조는 이
 
 을 명확하게 preview.
 
-## 20:00–30:00 — Second-run acceleration
+## 12:00–20:00 — Second-run acceleration
 
 Rebirth 이후:
 
