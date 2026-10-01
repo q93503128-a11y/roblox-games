@@ -184,17 +184,20 @@ You may NOT silently change these core product decisions:
 - Training Simulator is the core genre.
 - Visible body/power growth is essential.
 - Free PvP remains.
-- Spawn/training interaction pockets may be safe.
+- Spawn and first onboarding pocket may be safe; ordinary/advanced training spaces should not become blanket Safe Zones.
 - Weak-player attack freedom is not completely removed.
 - Repeated-victim reward farming is mitigated.
 - Pets are included.
 - Pets primarily amplify training/collection/social flex.
 - Pets do not directly replace the player in PvP in the first slice.
 - First Pet is guaranteed in roughly 3–5 min target.
-- First Rebirth target is roughly 15–25 min real play.
+- First Rebirth target is roughly 10–15 min real play, with ~8–11 min optimal-training baseline.
 - Rebirth must accelerate earlier progression and unlock content.
 - UI must remain contextual and low-clutter.
 - paid random eggs are not an initial monetization feature.
+- Portable Weight training is a core social/training mode; fixed machines are higher-efficiency or specialized alternatives.
+- Vertical Slice includes at least one short Strength Power Challenge.
+- Initial server population target is 16 players; consider 20 only after performance/readability validation.
 
 If a core decision appears technically harmful:
 STOP that subsystem and report evidence + smallest proposed design revision.
@@ -266,6 +269,8 @@ Do not mass-build yet.
 
 ## P1 — World shell
 
+Validate 16-player social density assumptions when sizing routes, training clearances and PvP space.
+
 Create:
 - safe spawn
 - Starter Training zone
@@ -278,7 +283,7 @@ Graybox and gameplay-camera test first.
 
 ## P2 — One polished training action
 
-Build one training action to near-production quality before making five.
+Start with a **portable Weight training action** to preserve free movement/social/PvP presence. Build it to near-production quality before making five.
 
 Verify:
 - approach
@@ -297,7 +302,7 @@ Only then expand to five.
 
 ## P3 — Training set
 
-Five distinct actions.
+Five distinct actions using a mix of portable Weight training and fixed stations.
 Multiple weight tiers.
 Balance from config.
 
@@ -535,7 +540,7 @@ At minimum:
 
 join
 → spawn
-→ first train
+→ portable first train
 → first upgrade
 → first Pet
 → equip
