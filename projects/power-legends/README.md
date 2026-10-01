@@ -1,6 +1,6 @@
 # Power Legends (working title)
 
-> Status: PREPRODUCTION / DESIGN
+> Status: PREPRODUCTION COMPLETE / READY FOR CODEX P0
 > Updated: 2026-10-01
 > Primary genre: Training / Incremental Simulator + Open-world PvP
 > Workflow target: Codex-led implementation + Roblox Studio MCP + Git + Studio playtest
@@ -64,7 +64,16 @@ Train
 - Shop/HUD/Save
 - PC + mobile primary route
 
-세부 기획은 `docs/GAME_DESIGN.md`를 정본으로 사용한다.
+세부 기획 정본:
+
+- `docs/GAME_DESIGN.md` — 제품 방향/핵심 시스템
+- `docs/PRODUCTION_SPEC.md` — 첫 30분, PvP/Pet/Rebirth/월드 제작 계약
+- `docs/ECONOMY_AND_BALANCE.md` — 초기 수치, 목표 시간, 경제/수익화 baseline
+- `docs/UI_UX_FLOW.md` — 정보 구조와 UX route
+- `docs/RELEASE_SCOPE_AND_ROADMAP.md` — Vertical Slice → 공개판 범위
+- `docs/CODEX_MASTER_IMPLEMENTATION_BRIEF.md` — Codex 제작 지시 정본
+
+기획 단계는 현재 구현 시작에 필요한 범위까지 완료했다. Codex는 전체 게임 원샷 제작이 아니라 P0 조사/Studio inspection부터 시작한다.
 
 ## Development rule
 
