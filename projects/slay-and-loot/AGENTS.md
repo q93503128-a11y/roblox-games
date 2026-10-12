@@ -45,6 +45,7 @@ Before editing:
 - inspect existing scripts, instances, hierarchy, tags, attributes, packages, assets, and important settings
 - inspect the exact scene/zone/system you intend to change
 - preserve working systems unless the requested change requires touching them
+- do not create a duplicate subsystem when a working equivalent already exists
 
 Do not delete, replace, or rewrite a working subsystem merely because a cleaner architecture exists.
 
@@ -58,11 +59,23 @@ Preferred loop:
 
 `inspect -> plan -> change one coherent slice -> inspect result -> playtest/runtime validation -> fix -> regression check -> document`
 
-Do not repeatedly re-fetch the entire DataModel, console, or screenshots when a targeted query is enough.
+Do not repeatedly re-fetch the entire DataModel, console, tool catalog, or screenshots when a targeted query is enough.
 
-Use only the MCP tools needed for the current task.
+Use only the MCP tools needed for the current task. Reuse already-known state when still trustworthy.
 
-## 5. External assets are encouraged, but audited
+For visual work, inspect the actual gameplay/Studio result at the point where visual judgment matters. If the result is wrong, fix it and re-check rather than assuming the edit succeeded.
+
+## 5. Diagnostic / inspection-only mode
+
+When the task is explicitly diagnosis, readiness inspection, audit, or investigation only:
+
+- do not modify Studio/project files unless the task explicitly authorizes changes
+- do not create helper files, configs, manifests, Git state, commits, or pushes merely to perform the diagnosis
+- report the observed state and a clear readiness/result classification
+
+Do not turn a read-only diagnostic request into an implementation task.
+
+## 6. External assets are encouraged, but audited
 
 Prefer this supply order:
 
@@ -84,7 +97,7 @@ Never adopt the first search result automatically. Preview multiple candidates w
 
 Do not mix individually good assets into an incoherent art direction.
 
-## 6. Reference before invention
+## 7. Reference before invention
 
 Do not design weapons, monsters, zones, UI, or combat in a vacuum when suitable references or existing assets are available.
 
@@ -97,7 +110,7 @@ For major player-facing additions:
 
 Do not force an old written concept onto an asset that clearly does not support it well.
 
-## 7. Map and spatial rules
+## 8. Map and spatial rules
 
 Never guess a production map from raw world coordinates.
 
@@ -122,7 +135,7 @@ Build maps in passes, not one-shot:
 
 After an art pass, replay the P0 route to confirm decoration did not break pathing, collision, visibility, or camera readability.
 
-## 8. Combat and gameplay rules
+## 9. Combat and gameplay rules
 
 For Slay & Loot, prioritize:
 
@@ -139,7 +152,7 @@ Do not implement dozens of weapons that share the same animation/timing/feel wit
 
 Server-authoritative valuable state is required. Never trust client-reported rewards, drops, currency, inventory ownership, upgrade success, or rebirth state.
 
-## 9. Plan discipline
+## 10. Plan discipline
 
 `PLAN.md` must contain:
 
@@ -158,20 +171,28 @@ Do not ask for manual placement or trivial decisions unless there is a true bloc
 
 Do not silently expand scope because another feature seems useful.
 
-## 10. Long-session safety
+## 11. Long-session context safety
 
-For long OpenCode sessions:
+Treat context budget as a reliability constraint, not a reason to keep pushing indefinitely.
+
+- below roughly 60% context usage: continue normally if state remains clear
+- around 60–80%: finish coherent units, checkpoint important state, and refresh `PLAN.md` / `HANDOFF.md` as material facts change
+- around 80–85%: do not begin another large subsystem; finish the current coherent unit, validate it, and prepare session handoff
+- at 85% or above: no new feature work; enter wrap-up mode, update state/handoff documents, record remaining bugs and exact next step, then end the session cleanly
+
+Automatic context compaction is not a substitute for explicit state documents. Treat compacted memory as potentially lossy.
+
+For long autonomous sessions:
 
 - finish one coherent unit before starting another
-- update `PLAN.md` and `HANDOFF.md` as soon as state materially changes
 - preserve the last known-good state
 - do not rework completed validated items without evidence of a regression
 - if the same failure repeats, record the root cause and switch approach instead of brute-force retrying
 - stop when acceptance criteria are met; do not keep polishing unrelated areas indefinitely
 
-When context is becoming unreliable, finish the current safe unit, update `HANDOFF.md`, and end the session cleanly.
+When context becomes unreliable, finish the current safe unit, update `HANDOFF.md`, and stop rather than improvising from partial memory.
 
-## 11. Validation language
+## 12. Validation language
 
 Keep these statuses distinct:
 
@@ -185,7 +206,7 @@ Never report `complete`, `fixed`, `verified`, or `Studio-validated` without corr
 
 If an editor/runtime environment problem blocks a test, report that separately from a game-code defect.
 
-## 12. Minimum validation before handoff
+## 13. Minimum validation before handoff
 
 When relevant, check:
 
@@ -199,9 +220,24 @@ When relevant, check:
 - multiplayer route when touched
 - valuable state server authority
 
+After code changes, check the relevant runtime/console path and self-fix attributable errors before reporting success.
+
 For performance-sensitive enemy counts, VFX, NPCs, or repeated assets, inspect performance early instead of postponing all optimization.
 
-## 13. Destructive / external actions
+## 14. GitHub / repository responsibility
+
+OpenCode's primary responsibility is local project/Studio implementation and MCP validation.
+
+Unless the user explicitly tells OpenCode to manage GitHub directly:
+
+- do not push to GitHub
+- do not rewrite canonical GitHub project docs directly as part of ordinary implementation
+- do not create branches/PRs/commits just to prove progress
+- report repository-relevant changes under a clearly labeled `GitHub 반영 필요 내용` section so ChatGPT/user can update the canonical repository deliberately
+
+Local project files may be edited when needed for implementation, but canonical repository state and live Studio validation are separate concerns.
+
+## 15. Destructive / external actions
 
 Do not:
 
@@ -214,7 +250,7 @@ Do not:
 
 Git/GitHub is project history, not a substitute for Studio validation.
 
-## 14. Final session report
+## 16. Final session report
 
 End substantial work with:
 
@@ -229,6 +265,9 @@ Failures encountered, root cause, and coherent fix.
 
 ### KNOWN LIMITATIONS
 Anything not actually validated or intentionally deferred.
+
+### GitHub 반영 필요 내용
+Rules, numbers, systems added/removed, technical structure, UI/UX decisions, asset decisions, unresolved/temporary state, and other facts that should be reflected in canonical repository docs. Do not present speculative future ideas as accepted facts.
 
 ### NEXT SAFE STEP
 The next coherent unit that can be started without invalidating current work.
