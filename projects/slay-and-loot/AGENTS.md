@@ -1,24 +1,25 @@
-# Slay & Loot — OpenCode / Roblox Studio MCP Rules
+# Slay & Loot — Codex / Roblox Studio MCP Rules
 
-This file is the operating contract for autonomous OpenCode work on Slay & Loot.
+This file is the operating contract for Codex work on Slay & Loot.
 
 ## 0. Read order
 
 Before changing the project:
 
 1. Read this file completely.
-2. Read `PLAN.md`.
-3. Read `HANDOFF.md`.
-4. Read `docs/VISION.md` and `docs/LIVE_DESIGN.md`.
-5. Inspect the current Roblox Studio DataModel through MCP.
-6. Read the relevant Godbase documents referenced by `knowledge/GODBASE_MANIFEST.json`.
-7. Only then plan changes.
+2. Read `CODEX_PRACTICAL_RULES.md`.
+3. Read `PLAN.md`.
+4. Read `HANDOFF.md`.
+5. Read `docs/VISION.md` and `docs/LIVE_DESIGN.md`.
+6. Inspect the current Roblox Studio DataModel through MCP.
+7. Read the relevant Godbase documents referenced by `knowledge/GODBASE_MANIFEST.json`.
+8. Only then plan changes.
 
-The current Studio/project state is authoritative over assumptions from an older chat or plan.
+The current repository and Studio state are authoritative over assumptions from older chats or plans.
 
 ## 1. Core operating principle
 
-Build the smallest coherent playable improvement, validate it in Studio, document what actually worked, then continue.
+Build the smallest coherent playable improvement, validate it in Studio, clean up the implementation, update canonical project docs, then continue.
 
 Do not treat code volume, asset count, file count, or checklist length as progress. Player-facing quality is progress.
 
@@ -29,14 +30,18 @@ Do not rely on session memory.
 Use these files as persistent state:
 
 - `AGENTS.md` — permanent working rules
+- `CODEX_PRACTICAL_RULES.md` — implementation cleanliness and reporting rules
 - `PLAN.md` — active goal, scope, acceptance, stop conditions
 - `HANDOFF.md` — exact current implementation state and unresolved issues
 - `docs/LIVE_DESIGN.md` — accepted current design
-- `docs/DECISIONS.md` — dated decisions and rejected alternatives when relevant
-- `docs/ASSET_SOURCES.md` — every external production asset and its audit status
+- `docs/DECISIONS.md` — dated design/technical decisions
+- `docs/ASSET_SOURCES.md` — external production assets and audit status
 - `docs/PLAYTEST_NOTES.md` — actual test evidence
+- `docs/CONTENT_CATALOG.md` — accepted production-facing content
 
-Update the relevant file immediately after a material decision or validated milestone. Do not postpone all documentation until the end of a long session.
+When a material implementation/design fact becomes accepted, update the relevant canonical file directly. Do not make the user manually copy project-state updates back into GitHub.
+
+Do not create development diaries or redundant documentation. Update the minimum canonical file that owns the information.
 
 ## 3. Never invent the current state
 
@@ -57,25 +62,15 @@ Use Roblox Studio MCP as the field worker whenever it can inspect or validate th
 
 Preferred loop:
 
-`inspect -> plan -> change one coherent slice -> inspect result -> playtest/runtime validation -> fix -> regression check -> document`
+`inspect -> plan -> change one coherent slice -> inspect result -> playtest/runtime validation -> fix -> regression check -> cleanup -> document`
 
 Do not repeatedly re-fetch the entire DataModel, console, tool catalog, or screenshots when a targeted query is enough.
 
-Use only the MCP tools needed for the current task. Reuse already-known state when still trustworthy.
+Use only the MCP tools needed for the current task. Reuse already-known state while it remains trustworthy.
 
-For visual work, inspect the actual gameplay/Studio result at the point where visual judgment matters. If the result is wrong, fix it and re-check rather than assuming the edit succeeded.
+For visual work, inspect the actual gameplay/Studio result where visual judgment matters. If it is wrong, fix it and re-check instead of assuming the edit succeeded.
 
-## 5. Diagnostic / inspection-only mode
-
-When the task is explicitly diagnosis, readiness inspection, audit, or investigation only:
-
-- do not modify Studio/project files unless the task explicitly authorizes changes
-- do not create helper files, configs, manifests, Git state, commits, or pushes merely to perform the diagnosis
-- report the observed state and a clear readiness/result classification
-
-Do not turn a read-only diagnostic request into an implementation task.
-
-## 6. External assets are encouraged, but audited
+## 5. External assets are encouraged, but audited
 
 Prefer this supply order:
 
@@ -91,26 +86,26 @@ For every production asset:
 - inspect descendants for `Script`, `LocalScript`, `ModuleScript`, suspicious `require(number)`, `loadstring`, runtime insertion/loading, HTTP usage, obfuscated strings, and unexpected dependencies
 - if only visual art is needed, use a sanitized script-free copy
 - verify pivot, scale, rig, collision, texture/material cost, and gameplay-camera appearance
-- compare important assets against the Roblox avatar scale
+- compare important assets against Roblox avatar scale
 
-Never adopt the first search result automatically. Preview multiple candidates when quality matters.
+Never adopt the first search result automatically when quality matters. Preview multiple plausible candidates.
 
 Do not mix individually good assets into an incoherent art direction.
 
-## 7. Reference before invention
+## 6. Reference before invention
 
 Do not design weapons, monsters, zones, UI, or combat in a vacuum when suitable references or existing assets are available.
 
 For major player-facing additions:
 
-- inspect 1 primary reference and, when useful, 2–4 secondary references
-- identify transferable structure, not superficial copying
-- inspect candidate assets before finalizing exact design details
+- inspect a strong primary reference and useful secondary references when needed
+- identify transferable structure rather than superficial copying
+- inspect candidate assets before finalizing detailed design
 - let verified asset capabilities inform the live design when that produces a better result
 
 Do not force an old written concept onto an asset that clearly does not support it well.
 
-## 8. Map and spatial rules
+## 7. Map and spatial rules
 
 Never guess a production map from raw world coordinates.
 
@@ -127,7 +122,7 @@ Before placement, inspect at minimum:
 
 Use named anchors and relative placement. For connected geometry use actual faces, pivots, bounding boxes, offsets, raycasts, or attachment relationships.
 
-For 5+ player-facing objects, create a placement table or equivalent spatial plan before bulk placement.
+For 5+ player-facing objects, make a placement table or equivalent spatial plan before bulk placement.
 
 Build maps in passes, not one-shot:
 
@@ -135,7 +130,7 @@ Build maps in passes, not one-shot:
 
 After an art pass, replay the P0 route to confirm decoration did not break pathing, collision, visibility, or camera readability.
 
-## 9. Combat and gameplay rules
+## 8. Combat and gameplay priorities
 
 For Slay & Loot, prioritize:
 
@@ -148,65 +143,35 @@ For Slay & Loot, prioritize:
 
 Do not add content breadth to compensate for weak combat feel.
 
-Do not implement dozens of weapons that share the same animation/timing/feel with different numbers.
+Do not implement many weapons that share the same animation/timing/feel with only different numbers.
 
-Server-authoritative valuable state is required. Never trust client-reported rewards, drops, currency, inventory ownership, upgrade success, or rebirth state.
+Valuable state must be server-authoritative. Never trust client-reported rewards, drops, currency, inventory ownership, upgrade success, or rebirth state.
 
-## 10. Plan discipline
+## 9. Plan discipline
 
-`PLAN.md` must contain:
-
-- current goal
-- current context
-- in-scope work
-- do-not-change areas
-- references/assets being evaluated
-- acceptance criteria
-- exact test route
-- stop conditions
+`PLAN.md` must contain the current goal, scope, do-not-change areas, references/assets being evaluated, acceptance criteria, exact test route, and stop conditions.
 
 Work autonomously inside that scope.
 
-Do not ask for manual placement or trivial decisions unless there is a true blocking ambiguity that cannot be resolved from Studio, docs, references, or current project state.
+Do not ask the user for manual placement or trivial decisions when the answer can be resolved from Studio, docs, references, or current project state.
 
 Do not silently expand scope because another feature seems useful.
 
-## 11. Long-session context safety
-
-Treat context budget as a reliability constraint, not a reason to keep pushing indefinitely.
-
-- below roughly 60% context usage: continue normally if state remains clear
-- around 60–80%: finish coherent units, checkpoint important state, and refresh `PLAN.md` / `HANDOFF.md` as material facts change
-- around 80–85%: do not begin another large subsystem; finish the current coherent unit, validate it, and prepare session handoff
-- at 85% or above: no new feature work; enter wrap-up mode, update state/handoff documents, record remaining bugs and exact next step, then end the session cleanly
-
-Automatic context compaction is not a substitute for explicit state documents. Treat compacted memory as potentially lossy.
-
-For long autonomous sessions:
-
-- finish one coherent unit before starting another
-- preserve the last known-good state
-- do not rework completed validated items without evidence of a regression
-- if the same failure repeats, record the root cause and switch approach instead of brute-force retrying
-- stop when acceptance criteria are met; do not keep polishing unrelated areas indefinitely
-
-When context becomes unreliable, finish the current safe unit, update `HANDOFF.md`, and stop rather than improvising from partial memory.
-
-## 12. Validation language
+## 10. Validation language
 
 Keep these statuses distinct:
 
 - CODED — code/assets were changed
 - INTEGRATED — connected in the current project/Studio state
 - RUNTIME-CHECKED — executed without the targeted route failing
-- PLAYTESTED — the route was actually played/tested
+- PLAYTESTED — the route was actually exercised as a player/runtime path
 - ACCEPTED — acceptance criteria passed
 
 Never report `complete`, `fixed`, `verified`, or `Studio-validated` without corresponding evidence.
 
 If an editor/runtime environment problem blocks a test, report that separately from a game-code defect.
 
-## 13. Minimum validation before handoff
+## 11. Minimum validation before handoff
 
 When relevant, check:
 
@@ -222,22 +187,22 @@ When relevant, check:
 
 After code changes, check the relevant runtime/console path and self-fix attributable errors before reporting success.
 
-For performance-sensitive enemy counts, VFX, NPCs, or repeated assets, inspect performance early instead of postponing all optimization.
+For performance-sensitive enemy counts, VFX, NPCs, or repeated assets, inspect performance early rather than postponing all optimization.
 
-## 14. GitHub / repository responsibility
+## 12. Repository discipline
 
-OpenCode's primary responsibility is local project/Studio implementation and MCP validation.
+Codex is allowed to keep the connected repository's canonical project files current as part of the same task.
 
-Unless the user explicitly tells OpenCode to manage GitHub directly:
+- update only relevant project/Godbase files
+- do not create branches or PRs unless explicitly requested
+- do not produce commits or churn merely to prove activity
+- do not touch unrelated projects
+- do not leave temporary docs/configs after they have served their purpose
+- preserve useful Git history and avoid destructive repository actions unrelated to the task
 
-- do not push to GitHub
-- do not rewrite canonical GitHub project docs directly as part of ordinary implementation
-- do not create branches/PRs/commits just to prove progress
-- report repository-relevant changes under a clearly labeled `GitHub 반영 필요 내용` section so ChatGPT/user can update the canonical repository deliberately
+GitHub state is not a substitute for Studio validation.
 
-Local project files may be edited when needed for implementation, but canonical repository state and live Studio validation are separate concerns.
-
-## 15. Destructive / external actions
+## 13. Destructive / external actions
 
 Do not:
 
@@ -248,28 +213,10 @@ Do not:
 - publish the game or make irreversible live changes without explicit user instruction
 - push unrelated repository changes
 
-Git/GitHub is project history, not a substitute for Studio validation.
+## 14. Final session report
 
-## 16. Final session report
+Follow `CODEX_PRACTICAL_RULES.md`.
 
-End substantial work with:
+Keep the report concise, directly copy-pastable, and factual. Do not include a separate `GitHub 반영 필요 내용` section; canonical repository docs should already have been updated when necessary.
 
-### CHANGED
-What actually changed.
-
-### TESTED
-Exact validation performed and its result.
-
-### FAILED & FIXED
-Failures encountered, root cause, and coherent fix.
-
-### KNOWN LIMITATIONS
-Anything not actually validated or intentionally deferred.
-
-### GitHub 반영 필요 내용
-Rules, numbers, systems added/removed, technical structure, UI/UX decisions, asset decisions, unresolved/temporary state, and other facts that should be reflected in canonical repository docs. Do not present speculative future ideas as accepted facts.
-
-### NEXT SAFE STEP
-The next coherent unit that can be started without invalidating current work.
-
-Keep implementation claims separate from validation claims.
+Always distinguish implementation from validation.
