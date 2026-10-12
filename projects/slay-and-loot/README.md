@@ -16,7 +16,8 @@ The exact content catalog is intentionally not frozen up front. The project uses
 
 ## Canonical project docs
 
-- `AGENTS.md` — OpenCode/MCP operating rules. Read first.
+- `AGENTS.md` — Codex/MCP operating rules. Read first.
+- `CODEX_PRACTICAL_RULES.md` — implementation cleanliness and reporting rules.
 - `PLAN.md` — current work plan and stop conditions.
 - `HANDOFF.md` — current implementation state for session recovery.
 - `docs/VISION.md` — stable product direction and non-goals.
@@ -31,6 +32,6 @@ Before major implementation decisions, use the repository Godbase in `knowledge/
 
 ## Development mode
 
-Primary workflow: Roblox Studio + OpenCode + Roblox Studio MCP + Git.
+Primary workflow: Roblox Studio + Codex + Roblox Studio MCP + Git/GitHub.
 
-Do not call a feature complete until it has been validated in Studio on the exact route it is meant to support.
+Codex keeps relevant canonical project docs current directly in the connected repository. Do not call a feature complete until it has been validated in Studio on the exact route it is meant to support.
