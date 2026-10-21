@@ -1,89 +1,265 @@
 # Slay & Loot — Live Design
 
-Status: EARLY DRAFT / ONLY CONFIRMED PRINCIPLES
+Status: FIRST PRODUCTION LOOP DEFINED / STUDIO VALIDATION PENDING
 
-This file records the current accepted game design. Do not fill it with speculative future content. Add details after they are supported by an accepted implementation, asset decision, or explicit project decision.
+This file records the current accepted game design. Treat numbers below as production targets for the first slice until Studio playtest evidence proves they need adjustment.
 
-## Current accepted loop
+## Product format
 
-`spawn -> fight monster groups -> receive loot/equipment -> become visibly stronger -> fight stronger encounter -> progress toward stronger zone/content`
+Slay & Loot is a fast Roblox dungeon-loot RPG built for immediate combat and cheap, repeatable content expansion.
+
+Primary loop:
+
+`Hub -> Play -> short dungeon run -> boss -> visible loot -> equip stronger gear -> replay harder difficulty or unlock next dungeon`
+
+The game deliberately uses familiar Roblox dungeon/simulator conventions. Originality is less important than clarity, speed, satisfying growth, and a clean reusable production pipeline.
+
+## Reference structure
+
+Use successful external games as structural references, not as sources to copy protected identity, map layouts, art, names, or exact UI.
+
+Current reference roles:
+
+- Dungeon Quest Reborn: core dungeon/loot/retry structure
+- Pixel Blade: immediate combat onboarding and fast first-fun
+- Fabled Legacy: multiple difficulties on reusable dungeon content and retry flow
+- Dungeon Heroes: inexpensive progression breadth through item rolls, realms, dailies, and later meta systems
+- World // Zero: long-term world/class/progression reference only; do not match its production scope early
+
+## First 10 minutes target
+
+Target pacing, subject to playtest revision:
+
+- 0:00–0:15: player can move and understands how to start combat
+- <= 0:30: first enemy defeated
+- <= 1:00: first useful reward/gold/XP feedback
+- 1:00–3:30: first Normal dungeon run
+- <= 4:00: first clearly stronger weapon equipped
+- 4:00–8:00: Hard replay or stronger encounter using the improved weapon
+- <= 10:00: player understands the next power goal / next dungeon unlock
+
+No long dialogue or mandatory text tutorial before combat.
 
 ## Combat
 
-Confirmed:
+First-slice player kit:
 
-- player uses direct combat rather than click-only automation
-- combat should support groups of enemies
-- combat feel must be proven before large content expansion
+- primary attack: 3-hit sword combo
+- dash/roll: short defensive/mobility action
+- one weapon skill: broad readable cleave/AOE attack
+- no stamina meter
+- no mana meter
+- no block/parry in the first slice
+- no large skill bar in the first slice
 
-Not yet fixed:
+Desktop target:
 
-- exact input bindings
-- exact weapon classes
-- exact combo structure
-- dodge implementation
-- skill count
-- target enemy counts
+- LMB = primary attack
+- Q = dash/roll
+- E = weapon skill
+
+Mobile target:
+
+- Attack
+- Dash
+- Skill
+
+The exact bindings may change if Studio/input conflicts require it, but the first-slice action count stays small.
+
+Combat requirements:
+
+- wide/readable hitboxes appropriate for Roblox third-person play
+- hit confirmation through animation timing + sound + VFX + enemy reaction
+- spam input handled intentionally
+- fighting 3–5 enemies at once must remain readable
+- enemy attacks require visible telegraphs
+- valuable combat results and rewards remain server-authoritative
+
+## Animation strategy
+
+Animations are shared by weapon family rather than by individual item.
+
+First slice needs one coherent sword animation family:
+
+- idle/locomotion integration as needed
+- M1-1
+- M1-2
+- M1-3
+- skill
+- dash/roll if custom animation improves quality
+- hit reaction
+- death
+
+Do not create unique attack animation sets merely because weapon models differ.
+
+## First dungeon
+
+Working theme: stylized fantasy forest ruins / goblin-held ruins, chosen because strong free environment supply already exists and compatible enemy/weapon assets are abundant.
+
+Final creature identity may change during asset procurement if a clearly better coherent family is available.
+
+First dungeon target structure:
+
+1. entry / orientation
+2. room A: 3 melee enemies
+3. room B: mixed melee + ranged enemies
+4. room C: elite/brute encounter
+5. boss room
+6. reward moment
+7. Retry / Return flow
+
+Target first-run duration: roughly 2.5–3.5 minutes once the player understands controls.
+
+Do not build a maze. The main route should be immediately readable.
+
+## Enemy architecture
+
+Use a small reusable behavior vocabulary and swap audited visual rigs/models on top.
+
+First-slice behavior families:
+
+- Grunt: approach + simple melee
+- Ranged: maintain usable distance + readable projectile
+- Brute/Elite: slower, larger telegraph, heavier attack
+- Boss: 2–3 readable attacks assembled from the same combat language
+
+Do not trust free-model AI/combat scripts for production architecture. Prefer sanitized visual rigs and project-owned AI/damage/reward systems.
 
 ## Loot and equipment
 
-Confirmed:
+Equipment is the primary visible progression axis.
 
-- equipment is a main progression axis
-- equipment upgrades should be visibly/readably stronger where practical
-- rare drops should have clear feedback
+First-slice scope:
 
-Not yet fixed:
+- weapon progression is mandatory
+- armor can remain deferred unless a strong ready-to-use asset/UI path makes it nearly free
+- boss/end reward should visibly produce loot rather than only changing a hidden number
+- item comparison and equip must be obvious
+- the first completed run should guarantee a meaningful upgrade if the player still has starter gear
 
-- rarity ladder
-- exact inventory UI
-- exact stat model
-- variants/mutations
-- enhancement system
-- sets
+Initial rarity ladder:
 
-## World progression
+`Common -> Uncommon -> Rare -> Epic -> Legendary -> Mythic`
 
-Confirmed:
+The first slice does not need every rarity to drop.
 
-- use compact, purposeful zones rather than a large empty open world
-- a stronger encounter should gate or communicate further progression
+Initial weapon stats should remain minimal. Base Damage is mandatory. Attack Speed and Crit are allowed only if they improve the slice without muddying item readability.
 
-Not yet fixed:
+Random affixes, enhancement, sets, crafting, rerolling, and mutation systems are deferred until the basic loot loop is accepted.
 
-- zone count
-- biome/theme
-- exact unlock rules
-- boss roster
+## Progression
 
-## Rebirth / long-term progression
+Use Level + equipment power as the familiar player-facing progression model.
 
-Confirmed:
+For the first slice:
 
-- rebirth or equivalent acceleration is part of the intended long-term direction
-- it must make earlier progression materially faster, not merely add a tiny percentage bonus
+- Level increases from combat/run completion
+- better equipment creates the larger immediate combat-power jump
+- completing Normal should expose/unlock a stronger replay target
+- harder difficulty reuses the same dungeon art/layout with stronger enemy tuning and better reward table
 
-Deferred until base loop acceptance:
+Difficulty reuse is intentional. A production dungeon should support multiple difficulties rather than requiring a new map for every progression step.
 
-- rebirth currency
-- permanent upgrade tree
-- unlock thresholds
-- world tiers
+Exact XP curves, damage formulas, and unlock thresholds are tuning variables, not permanent lore.
 
-## Art direction
+## World/content expansion
 
-Not yet fixed.
+Preferred cheap expansion order after the slice is accepted:
 
-The first coherent production art direction will be selected after comparing real environment, weapon, enemy, animation, and VFX asset candidates. Once accepted, document the exemplar assets and visual rules here.
+1. more difficulties on proven dungeon
+2. next compact dungeon using a new coherent asset family/biome
+3. more weapon visuals and loot tables
+4. daily/playtime rewards
+5. additional weapon family if combat quality justifies it
+6. challenge/raid/infinite mode using existing combat assets
+7. pets/companions only if they materially help retention and fit the product
+8. rebirth/meta acceleration after the base progression loop has enough content to reset meaningfully
 
-## UI
+Avoid building a giant seamless open world.
 
-Not yet fixed beyond the requirement for readable desktop and mobile play.
+## UI / UX
 
-## Economy
+Use audited Creator Store UI assets/components/icons aggressively when they reduce production time, then normalize them into one coherent visual system.
 
-Keep initial economy minimal. Do not add currencies without a clear gameplay purpose.
+First-slice navigation should expose only what is needed:
+
+- Play
+- Inventory
+- Shop may exist visually only when it has a real purpose; monetization is not required for the first playable slice
+- HP
+- Level / XP
+- Gold
+- current equipped weapon / power readability where useful
+
+Inventory first-slice actions:
+
+- inspect item
+- compare against equipped item
+- Equip
+- Sell may be deferred until enough loot exists
+- Lock may be deferred
+
+Avoid long modal chains and unnecessary confirmation steps.
+
+## Art / asset direction
+
+Primary target: coherent stylized Roblox / low-poly fantasy using external assets heavily.
+
+Current preferred environment supply starts with official/licensed Synty-style nature/dungeon assets and compatible audited medieval/fantasy additions.
+
+Multiple creators/packs may be mixed when their scale, palette, material density, proportions, and camera readability are compatible. Do not mix obviously incompatible realistic PBR, anime, voxel, and low-poly identities merely because each asset is individually good.
+
+Player-facing production placeholders are not acceptable once an audited production asset exists for the role.
+
+## Monetization direction
+
+Monetization is not required for the first vertical slice, but architecture must not block it.
+
+Likely later products:
+
+Passes:
+- +1 loot / extra reward roll
+- 2x Gold
+- VIP convenience/value bundle
+- extra storage
+
+Developer Products:
+- temporary luck/reward boost
+- revive where appropriate
+- currency bundle if the economy justifies it
+
+External shop UI assets may be reused visually, but purchase authority, entitlement checks, receipt handling, and valuable rewards must use current project-owned Roblox-safe logic.
+
+Do not let monetization interrupt the first combat experience.
+
+## Retention direction
+
+After core-loop acceptance, preferred low-cost retention systems are:
+
+- Daily Login
+- Playtime Gifts
+- Daily Quests
+- Group/community reward if appropriate
+- rotating cosmetic/value shop only after the core inventory/economy exists
+
+Do not build retention UI before there is a game worth returning to.
 
 ## Multiplayer
 
-The game should remain naturally playable alongside other players, but no complex party-only content is required for the first slice. Valuable progression state must be server-authoritative.
+The core game should be naturally compatible with multiple players, but the first slice does not require complex parties, matchmaking, trading, guilds, or dedicated-server orchestration.
+
+Do not add a complex multiplayer architecture solely to imitate larger reference games before the combat/loot loop is accepted.
+
+Valuable progression state remains server-authoritative.
+
+## Rebirth / long-term progression
+
+Rebirth or equivalent acceleration remains a long-term direction, not a first-slice requirement.
+
+When added, it must:
+
+- materially accelerate early progression
+- unlock or strengthen future progression options
+- make previously difficult content feel conquered
+
+Do not add rebirth merely as a percentage reset button before the game has enough progression to justify resetting.
