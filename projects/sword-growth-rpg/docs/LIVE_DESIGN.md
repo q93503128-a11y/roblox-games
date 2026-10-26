@@ -31,6 +31,10 @@ This file records decisions explicitly accepted in design discussion. Exact bala
 - Most enemies simply detect, approach, stay close, and attack the player.
 - Bosses do **not** require bespoke combat patterns by default.
 - The game should prioritize growth and farming over pattern-reading action combat.
+- Baseline critical chance: **5%** before permanent bonuses/effects.
+- Baseline critical damage: **2.0×** normal damage.
+- Do not add random damage variance by default; identical combat state should produce identical non-critical hit damage.
+- No general defense stat is required as a core progression axis. Enemy balance is primarily driven through HP and attack values.
 
 ## 4. Monster roles
 
@@ -140,6 +144,7 @@ Thus the current intended speed progression is:
 - Critical chance can exceed 100% mathematically.
 - Actual critical probability is capped at 100%.
 - Any amount above 100% converts into extra critical damage instead of being wasted.
+- Example: 125% calculated critical chance means 100% actual critical chance and +25% critical-damage multiplier on top of the 2.0× baseline, producing 2.25× critical damage before any other critical-damage bonuses.
 
 ## 8. Aura system
 
