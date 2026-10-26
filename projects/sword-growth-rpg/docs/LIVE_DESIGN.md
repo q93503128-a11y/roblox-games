@@ -49,6 +49,7 @@ Official role categories:
 Do not force MMO-style Normal/Enhanced/Elite tiers into the game.
 
 - Normal mobs and bosses may vary freely in HP, damage, size, movement, reward, and respawn behavior.
+- Baseline target for a normal mob at the player's intended hunting level: **about 3–5 normal sword hits to kill** before unusual effects or extreme progression advantages.
 - Respawn time is **per-monster data**, not a rigid rule based on category.
 - A boss may respawn quickly; a rare normal mob may respawn slowly.
 - World Bosses are server-scale cooperative targets and can use server-wide announcements when appropriate.
