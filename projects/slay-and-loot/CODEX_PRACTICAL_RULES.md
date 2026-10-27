@@ -124,3 +124,56 @@ NEXT SAFE STEP
 - ...
 
 Keep statements factual and distinguish implementation from validation.
+
+## 9. Prefer Plan for reasoning; keep Build execution-focused
+
+OpenCode Build usage is expensive and should be minimized.
+
+Use Plan mode for as much non-destructive work as practical, including:
+
+- reading repository/docs/source
+- inspecting current architecture and requirements
+- external asset/reference research
+- deciding exact files/instances to change
+- preparing complete Luau code, patches, placement tables, test routes, and acceptance criteria
+- identifying likely failure cases before implementation
+
+Switch to Build only when actual mutation or Studio execution is required, such as:
+
+- editing files
+- applying prepared code
+- inserting/auditing assets in Studio
+- changing the DataModel or map
+- running Playtest/device/runtime validation
+- saving/committing the accepted result
+
+Do not spend Build-mode budget rediscovering requirements or doing open-ended design work that could have been completed in Plan first.
+
+## 10. GitHub is the canonical source for important code and machine-readable project state
+
+Do not leave important Luau source existing only inside the live Studio session when it can reasonably be represented in Git.
+
+For project-owned gameplay code, config, data definitions, reusable helpers, and other text source:
+
+- keep a corresponding canonical file under the project repository
+- preserve one clear ownership/source-of-truth path
+- avoid maintaining two independently edited copies
+- after Studio-side changes, reconcile the canonical Git source before ending the task
+
+Roblox Cloud/Studio may remain the canonical home for visual scene composition, imported meshes/models, lighting, terrain, and other editor-native state that is impractical to represent directly in Git. Record important asset IDs, anchors, layout contracts, and verified Studio-only facts in the existing canonical docs rather than inventing duplicate summaries.
+
+A `.rbxl/.rbxlx` handoff should not be required for ordinary planning/review when Git source + canonical docs contain the needed implementation facts. Use place files or screenshots only when actual scene state/visual inspection is necessary.
+
+## 11. Save and commit before ending a coherent task
+
+Do not end a substantial implementation task with important accepted work existing only in memory, an unsaved Studio session, or an uncommitted working tree when the available tools permit persistence.
+
+At a coherent boundary:
+
+- save/publish the Studio place when possible
+- check `git status`
+- reconcile canonical Git source/docs with the actual accepted implementation
+- commit stable related changes
+- report the commit SHA when available
+
+If Studio save/publish requires user interaction or cannot be performed through available tools, explicitly warn the user before ending the task. If a commit cannot safely be made, state the exact reason and leave a precise handoff.
