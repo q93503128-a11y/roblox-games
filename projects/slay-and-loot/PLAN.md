@@ -1,175 +1,189 @@
 # Slay & Loot — Active Plan
 
-Status: READY FOR FIRST STUDIO BUILD / RUNTIME VALIDATION PENDING
+Status: VERTICAL SLICE IMPLEMENTED / SOURCE SNAPSHOTTED / ACCEPTANCE PLAYTEST PENDING
 
 ## Current goal
 
-Build and validate the first production-style vertical slice using Roblox Studio + OpenCode (MiniMax) + Studio MCP.
+Preserve the working first slice, reconcile it with the asset-heavy production strategy, and validate it in actual Roblox Studio play before expanding scope.
 
-The slice must prove this loop:
+The intended loop remains:
 
 `spawn/hub -> start dungeon -> fight readable groups -> boss -> visible loot -> equip upgrade -> replay stronger difficulty -> understand next target`
 
-Target play length: 5–10 minutes including the first stronger replay.
+Target play length remains 5–10 minutes including the first stronger replay.
 
-## Current design authority
+## Current implementation baseline
 
-Read `docs/LIVE_DESIGN.md` before implementation. It now defines the accepted first production loop, combat ceiling, loot direction, reference roles, and expansion priorities.
+Git snapshot commit: `51af92cd05dfc688b0031060ac5c381fffe11053`.
 
-## Phase 0 — inspect before editing
+Current Git-owned Luau mirrors these Studio containers:
 
-Before creating content, inspect the real Studio/DataModel state and record enough evidence to trust it.
+- `ServerScriptService.SlayAndLootMain`
+- `ReplicatedStorage.SlayAndLoot.Config`
+- `ReplicatedStorage.SlayAndLoot.Shared`
+- `ReplicatedStorage.SlayAndLoot.PlayerState`
+- `ReplicatedStorage.SlayAndLoot.LootService`
+- `ReplicatedStorage.SlayAndLoot.CombatService`
+- `ReplicatedStorage.SlayAndLoot.EnemyService`
+- `ReplicatedStorage.SlayAndLoot.RunService`
+- `StarterPlayer.StarterPlayerScripts.SlayAndLootClient`
 
-Confirm:
+Snapshot verification at capture time: 9/9 Studio source == Git file hash, 1,642 total lines.
 
-- current Place / DataModel hierarchy
-- existing scripts/remotes/UI/assets
-- spawn transform
-- avatar rig/scale
-- camera/FOV
-- Lighting
-- terrain/floor/playable bounds
-- unexpected Output/runtime errors
-- whether any previous Slay & Loot implementation exists in Studio but not GitHub
+The current source already contains the first combat/dungeon/loot/UI shell. Do not duplicate these systems or restart the project from the old pre-build plan.
 
-Do not duplicate an existing valid subsystem.
+## Source-of-truth rule
 
-## Phase 1 — asset procurement / quarantine
+GitHub owns project-written Luau/config/docs and the source hash baseline.
 
-Use Creator Store and the Godbase supply catalog aggressively.
+Roblox Studio / Roblox Cloud owns scene geometry, external models/meshes/rigs, lighting, and Studio-native placement state.
 
-Search/inspect multiple candidates where quality matters, then select the smallest coherent stack needed for the first slice.
+`generated/world-layout.snapshot.json` is reference evidence, not the authoritative map.
 
-Priority categories:
+Until a deliberate Git -> Studio apply workflow exists, do not independently edit the same Git-managed script on two PCs.
 
-1. environment: stylized nature + dungeon/ruins modules
-2. weapon: coherent sword family / starter + upgrade visuals
-3. enemies: compatible goblin/fantasy creature rigs or another stronger coherent family
-4. animation: one sword combat family shared across weapon visuals
-5. VFX: slash, hit, skill, boss telegraph, loot rarity feedback
-6. SFX: swing, impact, enemy hit/death, loot/reward, UI confirm
-7. UI: HUD, inventory/grid, item tooltip/compare, Play/dungeon selection, reward/result presentation
-8. monetization/shop UI may be collected as a future candidate but must not delay the slice
+## Phase A — source review before new implementation
 
-Preferred known starting candidates from Godbase include Synty Nature, compatible official/licensed dungeon/medieval assets, simple script-free weapon packs, and the audited-candidate VFX library. These are starting points, not automatic approvals.
+Review the snapshotted source directly and distinguish:
 
-For every candidate actually evaluated in Studio:
+- code that is already valid and should be preserved
+- actual missing acceptance requirements
+- visual placeholders that should be replaced by audited external assets
+- project-owned authority logic that must remain in-project
 
-- inspect descendants/scripts/dependencies
-- quarantine or remove scripts when only visuals are needed
-- inspect scale/pivot/rig/collision
-- inspect gameplay-camera appearance
-- inspect mobile/performance implications at intended repetition
-- record approved/rejected production candidates in `docs/ASSET_SOURCES.md`
+Known source facts:
 
-Do not ship a giant asset library wholesale.
+- inventory UI exists in the client source
+- loot card and equip presentation exist in the client source
+- `LootService.roll()` is currently pure weighted random
+- therefore the first-Normal-clear guaranteed meaningful upgrade rule is still missing
+- Config currently defines Common / Uncommon / Rare / Epic / Legendary; Mythic is not implemented in the active tables
+- boss visual construction depends on `ServerStorage.Quarantine.Goblin_Q`
 
-## Phase 2 — first spatial shell
+Do not treat old planning reports as more authoritative than the current Git snapshot.
 
-After asset selection, build only the coherent first route.
+## Phase B — first production asset integration pass
 
-Use named anchors and relative placement. Do not guess raw world coordinates independently.
+The project remains asset-heavy by design.
 
-Required authored spaces:
+External assets should carry most player-facing production value where they are audited and coherent:
 
-- compact hub/spawn camp
-- obvious Play/start focal point
-- first dungeon entry
-- room A
-- room B
-- room C / elite
-- boss room
-- reward/result area/state
+1. environment / ruins / nature modules
+2. weapon visuals
+3. enemy / boss visual rigs
+4. shared sword animation family
+5. VFX
+6. SFX
+7. icons and UI presentation components
 
-First dungeon working theme: stylized forest ruins / goblin-held ruins unless procurement finds a clearly stronger coherent alternative.
+Keep damage, valuable rewards, inventory ownership, progression, currency, purchases, save data, and authority-sensitive logic project-controlled.
 
-Target encounter structure:
+Current environment starting point:
 
-- room A: 3 melee
-- room B: mixed melee + ranged
-- room C: elite/brute encounter
-- boss room: one boss with 2–3 readable attacks
+- `ServerStorage.Quarantine.SyntyDungeon_Q` is quarantined and should be audited module-by-module before promotion
+- the current gameplay shell / named anchors remain the spatial reference while production art is integrated
+- do not copy the whole asset library into the live route
 
-Do not create a maze or a giant decorative hub.
+Build art in coherent sections:
 
-## Phase 3 — combat foundation
+`Hub -> Entry -> Room A -> safe/vista pocket -> Room B -> Room C/Elite -> Boss -> Reward`
 
-First-slice player kit:
+For each section:
 
-- 3-hit sword primary combo
-- dash/roll
-- one broad readable cleave/AOE skill
+`inspect -> placement plan -> place -> gameplay-camera check -> collision/path check -> fix -> next section`
 
-Target desktop bindings:
+Do not guess touching geometry with independent raw coordinates; use anchors, pivots, bounds, faces, and relative placement.
 
-- LMB attack
-- Q dash
-- E skill
+## Phase C — combat presentation
 
-Target mobile:
+Preserve the current combat authority/timing unless evidence shows a defect.
 
-- Attack
-- Dash
-- Skill
+Production tasks:
 
-Requirements:
+- replace/fix the current sword presentation so the held weapon reads correctly
+- obtain or create one coherent sword animation family
+- replace obvious primitive enemy visuals where audited rigs are available
+- improve hit/slash/boss/reward VFX and SFX using audited external resources where stronger than custom placeholders
 
-- animation active frames and hit timing match
-- hit sound/VFX/reaction readable
-- server validates damage/reward results
-- 3–5 enemies remain readable
-- spam input does not break state
-- death/respawn/reset route works
+Do not rewrite combat logic merely to adopt a free RPG kit.
 
-Do not add block/parry, stamina, mana, or a large skill bar in this pass.
+## Phase D — guaranteed first upgrade
 
-## Phase 4 — enemy behavior
+Current `LootService.roll()` is weighted random only.
 
-Own the AI/combat logic in-project. Use external assets primarily for visual rigs/models/animation source material.
+Implement the design invariant:
 
-Required behavior families:
+If the player is still on starter-level gear when completing the first Normal run, the reward must be a clearly stronger weapon.
 
-- Grunt
-- Ranged
-- Brute/Elite
-- Boss
+Constraints:
 
-Do not preserve arbitrary free-model AI merely because it came with a visually useful creature.
+- server authoritative
+- not a guaranteed highest-tier drop
+- not repeated on every clear
+- normal random loot should remain intact after the protection condition has been consumed
 
-## Phase 5 — loot / progression / UI
+Validate:
 
-First-slice progression:
+`Starter -> Normal clear -> reward -> inventory -> equip -> measurable damage increase`.
 
-- starter sword
-- combat rewards grant XP/Gold as appropriate
-- boss/end reward visibly produces loot
-- first Normal completion guarantees a meaningful weapon upgrade if still on starter gear
-- item can be inspected/compared/equipped clearly
-- improved weapon must produce a noticeable combat-power change
-- Normal completion exposes/unlocks a stronger replay target
-- Hard reuses the same dungeon art/layout with stronger tuning and improved reward table
+## Phase E — acceptance playtest
 
-Initial rarity ladder:
+Do not call the slice accepted until actual Studio evidence is recorded.
 
-`Common -> Uncommon -> Rare -> Epic -> Legendary -> Mythic`
+Minimum P0 route:
 
-The slice does not need all tiers to drop.
+1. clean boot
+2. spawn in hub
+3. start Normal
+4. primary attack
+5. dash
+6. skill
+7. clear room A
+8. clear room B
+9. clear room C / elite
+10. defeat boss
+11. receive/take loot
+12. open inventory and equip upgrade
+13. verify combat power increase
+14. start Hard
+15. verify stronger enemies and better reward target
+16. die / respawn / reset once
+17. replay after final art/UI changes
 
-Keep first-slice item stats minimal. Base Damage is mandatory. Do not add affix/reroll/crafting/set complexity yet.
+Record evidence in `docs/PLAYTEST_NOTES.md`.
 
-UI should use audited external assets/components/icons where useful and be normalized into one coherent style. Do not accept default/debug-looking UI merely because it is wired.
+Acceptance requires, where applicable:
 
-## First 10-minute pacing target
+- project-attributable unexpected runtime errors = 0
+- route cannot be trivially sequence-broken
+- melee/ranged/elite/boss attacks remain readable
+- loot/equip flow works
+- first-clear upgrade protection works
+- death/respawn does not corrupt run/progression state
+- camera/collision/path remain acceptable after the art pass
+- valuable state remains server-authoritative
+- desktop route works
+- mobile route exists and is actually validated before mobile acceptance is claimed
 
-- <= 0:15: player can move and understands how to start combat
-- <= 0:30: first enemy defeated
-- <= 1:00: first useful reward feedback
-- 1:00–3:30: first Normal run
-- <= 4:00: clearly stronger weapon equipped
-- 4:00–8:00: Hard replay / stronger encounter
-- <= 10:00: next progression target is obvious
+## Multi-PC rule
 
-These are tuning targets, not claims until playtested.
+Before switching active development PCs:
+
+Previous PC:
+
+`Studio save/publish -> git status -> commit -> push`
+
+New PC:
+
+`git fetch/pull -> read HANDOFF -> confirm intended Roblox Cloud place -> inspect before editing`
+
+Do not make simultaneous independent edits to the same Git-managed source or the same Studio place.
+
+## OpenCode usage
+
+Prefer Plan mode for investigation, source review, design, patch planning, code preparation, asset selection planning, and test design.
+
+Use Build only for necessary file/Studio writes, asset insertion/placement, integration, playtest, save, and commit/push work that cannot be handled directly through GitHub.
 
 ## Do not add yet
 
@@ -188,58 +202,16 @@ These are tuning targets, not claims until playtested.
 - large content batches
 - unique animation sets per individual weapon
 
-## Acceptance criteria
-
-The first slice is accepted only when actual Studio evidence shows:
-
-- clean boot
-- normal spawn
-- first objective obvious without long tutorial
-- first attack route works on desktop
-- viable mobile combat controls/UI exist
-- room progression cannot be trivially sequence-broken
-- melee/ranged/elite/boss attacks are readable
-- one full run can be completed
-- visible loot reward works
-- item comparison/equip works
-- equipped upgrade noticeably improves combat
-- stronger replay target works
-- death/respawn does not corrupt the run/progression state
-- project-attributable unexpected runtime errors = 0 on the P0 route
-- camera/collision/path remain acceptable after art pass
-- valuable rewards/inventory/currency remain server-authoritative
-
-## P0 test route
-
-Fill exact names/anchors after Studio implementation, but preserve this sequence:
-
-1. clean boot
-2. spawn in hub
-3. start first Normal dungeon
-4. use primary attack
-5. use dash
-6. use skill
-7. clear room A
-8. clear room B
-9. defeat elite encounter
-10. defeat boss
-11. collect/receive loot
-12. inspect and equip upgrade
-13. verify power increase in combat
-14. start stronger replay/difficulty
-15. verify stronger enemies + better reward target are readable
-16. die/respawn/reset once
-17. replay the same route after final art/UI pass
-
 ## Stop conditions
 
 Stop and reassess instead of patch stacking if:
 
 - the same combat/inventory/dungeon subsystem fails structurally twice
-- selected assets cannot be made visually coherent without heavy rework
+- asset dressing repeatedly breaks the route/collision/camera
+- selected assets cannot be made coherent without major rework
+- sword presentation is being repaired through repeated arbitrary CFrame offsets rather than a root-cause fix
 - enemy count/VFX causes unacceptable target-device performance
-- combat remains weak after one focused feel revision
 - Studio/MCP state cannot be trusted enough to validate the current step
-- a free/template kit requires adopting unsafe or opaque authority code to remain functional
+- a free/template kit requires unsafe or opaque authority code to remain functional
 
 Do not expand to Dungeon 2 until this slice passes acceptance.
