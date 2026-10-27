@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "projectId": "slay-and-loot",
+  "algorithm": "sha256",
+  "hashBasis": "raw file bytes of the Git snapshot (UTF-8, LF, no BOM)",
+  "capturedAt": "2026-10-27T12:11:23Z",
+  "verifiedAt": "2026-10-27T12:11:30Z",
+  "verification": {
+    "method": "Each Instance.Source was read twice from the live Studio DataModel via read-only MCP calls; each read was hashed independently and compared with the on-disk Git file bytes.",
+    "studioReadsPerFile": 2,
+    "result": "PASS",
+    "filesChecked": 9,
+    "filesEqual": 9,
+    "lineEndingsOnDisk": "LF only (0 CR bytes in all files)",
+    "totalBytes": 61772,
+    "totalLines": 1642,
+    "notes": "placeVersion reported by the open Studio session was 0, so this snapshot is the state of the currently open DataModel, not proof of a published cloud version."
+  },
+  "files": [
+    {
+      "studioPath": "ServerScriptService.SlayAndLootMain",
+      "gitFile": "src/ServerScriptService/SlayAndLootMain.server.luau",
+      "className": "Script",
+      "runContext": "Legacy",
+      "sha256": "0f4151755e78e7c8c74feacc5ea75ae516b258104d43f43bc73dd13be632d206",
+      "bytes": 5006,
+      "characters": 5006,
+      "lines": 173
+    },
+    {
+      "studioPath": "ReplicatedStorage.SlayAndLoot.Config",
+      "gitFile": "src/ReplicatedStorage/SlayAndLoot/Config.luau",
+      "className": "ModuleScript",
+      "sha256": "f68457836b911c00af9197eee75aac3c0e153ed140e18c4a19a756d096a390fe",
+      "bytes": 4387,
+      "characters": 4387,
+      "lines": 105
+    },
+    {
+      "studioPath": "ReplicatedStorage.SlayAndLoot.Shared",
+      "gitFile": "src/ReplicatedStorage/SlayAndLoot/Shared.luau",
+      "className": "ModuleScript",
+      "sha256": "60a463a39124b0e2a333a28c53d4d4b0f1d8ac4f554ed8bdcb968e70c5a2dca1",
+      "bytes": 729,
+      "characters": 729,
+      "lines": 34
+    },
+    {
+      "studioPath": "ReplicatedStorage.SlayAndLoot.PlayerState",
+      "gitFile": "src/ReplicatedStorage/SlayAndLoot/PlayerState.luau",
+      "className": "ModuleScript",
+      "sha256": "580d2419cf28f9381633efe9da629cd09cc72091dd5fd699102d2b5cfdb824a7",
+      "bytes": 2024,
+      "characters": 2024,
+      "lines": 80
+    },
+    {
+      "studioPath": "ReplicatedStorage.SlayAndLoot.LootService",
+      "gitFile": "src/ReplicatedStorage/SlayAndLoot/LootService.luau",
+      "className": "ModuleScript",
+      "sha256": "8b47d29b29c57a0f62c30921d593fc6a8e8b9c42557951529409b3834d4db532",
+      "bytes": 537,
+      "characters": 537,
+      "lines": 21
+    },
+    {
+      "studioPath": "ReplicatedStorage.SlayAndLoot.CombatService",
+      "gitFile": "src/ReplicatedStorage/SlayAndLoot/CombatService.luau",
+      "className": "ModuleScript",
+      "sha256": "7b82d2c14b79c1244855b218ddea45cf4bc70acb94ecb593231efdf2f12f2fe3",
+      "bytes": 3589,
+      "characters": 3589,
+      "lines": 104
+    },
+    {
+      "studioPath": "ReplicatedStorage.SlayAndLoot.EnemyService",
+      "gitFile": "src/ReplicatedStorage/SlayAndLoot/EnemyService.luau",
+      "className": "ModuleScript",
+      "sha256": "10d5f41ed82a530f548ae2d96962120cfe6efd461efcb5cb87356e6f404e1e83",
+      "bytes": 11813,
+      "characters": 11813,
+      "lines": 373
+    },
+    {
+      "studioPath": "ReplicatedStorage.SlayAndLoot.RunService",
+      "gitFile": "src/ReplicatedStorage/SlayAndLoot/RunService.luau",
+      "className": "ModuleScript",
+      "sha256": "5be577f9443d690b49ce6a9a843245479a403cbcda6106697dacd068e1442e43",
+      "bytes": 8268,
+      "characters": 8268,
+      "lines": 243
+    },
+    {
+      "studioPath": "StarterPlayer.StarterPlayerScripts.SlayAndLootClient",
+      "gitFile": "src/StarterPlayer/StarterPlayerScripts/SlayAndLootClient.local.luau",
+      "className": "LocalScript",
+      "runContext": "Legacy",
+      "sha256": "f25d379c1f021c7422582ad41114f06cf7742ecf33cddae9ddd0a6b7799b9db3",
+      "bytes": 25419,
+      "characters": 25419,
+      "lines": 509
+    }
+  ]
+}
