@@ -177,6 +177,7 @@ Vertical Slice부터 성능 baseline을 본다. 큰 맵 완성 후 처음 최적
 - 큰 작업 후에는 `changed / tested / failures fixed / known limitations / next safe step`를 구분한다.
 - 사용자에게 반복적인 `다음` 입력을 과도하게 요구하지 말고, 안전한 범위에서는 coherent chunk 단위로 충분히 진행한다.
 - 불필요한 빌드/CI/검사를 습관적으로 남발하지 않되, 실제 위험이 있는 변경에는 필요한 검증을 생략하지 않는다.
+- **사용자가 다른 AI/에이전트/OpenCode/Codex/Roblox Studio Agent 등에 복붙해서 사용할 모든 프롬프트는 반드시 독립적으로 스크롤되는 fenced code block (` ```text ... ``` `) 안에만 제공한다.** 긴 프롬프트를 일반 본문, writing block, 인용문, 표, 접힌 설명 형식으로 제공하지 않는다. 프롬프트 앞뒤 설명이 필요하면 code block 밖에 짧게 두되, 실제 복붙 대상 전체는 하나의 `text` code block 안에 넣는다.
 
 ## Source freshness
 
