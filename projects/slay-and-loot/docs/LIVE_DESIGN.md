@@ -263,3 +263,64 @@ When added, it must:
 - make previously difficult content feel conquered
 
 Do not add rebirth merely as a percentage reset button before the game has enough progression to justify resetting.
+
+## Implemented tuning — source-verified baseline
+
+Status: `CODED + INTEGRATED (source-verified)` unless a runtime note explicitly says otherwise. These values describe the current snapshot, not final accepted balance.
+
+### Player / combat
+
+- Max HP: 120
+- Base damage: 10
+- Combo multipliers: 1.00 / 1.15 / 2.00
+- Combo ranges: 9.5 / 9.5 / 11 studs
+- Combo arcs: 115 / 120 / 150 degrees
+- Combo cooldowns: 0.44 / 0.42 / 0.66 seconds
+- Dash: 24 studs / 0.20 s duration / 1.5 s cooldown / 0.32 s invulnerability window
+- Skill: x2.6 damage / 17 stud range / 6.5 s cooldown
+- Room-clear heal: 45% of max HP in the active run flow
+
+### Enemy baseline
+
+- Grunt: 45 HP / 9 damage
+- Caster: 36 HP / 11 damage
+- Brute: 240 HP / 18 damage
+- Boss: 700 HP / 14 base damage
+- Boss behavior currently contains three attack variants; exact human readability remains unaccepted.
+
+### Difficulty
+
+Normal:
+
+- HP x1.0
+- damage x1.0
+- Gold x1.0
+- XP x1.0
+- loot tier 1
+
+Hard:
+
+- HP x2.2
+- damage x1.8
+- Gold x1.7
+- XP x1.8
+- loot tier 2
+
+### Current room rewards / first-run arithmetic
+
+- Room A: +18 Gold
+- Room B: +28 Gold
+- Room C: +37 Gold
+- Boss: +120 Gold
+- A full Normal clear from zero therefore reaches 203 Gold under current tuning.
+- Current XP arithmetic reaches level 4 after that full route.
+
+### Spatial shell observations
+
+The current graybox/runtime shell has been observed with approximately:
+
+- 11-stud room ceilings in the repaired sections
+- 9-stud doorway/opening treatment in the safe-pocket repair
+- Ground top at `Y = -0.5` after the z-fighting fix
+
+These are current implementation facts, not permanent art-direction dimensions. Production art may change visual geometry only if route clearance, camera, navigation, and combat readability remain valid.
