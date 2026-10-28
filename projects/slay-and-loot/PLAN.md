@@ -102,6 +102,7 @@ Production tasks:
 
 - replace/fix the current sword presentation so the held weapon reads correctly
 - obtain or create one coherent sword animation family
+- do not assume arbitrary cross-experience animation IDs will be reusable in this experience; use an experience-owned, permitted, or otherwise valid animation source and verify actual playback in Studio before approval
 - replace obvious primitive enemy visuals where audited rigs are available
 - improve hit/slash/boss/reward VFX and SFX using audited external resources where stronger than custom placeholders
 
@@ -127,6 +128,8 @@ Validate:
 `Starter -> Normal clear -> reward -> inventory -> equip -> measurable damage increase`.
 
 ## Phase E — acceptance playtest
+
+Recovered evidence in `docs/PLAYTEST_NOTES.md` shows a bot-driven/synthetic-input runtime pass through the first slice, including Normal clear, loot/equip, Hard tuning, death/respawn attempts, and multiple repaired defects. That evidence is `RUNTIME-CHECKED`, not human `PLAYTESTED` or `ACCEPTED`.
 
 Do not call the slice accepted until actual Studio evidence is recorded.
 
@@ -162,7 +165,8 @@ Acceptance requires, where applicable:
 - death/respawn does not corrupt run/progression state
 - camera/collision/path remain acceptable after the art pass
 - valuable state remains server-authoritative
-- desktop route works
+- desktop route works, including direct LMB -> primary attack validation
+- production audio/SFX exists where required for combat/reward readability
 - mobile route exists and is actually validated before mobile acceptance is claimed
 
 ## Multi-PC rule
