@@ -1,6 +1,6 @@
 # Slay & Loot — Session Handoff
 
-Last updated: 2026-10-27
+Last updated: 2026-10-28
 
 ## Current state
 
@@ -12,6 +12,7 @@ Last updated: 2026-10-27
 - The inspected Studio DataModel contained the combat/loot vertical slice, a 131-descendant `Workspace.SlayAndLoot` shell, and quarantined external assets in `ServerStorage.Quarantine`.
 - The current Git snapshot is a preservation baseline. It does not yet define an automatic Git -> Studio apply workflow.
 - Cloud save/publish equivalence is still unverified: the inspected session reported `game.PlaceVersion == 0`, so do not assume the live cloud version equals the captured Edit DataModel until the user confirms Studio save/publish state.
+- Recovered runtime evidence from the pre-snapshot session is recorded in `docs/PLAYTEST_NOTES.md` as `RUNTIME-CHECKED` bot-driven evidence, not human acceptance.
 
 ## Source-of-truth split
 
@@ -145,4 +146,7 @@ Do not spend Build usage on long research or speculative planning.
 - Multiplayer route is not yet validated.
 - Persistence/DataStore route is not yet validated.
 - Production environment art, animation, VFX/SFX, and final UI presentation are incomplete.
+- Sword presentation is still temporary: the held sword can read as a thin vertical stick, and no production-approved sword animation family is integrated yet.
+- Direct LMB -> attack has not been independently validated; prior bot-driven combat validation used the alternate F attack path.
+- No production audio/SFX pass is integrated yet.
 - A human acceptance playtest is still required before calling the slice accepted.
