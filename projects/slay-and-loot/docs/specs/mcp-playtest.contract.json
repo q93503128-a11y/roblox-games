@@ -1,0 +1,397 @@
+{
+  "schemaVersion": 1,
+  "status": "DESIGN_NOT_RUN",
+  "project": {
+    "name": "slay-and-loot",
+    "revision": "B01-COMBAT-LOOT-SLICE",
+    "genre": [
+      "combat-loot-simulator"
+    ],
+    "primaryLoop": "spawn -> kill -> Coins + weapon -> duplicate level -> hatch/equip -> stronger combat -> personal Zone unlock"
+  },
+  "studioTarget": {
+    "expectedPlaceId": 121055730304610,
+    "expectedName": "베고 약탈하기",
+    "requireExplicitStudioId": true,
+    "durableTests": "separate TEST Experience; never enable API writes to production Place"
+  },
+  "boot": {
+    "spawnTimeoutSeconds": 20,
+    "unexpectedConsolePatterns": [
+      "error",
+      "stack begin",
+      "infinite yield possible"
+    ],
+    "requiredInstances": [
+      "game.Players.LocalPlayer.Character",
+      "game.Workspace.SpawnLocation",
+      "game.Workspace.SlayAndLoot"
+    ],
+    "requiredUi": [
+      "game.Players.LocalPlayer.PlayerGui.SlayAndLootUI"
+    ]
+  },
+  "routes": [
+    {
+      "id": "p0-primary-loop",
+      "priority": "P0",
+      "preconditions": [
+        "isolated TEST new profile; published test build; no QA grants"
+      ],
+      "steps": [
+        {
+          "action": "observe",
+          "target": "spawn vista; Slime and next Zone direction visible"
+        },
+        {
+          "action": "input",
+          "target": "LMB or touch Attack; kill Moss Slime"
+        },
+        {
+          "action": "assert",
+          "expression": "Rusty Sword Lv1->Lv2, 12 Coins, one weapon entry"
+        },
+        {
+          "action": "input",
+          "target": "earn >=30 Coins; Egg panel; Hatch 1; Pets panel; Equip Best"
+        },
+        {
+          "action": "assert",
+          "expression": "one owned pet, one equipped UID, damage greater than before equipment"
+        },
+        {
+          "action": "input",
+          "target": "fight Scouts; own/equip Goblin Blade; earn 600 Coins after spending"
+        },
+        {
+          "action": "input",
+          "target": "explicit Unlock at gate; walk into Zone2 safe landing"
+        }
+      ],
+      "expected": [
+        "all steps through real player UI/input",
+        "Coins, XP, equipment and unlock match server state",
+        "first kill 5-12s; first duplicate <60s; hatch early; gate pacing measured",
+        "no duplicate grant; no runtime errors"
+      ],
+      "screenshots": [
+        "spawn",
+        "first-level-up",
+        "hatch",
+        "pets-equipped",
+        "gate-unlocked"
+      ]
+    },
+    {
+      "id": "p0-weapon-boundaries",
+      "priority": "P0",
+      "preconditions": [
+        "server-only fixtures in isolated TEST; production rejects fixture controls"
+      ],
+      "steps": [
+        {
+          "action": "assert",
+          "expression": "first copy creates Lv1 XP0; duplicate raises existing entry"
+        },
+        {
+          "action": "assert",
+          "expression": "Rusty Lv9 XP39 +5 copies -> Lv10 XP0 +48 Coins"
+        },
+        {
+          "action": "input",
+          "target": "Equip Best with Rusty Lv10 and Goblin Lv1"
+        }
+      ],
+      "expected": [
+        "one weapon entry per definition",
+        "no overflow loss or double XP+Coins",
+        "actual performance wins over rarity"
+      ],
+      "screenshots": [
+        "max-conversion",
+        "equip-best"
+      ]
+    },
+    {
+      "id": "p0-economy-abuse",
+      "priority": "P0",
+      "preconditions": [
+        "server test harness or intercepted client requests in TEST"
+      ],
+      "steps": [
+        {
+          "action": "assert",
+          "expression": "replay same nonce/seq, old session, huge/malformed inputs, spoofed damage/reward rejected"
+        },
+        {
+          "action": "assert",
+          "expression": "zero-Coin Hatch/Unlock and capacity100 Hatch fail without charges or grants"
+        },
+        {
+          "action": "assert",
+          "expression": "distant Attack/Hatch/Unlock, stale generation and locked-zone requests rejected"
+        }
+      ],
+      "expected": [
+        "no unauthorized profile mutation",
+        "request retries do not create value",
+        "all rejection paths observable"
+      ],
+      "screenshots": []
+    },
+    {
+      "id": "p0-multiplayer",
+      "priority": "P0",
+      "preconditions": [
+        "two distinct players; later eight clients for density"
+      ],
+      "steps": [
+        {
+          "action": "input",
+          "target": "two players contribute >=2% HP with fresh hits to same enemy"
+        },
+        {
+          "action": "assert",
+          "expression": "one personal reward each; one death claim per generation"
+        },
+        {
+          "action": "input",
+          "target": "A unlocks/equips/hatches/leaves while B keeps farming"
+        }
+      ],
+      "expected": [
+        "B profile untouched by A changes",
+        "B gate remains locked",
+        "no players[1] target; no global damage",
+        "under-threshold/expired participants do not receive reward"
+      ],
+      "screenshots": [
+        "shared-enemy",
+        "personal-gate"
+      ]
+    },
+    {
+      "id": "p0-persistence",
+      "priority": "P0",
+      "preconditions": [
+        "isolated TEST Experience; reviewed pinned provider; real datastore access authorized/configured there"
+      ],
+      "steps": [
+        {
+          "action": "input",
+          "target": "earn/spend Coins, level weapon, hatch/equip pet, unlock zone; observe actual successful save"
+        },
+        {
+          "action": "input",
+          "target": "leave, server restart, rejoin"
+        },
+        {
+          "action": "assert",
+          "expression": "all durable fields and discovery/pity restored"
+        },
+        {
+          "action": "assert",
+          "expression": "load failure, future schema, session loss and same-key conflict between two independent servers fail closed"
+        }
+      ],
+      "expected": [
+        "no blank overwrite",
+        "TEST namespace only",
+        "real rejoin and same-key conflict evidence; mock alone insufficient",
+        "save acknowledgement distinguished from in-session mutation"
+      ],
+      "screenshots": [
+        "rejoin-state",
+        "data-unavailable"
+      ]
+    },
+    {
+      "id": "p0-mobile-visual",
+      "priority": "P0",
+      "preconditions": [
+        "required viewport/device profiles"
+      ],
+      "steps": [
+        {
+          "action": "input",
+          "target": "movement+jump+Attack, inventories, Hatch, Equip Best, gate; open/close10x"
+        },
+        {
+          "action": "observe",
+          "target": "entry/center/interaction/combat cameras after art"
+        }
+      ],
+      "expected": [
+        "English readable; no clipped/unreachable buttons",
+        "no system/thumb control overlaps",
+        "one reward card; no duplicated connections",
+        "approved hero assets; no floating/clipping/blocked path"
+      ],
+      "screenshots": [
+        "phone-combat",
+        "phone-inventory",
+        "camera-entry",
+        "camera-interaction"
+      ]
+    },
+    {
+      "id": "p0-performance-lifecycle",
+      "priority": "P0",
+      "preconditions": [
+        "8 players; 11 enemy sockets; up to24 equipped pet visuals"
+      ],
+      "steps": [
+        {
+          "action": "input",
+          "target": "10-minute farm; respawn10x; UI reopen10x"
+        },
+        {
+          "action": "observe",
+          "target": "Performance Summary, memory/instances, pending work and remote rate; add latency/loss scenario"
+        }
+      ],
+      "expected": [
+        "baseline measured; no unbounded memory/listener/task increase",
+        "target desktop60/mobile30fps assessed on stated hardware",
+        "no multiplied rewards or stale targets on respawn"
+      ],
+      "screenshots": [
+        "perf-baseline"
+      ]
+    }
+  ],
+  "visualStates": [
+    {
+      "id": "spawn",
+      "required": true,
+      "checks": [
+        "ui-not-clipped",
+        "readable-target-and-next-goal",
+        "coherent-avatar-scale",
+        "no-z-fighting",
+        "no-detached-model-parts"
+      ]
+    },
+    {
+      "id": "first-level-up",
+      "required": true,
+      "checks": [
+        "ui-not-clipped",
+        "readable-target-and-next-goal",
+        "coherent-avatar-scale",
+        "no-z-fighting",
+        "no-detached-model-parts"
+      ]
+    },
+    {
+      "id": "hatch",
+      "required": true,
+      "checks": [
+        "ui-not-clipped",
+        "readable-target-and-next-goal",
+        "coherent-avatar-scale",
+        "no-z-fighting",
+        "no-detached-model-parts"
+      ]
+    },
+    {
+      "id": "pets-equipped",
+      "required": true,
+      "checks": [
+        "ui-not-clipped",
+        "readable-target-and-next-goal",
+        "coherent-avatar-scale",
+        "no-z-fighting",
+        "no-detached-model-parts"
+      ]
+    },
+    {
+      "id": "gate-unlocked",
+      "required": true,
+      "checks": [
+        "ui-not-clipped",
+        "readable-target-and-next-goal",
+        "coherent-avatar-scale",
+        "no-z-fighting",
+        "no-detached-model-parts"
+      ]
+    },
+    {
+      "id": "phone-combat",
+      "required": true,
+      "checks": [
+        "ui-not-clipped",
+        "readable-target-and-next-goal",
+        "coherent-avatar-scale",
+        "no-z-fighting",
+        "no-detached-model-parts"
+      ]
+    },
+    {
+      "id": "phone-inventory",
+      "required": true,
+      "checks": [
+        "ui-not-clipped",
+        "readable-target-and-next-goal",
+        "coherent-avatar-scale",
+        "no-z-fighting",
+        "no-detached-model-parts"
+      ]
+    }
+  ],
+  "deviceMatrix": [
+    {
+      "name": "phone-small",
+      "width": 667,
+      "height": 375,
+      "orientation": "landscape"
+    },
+    {
+      "name": "phone-main",
+      "width": 844,
+      "height": 390,
+      "orientation": "landscape"
+    },
+    {
+      "name": "desktop-hd",
+      "width": 1280,
+      "height": 720,
+      "orientation": "landscape"
+    },
+    {
+      "name": "desktop-fhd",
+      "width": 1920,
+      "height": 1080,
+      "orientation": "landscape"
+    }
+  ],
+  "multiplayer": {
+    "required": true,
+    "maxClients": 8,
+    "scenarios": [
+      "two-player shared enemy and personal rewards",
+      "personal gate and equipment isolation",
+      "leave/respawn during attack/hatch",
+      "eight-player density/VFX",
+      "two independent TEST servers same profile key session conflict"
+    ]
+  },
+  "completion": {
+    "allowedFinalStates": [
+      "INTERNAL_PROTOTYPE",
+      "READY_FOR_USER_TEST"
+    ],
+    "readyRequires": [
+      "cleanBoot",
+      "zeroUnexpectedRuntimeErrors",
+      "allP0RoutesPass",
+      "visualReviewPass",
+      "requiredDeviceProfilesPass",
+      "requiredMultiplayerScenariosPass",
+      "realPersistenceSaveRejoinPass",
+      "knownLimitationsRecorded",
+      "sourceStudioRevisionMatch",
+      "testPlaceSavePublishRecorded"
+    ]
+  }
+}

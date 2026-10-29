@@ -1,0 +1,448 @@
+{
+  "schemaVersion": 1,
+  "catalogVersion": 1,
+  "status": "DESIGN_NOT_IMPLEMENTED",
+  "balanceStatus": "INITIAL_VALIDATION_VALUES_NOT_REFERENCE_MEASUREMENTS",
+  "currency": "Coins",
+  "serverPlayerTarget": 8,
+  "combat": {
+    "attackIntervalSeconds": 0.6,
+    "windupSeconds": 0.18,
+    "rangeStuds": 9,
+    "maxVerticalDeltaStuds": 6,
+    "petBonusMode": "additive_basis_points",
+    "damageFormula": "max(1, floor(baseAttack * (10000 + 2000 * (weaponLevel - 1)) / 10000 * (10000 + sumEquippedPetBonusBps) / 10000))",
+    "enemyRetaliation": false,
+    "autoFight": false
+  },
+  "progression": {
+    "weaponMaxLevel": 10,
+    "xpPerDuplicate": 1,
+    "xpToNextLevel": [
+      1,
+      2,
+      3,
+      5,
+      8,
+      12,
+      18,
+      27,
+      40
+    ],
+    "maxLevelDuplicatePolicy": "fixed_coins_per_copy",
+    "firstCopyXp": 0
+  },
+  "weapons": [
+    {
+      "id": "weapon_rusty_sword",
+      "displayName": "Rusty Sword",
+      "rarity": "Common",
+      "baseAttack": 10,
+      "maxDuplicateCoins": 12,
+      "starter": true
+    },
+    {
+      "id": "weapon_goblin_blade",
+      "displayName": "Goblin Blade",
+      "rarity": "Rare",
+      "baseAttack": 18,
+      "maxDuplicateCoins": 30,
+      "starter": false
+    },
+    {
+      "id": "weapon_chieftain_cleaver",
+      "displayName": "Chieftain Cleaver",
+      "rarity": "Legendary",
+      "baseAttack": 32,
+      "maxDuplicateCoins": 120,
+      "starter": false
+    }
+  ],
+  "pets": [
+    {
+      "id": "pet_sprout_slime",
+      "displayName": "Sprout Slime",
+      "rarity": "Common",
+      "damageBonusBps": 1000
+    },
+    {
+      "id": "pet_moss_bunny",
+      "displayName": "Moss Bunny",
+      "rarity": "Common",
+      "damageBonusBps": 1200
+    },
+    {
+      "id": "pet_ember_fox",
+      "displayName": "Ember Fox",
+      "rarity": "Uncommon",
+      "damageBonusBps": 1800
+    },
+    {
+      "id": "pet_pebble_drake",
+      "displayName": "Pebble Drake",
+      "rarity": "Rare",
+      "damageBonusBps": 2500
+    },
+    {
+      "id": "pet_grove_spirit",
+      "displayName": "Grove Spirit",
+      "rarity": "Epic",
+      "damageBonusBps": 3500
+    },
+    {
+      "id": "pet_sun_cub",
+      "displayName": "Sun Cub",
+      "rarity": "Legendary",
+      "damageBonusBps": 5000
+    }
+  ],
+  "petInventory": {
+    "equippedSlots": 3,
+    "capacity": 100,
+    "duplicatePolicy": "distinct_server_generated_uid",
+    "manualRelease": true,
+    "releaseEquippedAllowed": false,
+    "equipBestTieBreak": "bonus_desc_then_definition_id_then_uid",
+    "autoEquipOnHatch": false
+  },
+  "eggs": [
+    {
+      "id": "egg_meadow",
+      "displayName": "Meadow Egg",
+      "zoneId": "zone_greenvale",
+      "costCoins": 30,
+      "hatchCounts": [
+        1
+      ],
+      "interactDistanceStuds": 12,
+      "entries": [
+        {
+          "petId": "pet_sprout_slime",
+          "weight": 38
+        },
+        {
+          "petId": "pet_moss_bunny",
+          "weight": 30
+        },
+        {
+          "petId": "pet_ember_fox",
+          "weight": 18
+        },
+        {
+          "petId": "pet_pebble_drake",
+          "weight": 9
+        },
+        {
+          "petId": "pet_grove_spirit",
+          "weight": 4
+        },
+        {
+          "petId": "pet_sun_cub",
+          "weight": 1
+        }
+      ]
+    }
+  ],
+  "lootTables": [
+    {
+      "id": "loot_normal_a",
+      "semantics": "exactly_one_weighted_weapon",
+      "entries": [
+        {
+          "weaponId": "weapon_rusty_sword",
+          "weight": 100
+        }
+      ]
+    },
+    {
+      "id": "loot_normal_b",
+      "semantics": "exactly_one_weighted_weapon",
+      "entries": [
+        {
+          "weaponId": "weapon_rusty_sword",
+          "weight": 75
+        },
+        {
+          "weaponId": "weapon_goblin_blade",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "id": "loot_strong",
+      "semantics": "exactly_one_weighted_weapon",
+      "entries": [
+        {
+          "weaponId": "weapon_rusty_sword",
+          "weight": 40
+        },
+        {
+          "weaponId": "weapon_goblin_blade",
+          "weight": 58
+        },
+        {
+          "weaponId": "weapon_chieftain_cleaver",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "id": "loot_miniboss",
+      "semantics": "exactly_one_weighted_weapon",
+      "entries": [
+        {
+          "weaponId": "weapon_goblin_blade",
+          "weight": 90
+        },
+        {
+          "weaponId": "weapon_chieftain_cleaver",
+          "weight": 10
+        }
+      ]
+    }
+  ],
+  "enemies": [
+    {
+      "id": "enemy_moss_slime",
+      "displayName": "Moss Slime",
+      "role": "Normal A",
+      "maxHp": 100,
+      "coins": 12,
+      "respawnSeconds": 3,
+      "lootTableId": "loot_normal_a"
+    },
+    {
+      "id": "enemy_goblin_scout",
+      "displayName": "Goblin Scout",
+      "role": "Normal B",
+      "maxHp": 180,
+      "coins": 24,
+      "respawnSeconds": 3,
+      "lootTableId": "loot_normal_b"
+    },
+    {
+      "id": "enemy_goblin_guard",
+      "displayName": "Goblin Guard",
+      "role": "Strong",
+      "maxHp": 650,
+      "coins": 90,
+      "respawnSeconds": 6,
+      "lootTableId": "loot_strong"
+    },
+    {
+      "id": "enemy_goblin_chieftain",
+      "displayName": "Goblin Chieftain",
+      "role": "Mini-Boss",
+      "maxHp": 2200,
+      "coins": 250,
+      "respawnSeconds": 20,
+      "lootTableId": "loot_miniboss"
+    }
+  ],
+  "pity": {
+    "targetWeaponId": "weapon_goblin_blade",
+    "enemyId": "enemy_goblin_scout",
+    "guaranteedByEligibleKill": 4,
+    "scope": "until_first_ownership",
+    "persist": true,
+    "uiLabel": "Goblin Blade guaranteed within 4 Scout rewards"
+  },
+  "participation": {
+    "minDamageFraction": 0.02,
+    "lastHitWithinSeconds": 15,
+    "maxRewardDistanceStuds": 80,
+    "requireLivingCharacter": true,
+    "requireActiveProfile": true,
+    "personalFullRewards": true,
+    "overkillCreditCappedAtRemainingHp": true
+  },
+  "zones": [
+    {
+      "id": "zone_greenvale",
+      "displayName": "Greenvale",
+      "initiallyUnlocked": true,
+      "contentInFirstSlice": "safe_services_and_farming"
+    },
+    {
+      "id": "zone_goblin_camp",
+      "displayName": "Goblin Camp",
+      "initiallyUnlocked": false,
+      "unlockCostCoins": 600,
+      "previousZoneId": "zone_greenvale",
+      "contentInFirstSlice": "preview_and_safe_landing_only"
+    }
+  ],
+  "gate": {
+    "id": "gate_greenvale_to_goblin_camp",
+    "zoneId": "zone_goblin_camp",
+    "interactionDistanceStuds": 12,
+    "unlockIsPersonal": true,
+    "alreadyUnlockedChargesAgain": false
+  },
+  "layout": {
+    "coordinateConvention": "rightStuds * Spawn.RightVector + forwardStuds * Spawn.LookVector; y uses ground-projected Spawn",
+    "baseplateExtensionForwardStuds": 64,
+    "mainPathWidthStuds": 18,
+    "anchors": [
+      {
+        "id": "SafeArea",
+        "rightStuds": 0,
+        "forwardStuds": 0,
+        "footprintStuds": [
+          64,
+          36
+        ]
+      },
+      {
+        "id": "MeadowEgg",
+        "rightStuds": 22,
+        "forwardStuds": 4,
+        "footprintStuds": [
+          8,
+          8
+        ]
+      },
+      {
+        "id": "FarmEntry",
+        "rightStuds": 0,
+        "forwardStuds": 18
+      },
+      {
+        "id": "NormalABay",
+        "rightStuds": -32,
+        "forwardStuds": 36
+      },
+      {
+        "id": "NormalBBay",
+        "rightStuds": 32,
+        "forwardStuds": 56
+      },
+      {
+        "id": "StrongBay",
+        "rightStuds": -36,
+        "forwardStuds": 76
+      },
+      {
+        "id": "MiniBossBay",
+        "rightStuds": 34,
+        "forwardStuds": 82
+      },
+      {
+        "id": "NextGate",
+        "rightStuds": 0,
+        "forwardStuds": 104,
+        "footprintStuds": [
+          28,
+          4
+        ]
+      },
+      {
+        "id": "Zone2Landing",
+        "rightStuds": 0,
+        "forwardStuds": 116,
+        "footprintStuds": [
+          40,
+          16
+        ]
+      }
+    ],
+    "spawnSockets": [
+      {
+        "id": "normal_a_01",
+        "enemyId": "enemy_moss_slime",
+        "anchor": "NormalABay",
+        "offsetRightStuds": -8,
+        "offsetForwardStuds": -8
+      },
+      {
+        "id": "normal_a_02",
+        "enemyId": "enemy_moss_slime",
+        "anchor": "NormalABay",
+        "offsetRightStuds": 8,
+        "offsetForwardStuds": -8
+      },
+      {
+        "id": "normal_a_03",
+        "enemyId": "enemy_moss_slime",
+        "anchor": "NormalABay",
+        "offsetRightStuds": -8,
+        "offsetForwardStuds": 8
+      },
+      {
+        "id": "normal_a_04",
+        "enemyId": "enemy_moss_slime",
+        "anchor": "NormalABay",
+        "offsetRightStuds": 8,
+        "offsetForwardStuds": 8
+      },
+      {
+        "id": "normal_b_01",
+        "enemyId": "enemy_goblin_scout",
+        "anchor": "NormalBBay",
+        "offsetRightStuds": -8,
+        "offsetForwardStuds": -8
+      },
+      {
+        "id": "normal_b_02",
+        "enemyId": "enemy_goblin_scout",
+        "anchor": "NormalBBay",
+        "offsetRightStuds": 8,
+        "offsetForwardStuds": -8
+      },
+      {
+        "id": "normal_b_03",
+        "enemyId": "enemy_goblin_scout",
+        "anchor": "NormalBBay",
+        "offsetRightStuds": -8,
+        "offsetForwardStuds": 8
+      },
+      {
+        "id": "normal_b_04",
+        "enemyId": "enemy_goblin_scout",
+        "anchor": "NormalBBay",
+        "offsetRightStuds": 8,
+        "offsetForwardStuds": 8
+      },
+      {
+        "id": "strong_01",
+        "enemyId": "enemy_goblin_guard",
+        "anchor": "StrongBay",
+        "offsetRightStuds": -8,
+        "offsetForwardStuds": 0
+      },
+      {
+        "id": "strong_02",
+        "enemyId": "enemy_goblin_guard",
+        "anchor": "StrongBay",
+        "offsetRightStuds": 8,
+        "offsetForwardStuds": 0
+      },
+      {
+        "id": "mini_boss_01",
+        "enemyId": "enemy_goblin_chieftain",
+        "anchor": "MiniBossBay",
+        "offsetRightStuds": 0,
+        "offsetForwardStuds": 0
+      }
+    ]
+  },
+  "deferred": [
+    "Auto Fight",
+    "Hatch 3",
+    "Hatch 10",
+    "Auto Hatch",
+    "Auto Delete",
+    "Index UI",
+    "Golden",
+    "Rainbow",
+    "Shiny",
+    "Rebirth",
+    "Trading",
+    "Guilds",
+    "PvP",
+    "World 2",
+    "Raids",
+    "Battle Pass",
+    "Paid currency"
+  ]
+}

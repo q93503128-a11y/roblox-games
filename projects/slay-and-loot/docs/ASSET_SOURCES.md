@@ -1,36 +1,38 @@
-# Slay & Loot — Asset Sources
+# Asset sources / availability
+Audit date: 2026-10-30. **No external production asset is currently imported or APPROVED.**
+This pass performed no Studio insert/delete and destroyed no asset.
+Research screenshots and three user-generated concepts are preserved under docs/references for design evidence only; none is approved as in-game art or a literal blueprint.
 
-Every external production asset used in Slay & Loot must be recorded here after audit.
+## Current scene
+Workspace: Camera, Terrain, SpawnLocation, Baseplate. ServerStorage is empty, including no Quarantine folder.
+Baseplate/Spawn are KEEP calibration/safety objects, not production art. Terrain has no non-air voxels in the surveyed first-slice envelope; no claim is made about all terrain coordinates.
 
-## Required fields
+## Historical candidates — absent now
+Historical record: commit 58746a05d609e3e061c5acba72e1eaaa760240d2, former docs/ASSET_SOURCES.md.
+| Candidate | Historical source | Historical observed audit | Current status |
+|---|---|---|---|
+| Synty Dungeon / SyntyDungeon_Q | Creator Store 6934021345 | 271 MeshParts, zero scripts observed; not final production approval | HISTORICAL / ABSENT |
+| Goblin King / Goblin_Q | Creator Store 13557888509 | 75 BaseParts, 57 Motor6D, zero scripts observed; in use but not approved then | HISTORICAL / ABSENT |
+| Baseplate_Original | former quarantined original Part | old scene backup | HISTORICAL / ABSENT; current Baseplate is separately measured |
 
-| Asset | Asset ID / Source | Creator | Category | Intended Use | Scripts Removed | Modified | Security | Scale/Pivot/Collision | Visual Fit | Status | Notes |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| Synty Dungeon / Polygon Dungeon environment kit (`SyntyDungeon_Q`) | `6934021345` | Synty / Creator Store metadata to reverify before approval | Environment / props | Dungeon production-art candidate | N/A in inspected copy | No production promotion yet | Inspected quarantined copy: 271 MeshParts, 0 scripts observed | Full quarantined pack bbox observed at about `380.3 x 105.7 x 799.4` studs; module-by-module pivot/scale/collision/avatar/camera audit still required | Same stylized family as intended project direction, but not yet evaluated as a live room set | `QUARANTINED` | Stored under `ServerStorage.Quarantine.SyntyDungeon_Q`; current Git source does not reference it. Do not ship the whole library wholesale. |
-| Goblin King visual (`Goblin_Q`) | `13557888509` | Creator Store metadata to reverify before approval | Boss visual rig/model | First-dungeon boss visual | No scripts observed in inspected copy; runtime builder removes Humanoid/Animator/animation-sequence objects from the clone | Runtime clone is anchored, non-colliding/non-querying, scaled to 1.75 | Inspected quarantined copy contained 75 BaseParts, 57 Motor6D objects, 0 scripts; project-owned `EnemyService` controls combat/authority | Authored quarantined bbox observed at about `5.19 x 7.94 x 5.53` studs; current boss builder sanitizes the clone and final pivot/avatar/camera/performance approval is still required | Currently visible in the boss path and preferable to the primitive fallback, but full production approval is not yet recorded | `CANDIDATE` | **IN USE BUT NOT APPROVED.** `EnemyService.buildBossRig()` depends on `ServerStorage.Quarantine.Goblin_Q`; if missing, the code falls back to the project block rig. The inspected source model includes a HumanoidRootPart/R6 Humanoid; runtime sanitization removes authority/animation objects from the clone. |
-| Original Baseplate (`Baseplate_Original`) | Original Studio/base-place object; external provenance not applicable | Roblox Studio / original place state | Quarantined scene object | Preserve original baseplate while current Slay & Loot shell uses its own ground | N/A | Moved to quarantine | Plain Part; no script dependency observed | Stored as a single Part under `ServerStorage.Quarantine.Baseplate_Original` | Not intended as production art | `QUARANTINED` | Kept only to avoid destructive deletion while the project shell is evaluated. |
+These models were already removed by the earlier explicit erase request. Git preserves code and audit metadata, **not their Studio mesh/model binaries**. Do not claim models can be restored from source history alone. No backups were verified in this pass. Reacquire from lawful original sources and audit anew if needed.
 
-## Status meanings
+## Procurement order
+Roblox official → verified Package → audited Creator Store → approved permissive external/internal → custom.
+Candidate starting point from Godbase: Synty Nature Pack 6933438443, NOT yet freshly source/dependency/visual audited here. The current task does not import it.
+Do not reinstate the old Dungeon kit as the map's product direction merely because it once existed.
 
-- `CANDIDATE` — discovered, not yet approved
-- `QUARANTINED` — inserted only for inspection; must not ship as an unreviewed library
-- `APPROVED` — source/security/visual/technical checks passed for the stated use
-- `REJECTED` — do not use; explain why in Notes
-- `REPLACED` — historical source retained for traceability, but no longer active
+## Required first-build asset roles
+- coherent grass/cliff/tree/path/gate/egg pedestal family;
+- Slime, Scout, Guard, Chieftain silhouettes;
+- three visibly distinct held weapons, six small pet models, one Egg;
+- swing/contact/kill/Coins/new weapon/level/rare VFX+SFX;
+- consistent icons, frames and English typography.
 
-An asset being referenced by current prototype/runtime code does **not** automatically make it `APPROVED`.
+Record per promoted asset: ID/source URL, creator, terms/attribution, retrieval date/version, source grade, script/dependency findings, sanitization, pivot/bounds/rig/collision, thumbnail/gameplay-camera fit, repeated-use/mobile cost and actual status.
 
-## Minimum audit before APPROVED
-
-- source and creator known
-- usage basis acceptable
-- scripts/dependencies inspected
-- suspicious runtime loading/obfuscation absent or removed
-- pivot/rig usable
-- avatar-relative scale checked
-- collision suitable or replaced with proxy
-- gameplay camera appearance checked
-- performance cost reasonable for intended repetition count
-- visually coherent with the accepted project direction
-
-If only a visual model is needed, prefer a sanitized script-free copy.
+## Promotion gate
+Discovery → metadata triage → separate quarantine audit → script-free visual extraction → project-owned ApprovedAssets → actual camera/rig/dependency/mobile test.
+No free-model damage, rewards, remotes, persistence, purchases or ownership code enters project authority.
+Preserve any useful audited models discovered later; use ASSET-ONLY when the visual is useful but behavior is obsolete. Keep source library outside shipped hierarchy.
+Primitive blockout can be INTERNAL_PROTOTYPE only. READY_FOR_USER_TEST requires approved hero enemy/weapon/pet/Egg/gate presentation, permitted audio/animation and coherent art.

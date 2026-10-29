@@ -1,0 +1,79 @@
+{
+  "auditDate": "2026-10-30",
+  "mode": "Edit",
+  "studioId": "52d5ccd7-f746-4d59-b8e0-7a5a26820c90",
+  "placeId": 121055730304610,
+  "gameId": 10773222778,
+  "placeName": "베고 약탈하기",
+  "reportedPlaceVersion": 0,
+  "cloudSavePublishStatus": "NOT_VERIFIED_READ_ONLY_AUDIT",
+  "studioMutationsThisPass": 0,
+  "workspaceChildren": [
+    "Camera",
+    "Terrain",
+    "SpawnLocation",
+    "Baseplate"
+  ],
+  "scripts": 0,
+  "remotes": 0,
+  "serverStorageChildren": 0,
+  "replicatedStorageChildren": 0,
+  "starterGuiChildren": 0,
+  "starterPackChildren": 0,
+  "starterPlayerScriptChildren": 0,
+  "lightingEffects": 0,
+  "baseplate": {
+    "size": [
+      128,
+      2,
+      128
+    ],
+    "position": [
+      0,
+      -1,
+      0
+    ],
+    "topY": 0,
+    "anchored": true,
+    "canCollide": true
+  },
+  "spawn": {
+    "size": [
+      12,
+      1,
+      12
+    ],
+    "position": [
+      0,
+      0.5,
+      0
+    ],
+    "rotationIdentity": true
+  },
+  "camera": {
+    "fieldOfView": 70,
+    "type": "Fixed",
+    "note": "Edit camera only; gameplay camera and avatar scale require future Play calibration"
+  },
+  "starterPlayer": {
+    "walkSpeed": 16,
+    "cameraMinZoomDistance": 0.5,
+    "cameraMaxZoomDistance": 128
+  },
+  "streamingEnabled": true,
+  "terrainRegionAudit": {
+    "min": [
+      -64,
+      -16,
+      -128
+    ],
+    "max": [
+      64,
+      16,
+      64
+    ],
+    "resolution": 4,
+    "nonAirVoxels": 0
+  },
+  "players": 0
+}

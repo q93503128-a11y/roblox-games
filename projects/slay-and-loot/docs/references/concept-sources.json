@@ -1,0 +1,29 @@
+[
+  {
+    "file": "concepts/combat-hud.png",
+    "source": "user-supplied generated concept image",
+    "originalAttachmentName": "codex-clipboard-fe90a7f1-384a-49c8-8a20-bf4de4dc1c48.png",
+    "role": "Image1: combat HUD and weapon feedback",
+    "authority": "SECONDARY_BRAINSTORMING_NOT_BLUEPRINT",
+    "productionApproved": false,
+    "bytes": 2420884
+  },
+  {
+    "file": "concepts/egg-pets.png",
+    "source": "user-supplied generated concept image",
+    "originalAttachmentName": "codex-clipboard-3545501c-7c65-4a87-844d-44a424b2e2b3.png",
+    "role": "Image2: Egg, Hatch and pet inventory",
+    "authority": "SECONDARY_BRAINSTORMING_NOT_BLUEPRINT",
+    "productionApproved": false,
+    "bytes": 2516505
+  },
+  {
+    "file": "concepts/world-progression.png",
+    "source": "user-supplied generated concept image",
+    "originalAttachmentName": "codex-clipboard-e502fb2d-04ed-46c9-a7a4-21801fc2c76c.png",
+    "role": "Image3: World1 spatial progression",
+    "authority": "SECONDARY_BRAINSTORMING_NOT_BLUEPRINT",
+    "productionApproved": false,
+    "bytes": 3202829
+  }
+]
