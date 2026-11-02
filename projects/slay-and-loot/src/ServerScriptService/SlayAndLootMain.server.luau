@@ -1,4 +1,4 @@
--- Server gameplay source for Build 1 micro-slice (structural repair)
+-- Server gameplay source for Build 1 micro-slice (final authority repair)
 local Players = game:GetService("Players")
 local RS = game:GetService("ReplicatedStorage")
 local remotes = RS:WaitForChild("SlayAndLoot")
@@ -27,10 +27,9 @@ end
 
 local function hasRustySword(player)
     local char = player.Character
-    if char and char:FindFirstChild("Rusty Sword") then return true end
-    local bp = player:FindFirstChild("Backpack")
-    if bp and bp:FindFirstChild("Rusty Sword") then return true end
-    return false
+    if not char then return false end
+    local tool = char:FindFirstChild("Rusty Sword")
+    return tool ~= nil and tool:IsA("Tool")
 end
 
 local function respawnSlime()
