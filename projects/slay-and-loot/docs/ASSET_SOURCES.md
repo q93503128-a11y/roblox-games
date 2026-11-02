@@ -1,48 +1,44 @@
 # Asset sources / availability
-Audit date: 2026-10-30. **No external production asset is currently imported or APPROVED.**
-This pass performed no Studio insert/delete and destroyed no asset.
-Research screenshots and three user-generated concepts are preserved under docs/references for design evidence only; none is approved as in-game art or a literal blueprint.
 
-## Current scene
-Workspace: Camera, Terrain, SpawnLocation, Baseplate. ServerStorage is empty, including no Quarantine folder.
-Baseplate/Spawn are KEEP calibration/safety objects, not production art. Terrain has no non-air voxels in the surveyed first-slice envelope; no claim is made about all terrain coordinates.
+## BASELINE_HISTORY
+Historical candidates recorded in commit 58746a05d609e3e061c5acba72e1eaaa760240d2:
+- Synty Dungeon / SyntyDungeon_Q: Creator Store 6934021345, 271 MeshParts, 0 scripts observed, QUARANTINED, HISTORICAL / ABSENT
+- Goblin King / Goblin_Q: Creator Store 13557888509, 75 BaseParts, 57 Motor6D, 0 scripts observed, CANDIDATE then, HISTORICAL / ABSENT
+- Baseplate_Original: former quarantined original Part, HISTORICAL / ABSENT
 
-## Historical candidates — absent now
-Historical record: commit 58746a05d609e3e061c5acba72e1eaaa760240d2, former docs/ASSET_SOURCES.md.
-| Candidate | Historical source | Historical observed audit | Current status |
-|---|---|---|---|
-| Synty Dungeon / SyntyDungeon_Q | Creator Store 6934021345 | 271 MeshParts, zero scripts observed; not final production approval | HISTORICAL / ABSENT |
-| Goblin King / Goblin_Q | Creator Store 13557888509 | 75 BaseParts, 57 Motor6D, zero scripts observed; in use but not approved then | HISTORICAL / ABSENT |
-| Baseplate_Original | former quarantined original Part | old scene backup | HISTORICAL / ABSENT; current Baseplate is separately measured |
+These models were removed by earlier erase request. Git preserves audit metadata, not binaries.
 
-These models were already removed by the earlier explicit erase request. Git preserves code and audit metadata, **not their Studio mesh/model binaries**. Do not claim models can be restored from source history alone. No backups were verified in this pass. Reacquire from lawful original sources and audit anew if needed.
+## CURRENT_STUDIO_STATE
+Current Studio contains Build 1 candidate visuals:
+- Slime visual: Creator Store 1223370964, Firefan102 — CANDIDATE_IN_STUDIO, not approved
+- Rusty Sword visual: Creator Store 394537937, s2Theronks2 — CANDIDATE_IN_STUDIO, no scripts observed, not approved
+- Environment Trees/Fence: Creator Store 68938776, williamsboys — CANDIDATE only, ~280 descendants, not promoted
 
-## Procurement order
-Roblox official → verified Package → audited Creator Store → approved permissive external/internal → custom.
-Candidate starting point from Godbase: Synty Nature Pack 6933438443, NOT yet freshly source/dependency/visual audited here. The current task does not import it.
-Do not reinstate the old Dungeon kit as the map's product direction merely because it once existed.
+## TECHNICAL_PLACEHOLDER
+- Prior primitive Slime/Sword/UI were placeholders; candidate visuals now partially replace them
+- Structural Greenvale parts are blockout, not production art
 
-## Required first-build asset roles
-- coherent grass/cliff/tree/path/gate/egg pedestal family;
-- Slime, Scout, Guard, Chieftain silhouettes;
-- three visibly distinct held weapons, six small pet models, one Egg;
-- swing/contact/kill/Coins/new weapon/level/rare VFX+SFX;
-- consistent icons, frames and English typography.
+## CANDIDATE_IN_STUDIO
+- Slime and Rusty Sword candidate visuals are present in Studio
+- Environment candidate remains in ServerStorage
 
-Record per promoted asset: ID/source URL, creator, terms/attribution, retrieval date/version, source grade, script/dependency findings, sanitization, pivot/bounds/rig/collision, thumbnail/gameplay-camera fit, repeated-use/mobile cost and actual status.
+## AUDITED_CANDIDATE
+- Rusty Sword: no scripts observed after insert
+- Slime: simple part candidate
+- Environment: not yet audited for production use
 
-## Promotion gate
-Discovery → metadata triage → separate quarantine audit → script-free visual extraction → project-owned ApprovedAssets → actual camera/rig/dependency/mobile test.
-No free-model damage, rewards, remotes, persistence, purchases or ownership code enters project authority.
-Preserve any useful audited models discovered later; use ASSET-ONLY when the visual is useful but behavior is obsolete. Keep source library outside shipped hierarchy.
-Primitive blockout can be INTERNAL_PROTOTYPE only. READY_FOR_USER_TEST requires approved hero enemy/weapon/pet/Egg/gate presentation, permitted audio/animation and coherent art.
+## APPROVED_PRODUCTION
+- None
 
-## Build 1 asset candidates integrated (visual only)
-- Slime visual: Creator Store 1223370964 (Firefan102) — candidate, not approved
-- Rusty Sword visual: Creator Store 394537937 (s2Theronks2) — candidate, sandboxed on insert, no scripts found after audit
-- Environment (trees/fence): Creator Store 68938776 (williamsboys) — heavy (280 descendants), candidate only
+## REJECTED
+- None newly rejected in this pass
 
-- Slime visual: TECHNICAL PLACEHOLDER (default Part ball)
-- Rusty Sword visual: TECHNICAL PLACEHOLDER (default Tool handle)
-- UI art: TECHNICAL PLACEHOLDER (default TextLabels)
-- Production asset audit: PENDING
+## PROCUREMENT ORDER
+Roblox official → verified Package → audited Creator Store → approved permissive external/internal → custom
+
+## PROMOTION GATE
+Discovery → metadata triage → quarantine audit → script-free visual extraction → ApprovedAssets → camera/rig/dependency/mobile test
+No free-model damage, rewards, remotes, persistence, purchases, or ownership code enters project authority.
+
+## NOTE
+Current Studio object state is NOT durably saved in Git. A local .rbxl backup was reported but not found at the stated path during this pass.
