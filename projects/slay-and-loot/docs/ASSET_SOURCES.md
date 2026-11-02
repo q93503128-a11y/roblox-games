@@ -1,4 +1,4 @@
-# Asset sources / availability
+﻿# Asset sources / availability
 
 ## BASELINE_HISTORY
 Historical candidates recorded in commit 58746a05d609e3e061c5acba72e1eaaa760240d2:
@@ -10,9 +10,9 @@ These models were removed by earlier erase request. Git preserves audit metadata
 
 ## CURRENT_STUDIO_STATE
 Current Studio contains Build 1 candidate visuals:
-- Slime visual: Creator Store 1223370964, Firefan102 — CANDIDATE_IN_STUDIO, not approved
-- Rusty Sword visual: Creator Store 394537937, s2Theronks2 — CANDIDATE_IN_STUDIO, no scripts observed, not approved
-- Environment Trees/Fence: Creator Store 68938776, williamsboys — CANDIDATE only, ~280 descendants, not promoted
+- Slime visual: Creator Store 1223370964, Firefan102 ??CANDIDATE_IN_STUDIO, not approved
+- Rusty Sword visual: Creator Store 394537937, s2Theronks2 ??CANDIDATE_IN_STUDIO, no scripts observed, not approved
+- Environment Trees/Fence: Creator Store 68938776, williamsboys ??CANDIDATE only, ~280 descendants, not promoted
 
 ## TECHNICAL_PLACEHOLDER
 - Prior primitive Slime/Sword/UI were placeholders; candidate visuals now partially replace them
@@ -33,12 +33,15 @@ Current Studio contains Build 1 candidate visuals:
 ## REJECTED
 - None newly rejected in this pass
 
-## PROCUREMENT ORDER
-Roblox official → verified Package → audited Creator Store → approved permissive external/internal → custom
+## PROCUREMENT_ORDER
+Roblox official ??verified Package ??audited Creator Store ??approved permissive external/internal ??custom
 
-## PROMOTION GATE
-Discovery → metadata triage → quarantine audit → script-free visual extraction → ApprovedAssets → camera/rig/dependency/mobile test
+## PROMOTION_GATE
+Discovery ??metadata triage ??quarantine audit ??script-free visual extraction ??ApprovedAssets ??camera/rig/dependency/mobile test
 No free-model damage, rewards, remotes, persistence, purchases, or ownership code enters project authority.
 
 ## NOTE
-Current Studio object state is NOT durably saved in Git. A local .rbxl backup was reported but not found at the stated path during this pass.
+- No local .rbxl backup was created.
+- Current Studio-only object state is disposable and not stored in Git.
+- This was an intentional user decision for the current experimental/pre-production pass.
+- Production work will require a durable save/sync path later.
