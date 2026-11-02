@@ -1,5 +1,4 @@
--- Client gameplay source for Build 1 micro-slice
-local UIS = game:GetService("UserInputService")
+-- Client gameplay source for Build 1 micro-slice (structural repair)
 local RS = game:GetService("ReplicatedStorage")
 local remotes = RS:WaitForChild("SlayAndLoot")
 local attackRE = remotes:WaitForChild("Attack")
@@ -16,17 +15,29 @@ local function show(msg)
     task.delay(2, function() if notifyLbl.Text == msg then notifyLbl.Text = "" end end)
 end
 
-UIS.InputBegan:Connect(function(input, gp)
-    if gp then return end
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+local function bindTool(tool)
+    if not tool or tool.Name ~= "Rusty Sword" then return end
+    tool.Activated:Connect(function()
         local gen = slime:GetAttribute("Generation")
         attackRE:FireServer(gen)
+    end)
+end
+
+local function watchCharacter(char)
+    for _,c in ipairs(char:GetChildren()) do
+        if c:IsA("Tool") then bindTool(c) end
     end
-end)
+    char.ChildAdded:Connect(function(c)
+        if c:IsA("Tool") then bindTool(c) end
+    end)
+end
+
+if player.Character then watchCharacter(player.Character) end
+player.CharacterAdded:Connect(watchCharacter)
 
 attackRE.OnClientEvent:Connect(function(kind, a, b, c, d)
     if kind == "hit" then
-        show("Hit for "..d)
+        show("Hit for "..b)
     elseif kind == "kill" then
         coinsLbl.Text = "Coins: "..a
         weaponLbl.Text = "Rusty Sword Lv."..b.."  "..c.."/1 XP"
