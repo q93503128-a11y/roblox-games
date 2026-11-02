@@ -37,7 +37,11 @@ No free-model damage, rewards, remotes, persistence, purchases or ownership code
 Preserve any useful audited models discovered later; use ASSET-ONLY when the visual is useful but behavior is obsolete. Keep source library outside shipped hierarchy.
 Primitive blockout can be INTERNAL_PROTOTYPE only. READY_FOR_USER_TEST requires approved hero enemy/weapon/pet/Egg/gate presentation, permitted audio/animation and coherent art.
 
-## Build 1 placeholder status (additive)
+## Build 1 asset candidates integrated (visual only)
+- Slime visual: Creator Store 1223370964 (Firefan102) — candidate, not approved
+- Rusty Sword visual: Creator Store 394537937 (s2Theronks2) — candidate, sandboxed on insert, no scripts found after audit
+- Environment (trees/fence): Creator Store 68938776 (williamsboys) — heavy (280 descendants), candidate only
+
 - Slime visual: TECHNICAL PLACEHOLDER (default Part ball)
 - Rusty Sword visual: TECHNICAL PLACEHOLDER (default Tool handle)
 - UI art: TECHNICAL PLACEHOLDER (default TextLabels)
